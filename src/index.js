@@ -25,7 +25,7 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
     <Provider store={store} >
-      <BrowserRouter basename={base_path}>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
       <AllRoutes />
 
       </BrowserRouter>

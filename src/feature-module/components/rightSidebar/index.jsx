@@ -172,7 +172,7 @@ const RightSideBar = () => {
                       <input type="checkbox" id={1} className="check" />
                       <label htmlFor={1} className="checktoggle">
                         <Link
-                          to="https://dreamspos.dreamguystech.com/react/template-rtl/dashboard"
+                          to="https://dreamspos.dreamguystech.com/react/dashboard"
                           className="layout-link"
                         >
                           checkbox

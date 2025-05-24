@@ -257,7 +257,7 @@ const ThemeSettings = () => {
                               />
                               <label htmlFor="rtl" className="checktoggles">
                                 <Link
-                                  to="https://dreamspos.dreamstechnologies.com/react/template-rtl/"
+                                  to="https://dreamspos.dreamstechnologies.com/react/"
                                   target="_blank"
                                 >
                                   <ImageWithBasePath

@@ -116,8 +116,8 @@ const Header = () => {
   let pathname = location.pathname;
 
   const exclusionArray = [
-    "/reactjs/template/dream-pos/index-three",
-    "/reactjs/template/dream-pos/index-one",
+    "/reactjs/dream-pos/index-three",
+    "/reactjs/dream-pos/index-one",
   ];
   if (exclusionArray.indexOf(window.location.pathname) >= 0) {
     return "";

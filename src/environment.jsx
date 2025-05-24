@@ -1,5 +1,6 @@
 // For development environment
-export const base_path = process.env.PUBLIC_URL || "/react/";
+const publicUrl = process.env.PUBLIC_URL || "/";
+export const base_path = publicUrl.endsWith('/') ? publicUrl : publicUrl + '/';
 
 // For production with a subdirectory (uncomment and modify as needed)
 // export const base_path = "/react/";

@@ -16,7 +16,7 @@ const ImageWithBasePath = (props) => {
   }
 
   // For debugging - remove in production
-  // console.log('Image path:', fullSrc);
+  // console.log('Base path:', base_path, 'Src:', props.src, 'Full path:', fullSrc);
 
   return (
     <img
