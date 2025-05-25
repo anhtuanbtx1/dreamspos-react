@@ -193,6 +193,7 @@ import TaxRates from "../feature-module/settings/financialsettings/taxrates";
 import CurrencySettings from "../feature-module/settings/financialsettings/currencysettings";
 import WareHouses from "../core/modals/peoples/warehouses";
 import Coupons from "../feature-module/coupons/coupons";
+import ApiTest from "../components/ApiTest";
 import { all_routes } from "./all_routes";
 export const publicRoutes = [
   {
@@ -1382,13 +1383,20 @@ export const publicRoutes = [
   },
   {
     id: 115,
+    path: "/api-test",
+    name: "apitest",
+    element: <ApiTest />,
+    route: Route,
+  },
+  {
+    id: 116,
     path: "/",
     name: "Root",
     element: <Navigate to="/" />,
     route: Route,
   },
   {
-    id: 116,
+    id: 117,
     path: "*",
     name: "NotFound",
     element: <Navigate to="/" />,

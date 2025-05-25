@@ -6,7 +6,12 @@ const ImageWithBasePath = (props) => {
   // Combine the base path and the provided src to create the full image source URL
   // Handle both relative and absolute paths
   let fullSrc;
-  if (props.src.startsWith('http')) {
+
+  // Check if src is provided and is a string
+  if (!props.src || typeof props.src !== 'string') {
+    // Use a default placeholder image if src is undefined or invalid
+    fullSrc = `${base_path}assets/img/placeholder.png`;
+  } else if (props.src.startsWith('http')) {
     fullSrc = props.src;
   } else {
     // Ensure there's always a slash between base_path and src
@@ -38,7 +43,7 @@ const ImageWithBasePath = (props) => {
 // Add PropTypes validation
 ImageWithBasePath.propTypes = {
   className: PropTypes.string,
-  src: PropTypes.string.isRequired, // Make 'src' required
+  src: PropTypes.string, // Allow src to be optional
   alt: PropTypes.string,
   height: PropTypes.number,
   width: PropTypes.number,

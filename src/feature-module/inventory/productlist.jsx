@@ -11,7 +11,7 @@ import {
   StopCircle,
   Trash2,
 } from "feather-icons-react/build/IconComponents";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Select from "react-select";
@@ -24,17 +24,94 @@ import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import Table from "../../core/pagination/datatable";
 import { setToogleHeader } from "../../core/redux/action";
 import { Download } from "react-feather";
+import {
+  fetchProducts,
+  fetchProduct,
+  deleteProduct,
+  clearProductError
+} from "../../core/redux/actions/productActions";
 
 const ProductList = () => {
-  const dataSource = useSelector((state) => state.product_list);
+  // Use new Redux structure for API data, fallback to legacy for existing functionality
+  const {
+    products: apiProducts,
+    loading,
+    error
+  } = useSelector((state) => state.products);
+
+  // Fallback to legacy data if API data is not available
+  const legacyProducts = useSelector((state) => state.legacy?.product_list || []);
+  const dataSource = apiProducts.length > 0 ? apiProducts : legacyProducts;
+
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.toggle_header);
+  const data = useSelector((state) => state.legacy?.toggle_header || false);
 
   const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const toggleFilterVisibility = () => {
     setIsFilterVisible((prevVisibility) => !prevVisibility);
   };
+
   const route = all_routes;
+
+  // Fetch products on component mount
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        await dispatch(fetchProducts());
+        // Only fetch products - categories/brands may be included in response
+        // or can be extracted from products data
+      } catch (error) {
+        console.error('Failed to load products:', error);
+      }
+    };
+
+    loadProducts();
+  }, [dispatch]);
+
+  // Handle product deletion
+  const handleDeleteProduct = async (productId) => {
+    try {
+      await dispatch(deleteProduct(productId));
+      // Show success message
+      MySwal.fire({
+        title: "Deleted!",
+        text: "Product has been deleted successfully.",
+        icon: "success",
+        className: "btn btn-success",
+        customClass: {
+          confirmButton: "btn btn-success",
+        },
+      });
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+      MySwal.fire({
+        title: "Error!",
+        text: "Failed to delete product. Please try again.",
+        icon: "error",
+        className: "btn btn-danger",
+        customClass: {
+          confirmButton: "btn btn-danger",
+        },
+      });
+    }
+  };
+
+  // Handle search
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    // You can implement debounced search here
+    // For now, we'll just update the search term
+  };
+
+  // Clear error when component unmounts
+  useEffect(() => {
+    return () => {
+      dispatch(clearProductError());
+    };
+  }, [dispatch]);
   const options = [
     { value: "sortByDate", label: "Sort by Date" },
     { value: "140923", label: "14 09 23" },
@@ -73,7 +150,10 @@ const ProductList = () => {
       render: (text, record) => (
         <span className="productimgname">
           <Link to="/profile" className="product-img stock-img">
-            <ImageWithBasePath alt="" src={record.productImage} />
+            <ImageWithBasePath
+              alt={record.name || text || "Product"}
+              src={record.productImage || record.image || record.img}
+            />
           </Link>
           <Link to="/profile">{text}</Link>
         </span>
@@ -119,7 +199,10 @@ const ProductList = () => {
       render: (text, record) => (
         <span className="userimgname">
           <Link to="/profile" className="product-img">
-            <ImageWithBasePath alt="" src={record.img} />
+            <ImageWithBasePath
+              alt={record.createdBy || text || "User"}
+              src={record.img || record.avatar || record.userImage}
+            />
           </Link>
           <Link to="/profile">{text}</Link>
         </span>
@@ -129,20 +212,44 @@ const ProductList = () => {
     {
       title: "Action",
       dataIndex: "action",
-      render: () => (
+      render: (text, record) => (
         <td className="action-table-data">
           <div className="edit-delete-action">
             <div className="input-block add-lists"></div>
             <Link className="me-2 p-2" to={route.productdetails}>
               <Eye className="feather-view" />
             </Link>
-            <Link className="me-2 p-2" to={route.editproduct}>
+            <Link
+              className="me-2 p-2"
+              to={`${route.editproduct}/${record.id || record.key}`}
+              onClick={() => {
+                // Pre-fetch product details for editing
+                if (record.id || record.key) {
+                  dispatch(fetchProduct(record.id || record.key));
+                }
+              }}
+            >
               <Edit className="feather-edit" />
             </Link>
             <Link
               className="confirm-text p-2"
               to="#"
-              onClick={showConfirmationAlert}
+              onClick={(e) => {
+                e.preventDefault();
+                MySwal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  showCancelButton: true,
+                  confirmButtonColor: "#00ff00",
+                  confirmButtonText: "Yes, delete it!",
+                  cancelButtonColor: "#ff0000",
+                  cancelButtonText: "Cancel",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    handleDeleteProduct(record.id || record.key);
+                  }
+                });
+              }}
             >
               <Trash2 className="feather-trash-2" />
             </Link>
@@ -154,31 +261,7 @@ const ProductList = () => {
   ];
   const MySwal = withReactContent(Swal);
 
-  const showConfirmationAlert = () => {
-    MySwal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      showCancelButton: true,
-      confirmButtonColor: "#00ff00",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonColor: "#ff0000",
-      cancelButtonText: "Cancel",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        MySwal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          className: "btn btn-success",
-          confirmButtonText: "OK",
-          customClass: {
-            confirmButton: "btn btn-success",
-          },
-        });
-      } else {
-        MySwal.close();
-      }
-    });
-  };
+  // Removed showConfirmationAlert as we handle confirmation inline
 
   const renderTooltip = (props) => (
     <Tooltip id="pdf-tooltip" {...props}>
@@ -292,6 +375,8 @@ const ProductList = () => {
                     type="text"
                     placeholder="Search"
                     className="form-control form-control-sm formsearch"
+                    value={searchTerm}
+                    onChange={handleSearch}
                   />
                   <Link to className="btn btn-searchset">
                     <i data-feather="search" className="feather-search" />
@@ -406,7 +491,26 @@ const ProductList = () => {
             </div>
             {/* /Filter */}
             <div className="table-responsive">
-              <Table columns={columns} dataSource={dataSource} />
+              {loading ? (
+                <div className="text-center p-4">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </div>
+                  <p className="mt-2">Loading products...</p>
+                </div>
+              ) : error ? (
+                <div className="alert alert-danger" role="alert">
+                  <strong>Error:</strong> {error}
+                  <button
+                    className="btn btn-sm btn-outline-danger ms-2"
+                    onClick={() => dispatch(fetchProducts())}
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : (
+                <Table columns={columns} dataSource={dataSource} />
+              )}
             </div>
           </div>
         </div>

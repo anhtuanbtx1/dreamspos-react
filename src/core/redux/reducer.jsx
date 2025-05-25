@@ -1,6 +1,9 @@
+import { combineReducers } from '@reduxjs/toolkit';
 import initialState from "./initial.value";
+import productReducer from './reducers/productReducer';
 
-const rootReducer = (state = initialState, action) => {
+// Legacy reducer for existing functionality
+const legacyReducer = (state = initialState, action) => {
   switch (action.type) {
     case "Product_list":
       return { ...state, product_list: action.payload };
@@ -65,5 +68,11 @@ const rootReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+// Combine reducers
+const rootReducer = combineReducers({
+  legacy: legacyReducer,
+  products: productReducer,
+});
 
 export default rootReducer;
