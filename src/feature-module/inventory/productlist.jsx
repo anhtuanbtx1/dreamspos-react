@@ -31,12 +31,54 @@ import {
   clearProductError
 } from "../../core/redux/actions/productActions";
 
+// Add CSS animations for beautiful UI
+const shimmerKeyframes = `
+  @keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(52, 152, 219, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(52, 152, 219, 0.6); }
+  }
+`;
+
+// Inject CSS into head if not already present
+if (typeof document !== 'undefined' && !document.getElementById('beautiful-pagination-styles')) {
+  const styleSheet = document.createElement('style');
+  styleSheet.id = 'beautiful-pagination-styles';
+  styleSheet.type = 'text/css';
+  styleSheet.innerText = shimmerKeyframes;
+  document.head.appendChild(styleSheet);
+}
+
 const ProductList = () => {
   // Use new Redux structure for API data, fallback to legacy for existing functionality
   const {
     products: apiProducts,
     loading,
-    error
+    error,
+    totalProducts,
+    totalPages,
+    pageSize: reduxPageSize,
+    currentPage: reduxCurrentPage
   } = useSelector((state) => state.products);
 
   // Fallback to legacy data if API data is not available
@@ -49,26 +91,46 @@ const ProductList = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // State for pagination - sync with Redux
+  const [currentPage, setCurrentPage] = useState(reduxCurrentPage || 1);
+  const pageSize = reduxPageSize || 20;
+
+  // Debounced search term
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
   const toggleFilterVisibility = () => {
     setIsFilterVisible((prevVisibility) => !prevVisibility);
   };
 
   const route = all_routes;
 
-  // Fetch products on component mount
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Fetch products when debounced search term or pagination changes
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        await dispatch(fetchProducts());
-        // Only fetch products - categories/brands may be included in response
-        // or can be extracted from products data
+        const searchParams = {
+          page: currentPage,
+          pageSize: pageSize,
+          searchTerm: debouncedSearchTerm
+        };
+
+        await dispatch(fetchProducts(searchParams));
       } catch (error) {
         console.error('Failed to load products:', error);
       }
     };
 
     loadProducts();
-  }, [dispatch]);
+  }, [dispatch, currentPage, pageSize, debouncedSearchTerm]);
 
   // Handle product deletion
   const handleDeleteProduct = async (productId) => {
@@ -102,9 +164,24 @@ const ProductList = () => {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    // You can implement debounced search here
-    // For now, we'll just update the search term
+    // Reset to first page when searching
+    setCurrentPage(1);
   };
+
+  // Handle pagination
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate pagination info
+  const totalRecords = totalProducts || dataSource.length;
+  const calculatedTotalPages = Math.ceil(totalRecords / pageSize);
+  const actualTotalPages = totalPages || calculatedTotalPages;
+
+  const startRecord = totalRecords > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+  const endRecord = Math.min(currentPage * pageSize, totalRecords);
+
+  // Debug logs removed for production
 
   // Clear error when component unmounts
   useEffect(() => {
@@ -163,34 +240,83 @@ const ProductList = () => {
     {
       title: "SKU",
       dataIndex: "sku",
-      sorter: (a, b) => a.sku.length - b.sku.length,
+      render: (_, record) => {
+        const sku = record.sku || record.code || record.productCode || '-';
+        return <span>{sku}</span>;
+      },
+      sorter: (a, b) => {
+        const skuA = a.sku || a.code || a.productCode || '';
+        const skuB = b.sku || b.code || b.productCode || '';
+        return skuA.length - skuB.length;
+      },
     },
 
     {
       title: "Category",
       dataIndex: "category",
-      sorter: (a, b) => a.category.length - b.category.length,
+      render: (_, record) => {
+        const category = record.category || record.categoryName || '-';
+        return <span>{category}</span>;
+      },
+      sorter: (a, b) => {
+        const catA = a.category || a.categoryName || '';
+        const catB = b.category || b.categoryName || '';
+        return catA.length - catB.length;
+      },
     },
 
     {
       title: "Brand",
       dataIndex: "brand",
-      sorter: (a, b) => a.brand.length - b.brand.length,
+      render: (_, record) => {
+        const brand = record.brand || record.brandName || '-';
+        return <span>{brand}</span>;
+      },
+      sorter: (a, b) => {
+        const brandA = a.brand || a.brandName || '';
+        const brandB = b.brand || b.brandName || '';
+        return brandA.length - brandB.length;
+      },
     },
     {
       title: "Price",
       dataIndex: "price",
-      sorter: (a, b) => a.price.length - b.price.length,
+      render: (_, record) => {
+        const price = record.price || record.salePrice || record.unitPrice || 0;
+        return <span>${Number(price).toFixed(2)}</span>;
+      },
+      sorter: (a, b) => {
+        const priceA = Number(a.price || a.salePrice || a.unitPrice || 0);
+        const priceB = Number(b.price || b.salePrice || b.unitPrice || 0);
+        return priceA - priceB;
+      },
     },
     {
       title: "Unit",
       dataIndex: "unit",
-      sorter: (a, b) => a.unit.length - b.unit.length,
+      render: (_, record) => {
+        const unit = record.unit || record.unitOfMeasure || '-';
+        return <span>{unit}</span>;
+      },
+      sorter: (a, b) => {
+        const unitA = a.unit || a.unitOfMeasure || '';
+        const unitB = b.unit || b.unitOfMeasure || '';
+        return unitA.length - unitB.length;
+      },
     },
     {
       title: "Qty",
       dataIndex: "qty",
-      sorter: (a, b) => a.qty.length - b.qty.length,
+      render: (_, record) => {
+        // Try multiple possible field names for quantity
+        const quantity = record.qty || record.quantity || record.stock || record.stockQuantity || 0;
+        return <span>{quantity}</span>;
+      },
+      sorter: (a, b) => {
+        const qtyA = a.qty || a.quantity || a.stock || a.stockQuantity || 0;
+        const qtyB = b.qty || b.quantity || b.stock || b.stockQuantity || 0;
+        return Number(qtyA) - Number(qtyB);
+      },
     },
 
     {
@@ -509,7 +635,250 @@ const ProductList = () => {
                   </button>
                 </div>
               ) : (
-                <Table columns={columns} dataSource={dataSource} />
+                <>
+                  <Table
+                    columns={columns}
+                    dataSource={dataSource}
+                    pagination={false} // Disable Ant Design pagination
+                  />
+
+                  {/* Ant Design Pagination Structure with Beautiful Design */}
+                  <div
+                    className="ant-pagination ant-table-pagination ant-table-pagination-right css-dev-only-do-not-override-vrrzze"
+                    style={{
+                      background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+                      border: '1px solid rgba(52, 152, 219, 0.3)',
+                      borderRadius: '12px',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)',
+                      backdropFilter: 'blur(10px)',
+                      transition: 'all 0.3s ease',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      padding: '16px 24px',
+                      margin: '16px 0',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)';
+                    }}
+                  >
+                    {/* Animated background glow */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent)',
+                        animation: 'shimmer 3s infinite',
+                        pointerEvents: 'none'
+                      }}
+                    />
+
+                    {/* Left side - Total Records Info */}
+                    <div
+                      className="ant-pagination-total-text"
+                      style={{
+                        position: 'relative',
+                        zIndex: 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px'
+                      }}
+                    >
+                      <div
+                        style={{
+                          background: 'linear-gradient(45deg, #3498db, #2ecc71)',
+                          borderRadius: '50%',
+                          width: '32px',
+                          height: '32px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '14px',
+                          boxShadow: '0 4px 12px rgba(52, 152, 219, 0.3)'
+                        }}
+                      >
+                        📊
+                      </div>
+                      <div>
+                        <span style={{color: '#bdc3c7', fontSize: '14px', lineHeight: '1.4'}}>
+                          Showing <strong style={{color: '#3498db', fontWeight: '700'}}>{startRecord}</strong> to <strong style={{color: '#3498db', fontWeight: '700'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c', fontWeight: '700'}}>{totalRecords}</strong> entries
+                          {debouncedSearchTerm && (
+                            <div style={{color: '#2ecc71', fontSize: '12px', marginTop: '2px'}}>
+                              🔍 Filtered from <strong style={{color: '#f39c12'}}>{totalProducts || totalRecords}</strong> total products
+                            </div>
+                          )}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Right side - Pagination Controls */}
+                    {actualTotalPages > 1 && (
+                      <div
+                        className="ant-pagination-options"
+                        style={{
+                          position: 'relative',
+                          zIndex: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}
+                      >
+                        <span style={{color: '#bdc3c7', fontSize: '12px', marginRight: '8px'}}>
+                          Page {currentPage} of {actualTotalPages}
+                        </span>
+                        <ul
+                          className="ant-pagination-list"
+                          style={{
+                            display: 'flex',
+                            listStyle: 'none',
+                            margin: 0,
+                            padding: 0,
+                            gap: '4px'
+                          }}
+                        >
+                          <li className={`ant-pagination-prev ${currentPage === 1 ? 'ant-pagination-disabled' : ''}`}>
+                            <button
+                              className="ant-pagination-item-link"
+                              style={{
+                                background: currentPage === 1
+                                  ? 'rgba(52, 73, 94, 0.5)'
+                                  : 'linear-gradient(45deg, #3498db, #2980b9)',
+                                border: 'none',
+                                borderRadius: '8px',
+                                color: currentPage === 1 ? '#7f8c8d' : '#ffffff',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                transition: 'all 0.3s ease',
+                                boxShadow: currentPage === 1
+                                  ? 'none'
+                                  : '0 2px 8px rgba(52, 152, 219, 0.3)',
+                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                              }}
+                              onClick={() => handlePageChange(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              onMouseEnter={(e) => {
+                                if (currentPage !== 1) {
+                                  e.target.style.transform = 'translateY(-1px)';
+                                  e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentPage !== 1) {
+                                  e.target.style.transform = 'translateY(0)';
+                                  e.target.style.boxShadow = '0 2px 8px rgba(52, 152, 219, 0.3)';
+                                }
+                              }}
+                            >
+                              ← Prev
+                            </button>
+                          </li>
+
+                          {Array.from({ length: Math.min(3, actualTotalPages) }, (_, i) => {
+                            let pageNum = i + 1;
+                            if (actualTotalPages > 3 && currentPage > 2) {
+                              pageNum = currentPage - 1 + i;
+                            }
+
+                            const isActive = currentPage === pageNum;
+
+                            return (
+                              <li key={pageNum} className={`ant-pagination-item ${isActive ? 'ant-pagination-item-active' : ''}`}>
+                                <button
+                                  className="ant-pagination-item-link"
+                                  style={{
+                                    background: isActive
+                                      ? 'linear-gradient(45deg, #e74c3c, #c0392b)'
+                                      : 'linear-gradient(45deg, #34495e, #2c3e50)',
+                                    border: isActive
+                                      ? '2px solid #e74c3c'
+                                      : '1px solid rgba(52, 152, 219, 0.3)',
+                                    borderRadius: '8px',
+                                    color: '#ffffff',
+                                    padding: '6px 12px',
+                                    fontSize: '12px',
+                                    fontWeight: '700',
+                                    minWidth: '32px',
+                                    transition: 'all 0.3s ease',
+                                    boxShadow: isActive
+                                      ? '0 4px 12px rgba(231, 76, 60, 0.4)'
+                                      : '0 2px 8px rgba(52, 73, 94, 0.3)',
+                                    cursor: 'pointer'
+                                  }}
+                                  onClick={() => handlePageChange(pageNum)}
+                                  onMouseEnter={(e) => {
+                                    if (!isActive) {
+                                      e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+                                      e.target.style.transform = 'translateY(-1px)';
+                                      e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (!isActive) {
+                                      e.target.style.background = 'linear-gradient(45deg, #34495e, #2c3e50)';
+                                      e.target.style.transform = 'translateY(0)';
+                                      e.target.style.boxShadow = '0 2px 8px rgba(52, 73, 94, 0.3)';
+                                    }
+                                  }}
+                                >
+                                  {pageNum}
+                                </button>
+                              </li>
+                            );
+                          })}
+
+                          <li className={`ant-pagination-next ${currentPage === actualTotalPages ? 'ant-pagination-disabled' : ''}`}>
+                            <button
+                              className="ant-pagination-item-link"
+                              style={{
+                                background: currentPage === actualTotalPages
+                                  ? 'rgba(52, 73, 94, 0.5)'
+                                  : 'linear-gradient(45deg, #3498db, #2980b9)',
+                                border: 'none',
+                                borderRadius: '8px',
+                                color: currentPage === actualTotalPages ? '#7f8c8d' : '#ffffff',
+                                padding: '6px 12px',
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                transition: 'all 0.3s ease',
+                                boxShadow: currentPage === actualTotalPages
+                                  ? 'none'
+                                  : '0 2px 8px rgba(52, 152, 219, 0.3)',
+                                cursor: currentPage === actualTotalPages ? 'not-allowed' : 'pointer'
+                              }}
+                              onClick={() => handlePageChange(currentPage + 1)}
+                              disabled={currentPage === actualTotalPages}
+                              onMouseEnter={(e) => {
+                                if (currentPage !== actualTotalPages) {
+                                  e.target.style.transform = 'translateY(-1px)';
+                                  e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentPage !== actualTotalPages) {
+                                  e.target.style.transform = 'translateY(0)';
+                                  e.target.style.boxShadow = '0 2px 8px rgba(52, 152, 219, 0.3)';
+                                }
+                              }}
+                            >
+                              Next →
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
             </div>
           </div>

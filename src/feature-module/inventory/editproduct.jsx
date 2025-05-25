@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useParams } from "react-router-dom";
 import Select from "react-select";
 import { all_routes } from "../../Router/all_routes";
 import { DatePicker } from "antd";
@@ -20,14 +20,89 @@ import {
 } from "feather-icons-react/build/IconComponents";
 import { useDispatch, useSelector } from "react-redux";
 import { setToogleHeader } from "../../core/redux/action";
+import { fetchProduct } from "../../core/redux/actions/productActions";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import ImageWithBasePath from "../../core/img/imagewithbasebath";
 
 const EditProduct = () => {
   const route = all_routes;
   const dispatch = useDispatch();
+  const { id } = useParams(); // Get product ID from URL
 
   const data = useSelector((state) => state.toggle_header);
+
+  // Get product data from Redux store
+  const { currentProduct, productLoading, productError } = useSelector((state) => state.products || {});
+
+  // Track if we've already fetched this product
+  const fetchedProductId = useRef(null);
+
+  // Form state for editing
+  const [formData, setFormData] = useState({
+    name: '',
+    slug: '',
+    sku: '',
+    description: '',
+    price: '',
+    category: null, // Change to null for Select component
+    brand: null,    // Change to null for Select component
+    quantity: '',
+    unit: null,     // Change to null for Select component
+    status: '',
+    images: []
+  });
+
+  // Load product data if ID is provided and product not already loaded
+  useEffect(() => {
+    if (id && fetchedProductId.current !== id) {
+      console.log('Fetching product details for ID:', id);
+      fetchedProductId.current = id;
+      dispatch(fetchProduct(id));
+    }
+  }, [id, dispatch]);
+
+  // Helper function to find option by value or label
+  const findSelectOption = (options, value) => {
+    if (!value) return null;
+    return options.find(option =>
+      option.value === value ||
+      option.label === value ||
+      option.value.toLowerCase() === value.toLowerCase() ||
+      option.label.toLowerCase() === value.toLowerCase()
+    ) || null;
+  };
+
+  // Update form data when currentProduct changes
+  useEffect(() => {
+    if (currentProduct) {
+      console.log('Product data loaded:', currentProduct);
+
+      // Find matching options for select fields
+      const categoryOption = findSelectOption(category, currentProduct.category || currentProduct.categoryName);
+      const brandOption = findSelectOption(brand, currentProduct.brand || currentProduct.brandName);
+      const unitOption = findSelectOption(unit, currentProduct.unit);
+
+      setFormData({
+        name: currentProduct.name || currentProduct.productName || '',
+        slug: currentProduct.slug || '',
+        sku: currentProduct.sku || currentProduct.code || '',
+        description: currentProduct.description || '',
+        price: currentProduct.price || currentProduct.salePrice || '',
+        category: categoryOption,
+        brand: brandOption,
+        quantity: currentProduct.quantity || currentProduct.stock || '',
+        unit: unitOption,
+        status: currentProduct.status || 'active',
+        images: currentProduct.images || []
+      });
+
+      console.log('Form data updated:', {
+        category: categoryOption,
+        brand: brandOption,
+        unit: unitOption
+      });
+    }
+  }, [currentProduct]);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const handleDateChange = (date) => {
@@ -58,6 +133,9 @@ const EditProduct = () => {
     { value: "choose", label: "Choose" },
     { value: "lenovo", label: "Lenovo" },
     { value: "electronics", label: "Electronics" },
+    { value: "laptop", label: "Laptop" },
+    { value: "computer", label: "Computer" },
+    { value: "mobile", label: "Mobile" },
   ];
   const subcategory = [
     { value: "choose", label: "Choose" },
@@ -78,6 +156,11 @@ const EditProduct = () => {
     { value: "choose", label: "Choose" },
     { value: "kg", label: "Kg" },
     { value: "pc", label: "Pc" },
+    { value: "pcs", label: "Pcs" },
+    { value: "piece", label: "Piece" },
+    { value: "gram", label: "Gram" },
+    { value: "liter", label: "Liter" },
+    { value: "meter", label: "Meter" },
   ];
   const sellingtype = [
     { value: "choose", label: "Choose" },
@@ -114,13 +197,74 @@ const EditProduct = () => {
   const handleRemoveProduct1 = () => {
     setIsImageVisible1(false);
   };
+  // Show loading state
+  if (productLoading) {
+    return (
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="text-center p-4">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <p className="mt-2">Loading product details...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (productError) {
+    return (
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="alert alert-danger" role="alert">
+            <strong>Error:</strong> {productError}
+            <div className="mt-2">
+              <Link to={route.productlist} className="btn btn-secondary me-2">
+                Back to Product List
+              </Link>
+              <button
+                className="btn btn-primary"
+                onClick={() => {
+                  console.log('Retrying fetch for ID:', id);
+                  dispatch(fetchProduct(id));
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show not found state
+  if (id && !currentProduct) {
+    return (
+      <div className="page-wrapper">
+        <div className="content">
+          <div className="alert alert-warning" role="alert">
+            <strong>Product not found!</strong> The product you&apos;re trying to edit doesn&apos;t exist.
+            <div className="mt-2">
+              <Link to={route.productlist} className="btn btn-secondary">
+                Back to Product List
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="page-wrapper">
       <div className="content">
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>Edit Product</h4>
+              <h4>Edit Product {currentProduct?.name ? `- ${currentProduct.name}` : ''}</h4>
             </div>
           </div>
           <ul className="table-top-head">
@@ -211,13 +355,33 @@ const EditProduct = () => {
                         <div className="col-lg-4 col-sm-6 col-12">
                           <div className="mb-3 add-product">
                             <label className="form-label">Product Name</label>
-                            <input type="text" className="form-control" />
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.name}
+                              onChange={(e) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  name: e.target.value
+                                }));
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="col-lg-4 col-sm-6 col-12">
                           <div className="mb-3 add-product">
                             <label className="form-label">Slug</label>
-                            <input type="text" className="form-control" />
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={formData.slug}
+                              onChange={(e) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  slug: e.target.value
+                                }));
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="col-lg-4 col-sm-6 col-12">
@@ -227,6 +391,13 @@ const EditProduct = () => {
                               type="text"
                               className="form-control list"
                               placeholder="Enter SKU"
+                              value={formData.sku}
+                              onChange={(e) => {
+                                setFormData(prev => ({
+                                  ...prev,
+                                  sku: e.target.value
+                                }));
+                              }}
                             />
                             <Link
                               to={route.addproduct}
@@ -255,7 +426,15 @@ const EditProduct = () => {
                               <Select
                                 className="select"
                                 options={category}
-                                placeholder="Lenovo"
+                                placeholder="Choose Category"
+                                value={formData.category}
+                                onChange={(selectedOption) => {
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    category: selectedOption
+                                  }));
+                                }}
+                                isClearable
                               />
                             </div>
                           </div>
@@ -301,7 +480,15 @@ const EditProduct = () => {
                               <Select
                                 className="select"
                                 options={brand}
-                                placeholder="Nike"
+                                placeholder="Choose Brand"
+                                value={formData.brand}
+                                onChange={(selectedOption) => {
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    brand: selectedOption
+                                  }));
+                                }}
+                                isClearable
                               />
                             </div>
                           </div>
@@ -321,7 +508,15 @@ const EditProduct = () => {
                               <Select
                                 className="select"
                                 options={unit}
-                                placeholder="Kg"
+                                placeholder="Choose Unit"
+                                value={formData.unit}
+                                onChange={(selectedOption) => {
+                                  setFormData(prev => ({
+                                    ...prev,
+                                    unit: selectedOption
+                                  }));
+                                }}
+                                isClearable
                               />
                             </div>
                           </div>
@@ -374,7 +569,13 @@ const EditProduct = () => {
                           <textarea
                             className="form-control h-100"
                             rows={5}
-                            defaultValue={""}
+                            value={formData.description}
+                            onChange={(e) => {
+                              setFormData(prev => ({
+                                ...prev,
+                                description: e.target.value
+                              }));
+                            }}
                           />
                           <p className="mt-1">Maximum 60 Characters</p>
                         </div>
@@ -474,13 +675,33 @@ const EditProduct = () => {
                             <div className="col-lg-4 col-sm-6 col-12">
                               <div className="input-blocks add-product">
                                 <label>Quantity</label>
-                                <input type="text" className="form-control" />
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={formData.quantity}
+                                  onChange={(e) => {
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      quantity: e.target.value
+                                    }));
+                                  }}
+                                />
                               </div>
                             </div>
                             <div className="col-lg-4 col-sm-6 col-12">
                               <div className="input-blocks add-product">
                                 <label>Price</label>
-                                <input type="text" className="form-control" />
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  value={formData.price}
+                                  onChange={(e) => {
+                                    setFormData(prev => ({
+                                      ...prev,
+                                      price: e.target.value
+                                    }));
+                                  }}
+                                />
                               </div>
                             </div>
                             <div className="col-lg-4 col-sm-6 col-12">

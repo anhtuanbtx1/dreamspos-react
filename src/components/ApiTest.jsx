@@ -4,6 +4,7 @@ const ApiTest = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [productId, setProductId] = useState('1'); // Default test ID
 
   const testApiConnection = async () => {
     setLoading(true);
@@ -51,6 +52,50 @@ const ApiTest = () => {
     }
   };
 
+  const testProductDetail = async () => {
+    if (!productId) {
+      setError('Please enter a product ID');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      console.log('Testing Product Detail API for ID:', productId);
+
+      const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}Products/${productId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setResult(data);
+      console.log('Product Detail Response:', data);
+    } catch (err) {
+      console.error('Product Detail API Error:', err);
+
+      let errorMessage = err.message || 'Failed to fetch product details';
+
+      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        errorMessage = 'CORS Error or Network issue';
+      }
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container mt-4">
       <div className="card">
@@ -60,13 +105,38 @@ const ApiTest = () => {
         <div className="card-body">
           <p><strong>API Base URL:</strong> {process.env.REACT_APP_API_BASE_URL}</p>
 
-          <button
-            className="btn btn-primary"
-            onClick={testApiConnection}
-            disabled={loading}
-          >
-            {loading ? 'Testing...' : 'Test API Connection'}
-          </button>
+          <div className="row">
+            <div className="col-md-6">
+              <h6>Test All Products API</h6>
+              <button
+                className="btn btn-primary"
+                onClick={testApiConnection}
+                disabled={loading}
+              >
+                {loading ? 'Testing...' : 'Test Products List API'}
+              </button>
+            </div>
+
+            <div className="col-md-6">
+              <h6>Test Product Detail API</h6>
+              <div className="input-group mb-2">
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Enter Product ID"
+                  value={productId}
+                  onChange={(e) => setProductId(e.target.value)}
+                />
+                <button
+                  className="btn btn-success"
+                  onClick={testProductDetail}
+                  disabled={loading || !productId}
+                >
+                  {loading ? 'Testing...' : 'Test Product Detail'}
+                </button>
+              </div>
+            </div>
+          </div>
 
           {loading && (
             <div className="mt-3">

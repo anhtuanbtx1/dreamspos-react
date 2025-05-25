@@ -6,28 +6,31 @@ const initialState = {
   totalProducts: 0,
   currentPage: 1,
   totalPages: 1,
-  
+  pageSize: 20,
+  hasPrevious: false,
+  hasNext: false,
+
   // Current product (for edit/view)
   currentProduct: null,
-  
+
   // Search results
   searchResults: [],
   searchQuery: '',
-  
+
   // Categories and brands
   categories: [],
   brands: [],
-  
+
   // Loading states
   loading: false,
   productLoading: false,
   searchLoading: false,
-  
+
   // Error states
   error: null,
   productError: null,
   searchError: null,
-  
+
   // Operation states
   creating: false,
   updating: false,
@@ -43,18 +46,27 @@ const productReducer = (state = initialState, action) => {
         loading: true,
         error: null,
       };
-    
-    case PRODUCT_ACTIONS.FETCH_PRODUCTS_SUCCESS:
+
+    case PRODUCT_ACTIONS.FETCH_PRODUCTS_SUCCESS: {
+      // Handle different API response structures
+      const isArrayResponse = Array.isArray(action.payload);
+      const products = isArrayResponse ? action.payload : (action.payload.data || action.payload.items || []);
+      const pagination = action.payload.pagination || {};
+
       return {
         ...state,
         loading: false,
-        products: action.payload.data || action.payload,
-        totalProducts: action.payload.total || action.payload.length,
-        currentPage: action.payload.currentPage || 1,
-        totalPages: action.payload.totalPages || 1,
+        products: products,
+        totalProducts: pagination.totalCount || action.payload.total || products.length,
+        currentPage: pagination.currentPage || action.payload.currentPage || 1,
+        totalPages: pagination.totalPages || action.payload.totalPages || 1,
+        pageSize: pagination.pageSize || 20,
+        hasPrevious: pagination.hasPrevious || false,
+        hasNext: pagination.hasNext || false,
         error: null,
       };
-    
+    }
+
     case PRODUCT_ACTIONS.FETCH_PRODUCTS_FAILURE:
       return {
         ...state,
@@ -69,7 +81,7 @@ const productReducer = (state = initialState, action) => {
         productLoading: true,
         productError: null,
       };
-    
+
     case PRODUCT_ACTIONS.FETCH_PRODUCT_SUCCESS:
       return {
         ...state,
@@ -77,7 +89,7 @@ const productReducer = (state = initialState, action) => {
         currentProduct: action.payload,
         productError: null,
       };
-    
+
     case PRODUCT_ACTIONS.FETCH_PRODUCT_FAILURE:
       return {
         ...state,
@@ -92,7 +104,7 @@ const productReducer = (state = initialState, action) => {
         creating: true,
         error: null,
       };
-    
+
     case PRODUCT_ACTIONS.CREATE_PRODUCT_SUCCESS:
       return {
         ...state,
@@ -101,7 +113,7 @@ const productReducer = (state = initialState, action) => {
         totalProducts: state.totalProducts + 1,
         error: null,
       };
-    
+
     case PRODUCT_ACTIONS.CREATE_PRODUCT_FAILURE:
       return {
         ...state,
@@ -116,7 +128,7 @@ const productReducer = (state = initialState, action) => {
         updating: true,
         error: null,
       };
-    
+
     case PRODUCT_ACTIONS.UPDATE_PRODUCT_SUCCESS:
       return {
         ...state,
@@ -127,7 +139,7 @@ const productReducer = (state = initialState, action) => {
         currentProduct: action.payload.data,
         error: null,
       };
-    
+
     case PRODUCT_ACTIONS.UPDATE_PRODUCT_FAILURE:
       return {
         ...state,
@@ -142,7 +154,7 @@ const productReducer = (state = initialState, action) => {
         deleting: true,
         error: null,
       };
-    
+
     case PRODUCT_ACTIONS.DELETE_PRODUCT_SUCCESS:
       return {
         ...state,
@@ -151,7 +163,7 @@ const productReducer = (state = initialState, action) => {
         totalProducts: state.totalProducts - 1,
         error: null,
       };
-    
+
     case PRODUCT_ACTIONS.DELETE_PRODUCT_FAILURE:
       return {
         ...state,
@@ -166,7 +178,7 @@ const productReducer = (state = initialState, action) => {
         searchLoading: true,
         searchError: null,
       };
-    
+
     case PRODUCT_ACTIONS.SEARCH_PRODUCTS_SUCCESS:
       return {
         ...state,
@@ -175,7 +187,7 @@ const productReducer = (state = initialState, action) => {
         searchQuery: action.payload.query || '',
         searchError: null,
       };
-    
+
     case PRODUCT_ACTIONS.SEARCH_PRODUCTS_FAILURE:
       return {
         ...state,
@@ -189,7 +201,7 @@ const productReducer = (state = initialState, action) => {
         ...state,
         categories: action.payload,
       };
-    
+
     case PRODUCT_ACTIONS.FETCH_BRANDS_SUCCESS:
       return {
         ...state,
@@ -204,7 +216,7 @@ const productReducer = (state = initialState, action) => {
         productError: null,
         searchError: null,
       };
-    
+
     case PRODUCT_ACTIONS.CLEAR_CURRENT_PRODUCT:
       return {
         ...state,

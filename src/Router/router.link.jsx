@@ -843,6 +843,13 @@ export const publicRoutes = [
     route: Route,
   },
   {
+    id: 65.1,
+    path: `${routes.editproduct}/:id`,
+    name: "editproductwithid",
+    element: <EditProduct />,
+    route: Route,
+  },
+  {
     id: 63,
     path: routes.videocall,
     name: "videocall",
