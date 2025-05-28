@@ -65,7 +65,48 @@ if (typeof document !== 'undefined' && !document.getElementById('beautiful-pagin
   const styleSheet = document.createElement('style');
   styleSheet.id = 'beautiful-pagination-styles';
   styleSheet.type = 'text/css';
-  styleSheet.innerText = shimmerKeyframes;
+  styleSheet.innerText = shimmerKeyframes + `
+    /* Hide all Ant Design pagination elements */
+    .ant-pagination,
+    .ant-pagination-item,
+    .ant-pagination-item-active,
+    .ant-pagination-prev,
+    .ant-pagination-next,
+    .ant-table-pagination,
+    ul.ant-pagination,
+    li.ant-pagination-item,
+    .ant-pagination-item-1,
+    .ant-pagination-item-2,
+    .ant-pagination-item-3,
+    .ant-pagination-item-4,
+    .ant-pagination-item-5,
+    .ant-pagination-jump-prev,
+    .ant-pagination-jump-next,
+    .ant-pagination-options,
+    .ant-pagination-total-text,
+    .ant-table-wrapper .ant-pagination,
+    .ant-spin-container .ant-pagination {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      position: absolute !important;
+      left: -9999px !important;
+      top: -9999px !important;
+      z-index: -1 !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    /* Ensure our custom pagination is visible */
+    .custom-pagination-container {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: relative !important;
+      z-index: 1 !important;
+    }
+  `;
   document.head.appendChild(styleSheet);
 }
 
@@ -93,7 +134,7 @@ const ProductList = () => {
 
   // State for pagination - sync with Redux
   const [currentPage, setCurrentPage] = useState(reduxCurrentPage || 1);
-  const pageSize = reduxPageSize || 20;
+  const [pageSize, setPageSize] = useState(reduxPageSize || 20);
 
   // Debounced search term
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -171,6 +212,30 @@ const ProductList = () => {
   // Handle pagination
   const handlePageChange = (page) => {
     setCurrentPage(page);
+
+    // Dispatch action to fetch products for the new page
+    const searchParams = {
+      page: page,
+      pageSize: pageSize,
+      searchTerm: debouncedSearchTerm
+    };
+
+    dispatch(fetchProducts(searchParams));
+  };
+
+  // Handle page size change
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+
+    // Dispatch action to fetch products with new page size
+    const searchParams = {
+      page: 1,
+      pageSize: newPageSize,
+      searchTerm: debouncedSearchTerm
+    };
+
+    dispatch(fetchProducts(searchParams));
   };
 
   // Calculate pagination info
@@ -642,9 +707,9 @@ const ProductList = () => {
                     pagination={false} // Disable Ant Design pagination
                   />
 
-                  {/* Ant Design Pagination Structure with Beautiful Design */}
+                  {/* Table Pagination like the image */}
                   <div
-                    className="ant-pagination ant-table-pagination ant-table-pagination-right css-dev-only-do-not-override-vrrzze"
+                    className="custom-pagination-container"
                     style={{
                       background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
                       border: '1px solid rgba(52, 152, 219, 0.3)',
@@ -655,10 +720,7 @@ const ProductList = () => {
                       position: 'relative',
                       overflow: 'hidden',
                       padding: '16px 24px',
-                      margin: '16px 0',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
+                      margin: '16px 0'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-2px)';
@@ -683,200 +745,142 @@ const ProductList = () => {
                       }}
                     />
 
-                    {/* Left side - Total Records Info */}
+                    {/* Row Per Page Section */}
                     <div
-                      className="ant-pagination-total-text"
                       style={{
                         position: 'relative',
                         zIndex: 1,
                         display: 'flex',
+                        justifyContent: 'space-between',
                         alignItems: 'center',
-                        gap: '12px'
+                        marginBottom: '16px'
                       }}
                     >
-                      <div
-                        style={{
-                          background: 'linear-gradient(45deg, #3498db, #2ecc71)',
-                          borderRadius: '50%',
-                          width: '32px',
-                          height: '32px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '14px',
-                          boxShadow: '0 4px 12px rgba(52, 152, 219, 0.3)'
-                        }}
-                      >
-                        📊
+                      <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                        <span style={{color: '#bdc3c7', fontSize: '14px'}}>Row Per Page</span>
+                        <select
+                          value={pageSize}
+                          onChange={(e) => {
+                            const newPageSize = parseInt(e.target.value);
+                            handlePageSizeChange(newPageSize);
+                          }}
+                          disabled={loading}
+                          style={{
+                            background: loading
+                              ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
+                              : 'linear-gradient(45deg, #34495e, #2c3e50)',
+                            border: '1px solid rgba(52, 152, 219, 0.3)',
+                            borderRadius: '6px',
+                            color: '#ffffff',
+                            padding: '4px 8px',
+                            fontSize: '14px',
+                            cursor: loading ? 'not-allowed' : 'pointer',
+                            opacity: loading ? 0.7 : 1
+                          }}
+                        >
+                          <option value={10} style={{background: '#2c3e50', color: '#ffffff'}}>10</option>
+                          <option value={20} style={{background: '#2c3e50', color: '#ffffff'}}>20</option>
+                          <option value={50} style={{background: '#2c3e50', color: '#ffffff'}}>50</option>
+                          <option value={100} style={{background: '#2c3e50', color: '#ffffff'}}>100</option>
+                        </select>
+                        <span style={{color: '#bdc3c7', fontSize: '14px'}}>Entries</span>
                       </div>
-                      <div>
-                        <span style={{color: '#bdc3c7', fontSize: '14px', lineHeight: '1.4'}}>
-                          Showing <strong style={{color: '#3498db', fontWeight: '700'}}>{startRecord}</strong> to <strong style={{color: '#3498db', fontWeight: '700'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c', fontWeight: '700'}}>{totalRecords}</strong> entries
+
+                      <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                        <div
+                          style={{
+                            background: 'linear-gradient(45deg, #3498db, #2ecc71)',
+                            borderRadius: '50%',
+                            width: '24px',
+                            height: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '12px',
+                            boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)'
+                          }}
+                        >
+                          📊
+                        </div>
+                        <span style={{color: '#bdc3c7', fontSize: '14px'}}>
+                          Showing <strong style={{color: '#3498db'}}>{startRecord}</strong> to <strong style={{color: '#3498db'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c'}}>{totalRecords}</strong> entries
                           {debouncedSearchTerm && (
-                            <div style={{color: '#2ecc71', fontSize: '12px', marginTop: '2px'}}>
-                              🔍 Filtered from <strong style={{color: '#f39c12'}}>{totalProducts || totalRecords}</strong> total products
-                            </div>
+                            <span style={{color: '#2ecc71', marginLeft: '8px'}}>
+                              (filtered from <strong style={{color: '#f39c12'}}>{totalProducts || totalRecords}</strong> total)
+                            </span>
                           )}
                         </span>
                       </div>
                     </div>
 
-                    {/* Right side - Pagination Controls */}
-                    {actualTotalPages > 1 && (
-                      <div
-                        className="ant-pagination-options"
-                        style={{
-                          position: 'relative',
-                          zIndex: 1,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px'
-                        }}
-                      >
-                        <span style={{color: '#bdc3c7', fontSize: '12px', marginRight: '8px'}}>
-                          Page {currentPage} of {actualTotalPages}
-                        </span>
-                        <ul
-                          className="ant-pagination-list"
-                          style={{
-                            display: 'flex',
-                            listStyle: 'none',
-                            margin: 0,
-                            padding: 0,
-                            gap: '4px'
-                          }}
-                        >
-                          <li className={`ant-pagination-prev ${currentPage === 1 ? 'ant-pagination-disabled' : ''}`}>
-                            <button
-                              className="ant-pagination-item-link"
-                              style={{
-                                background: currentPage === 1
-                                  ? 'rgba(52, 73, 94, 0.5)'
-                                  : 'linear-gradient(45deg, #3498db, #2980b9)',
-                                border: 'none',
-                                borderRadius: '8px',
-                                color: currentPage === 1 ? '#7f8c8d' : '#ffffff',
-                                padding: '6px 12px',
-                                fontSize: '12px',
-                                fontWeight: '600',
-                                transition: 'all 0.3s ease',
-                                boxShadow: currentPage === 1
-                                  ? 'none'
-                                  : '0 2px 8px rgba(52, 152, 219, 0.3)',
-                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
-                              }}
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              disabled={currentPage === 1}
-                              onMouseEnter={(e) => {
-                                if (currentPage !== 1) {
-                                  e.target.style.transform = 'translateY(-1px)';
-                                  e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                if (currentPage !== 1) {
-                                  e.target.style.transform = 'translateY(0)';
-                                  e.target.style.boxShadow = '0 2px 8px rgba(52, 152, 219, 0.3)';
-                                }
-                              }}
-                            >
-                              ← Prev
-                            </button>
-                          </li>
+                    {/* Pagination Section like the image */}
+                    <div
+                      style={{
+                        position: 'relative',
+                        zIndex: 1,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                    >
+                      {/* Numbered Pagination Buttons */}
+                      {Array.from({ length: actualTotalPages }, (_, i) => {
+                        const pageNum = i + 1;
+                        const isActive = currentPage === pageNum;
 
-                          {Array.from({ length: Math.min(3, actualTotalPages) }, (_, i) => {
-                            let pageNum = i + 1;
-                            if (actualTotalPages > 3 && currentPage > 2) {
-                              pageNum = currentPage - 1 + i;
-                            }
-
-                            const isActive = currentPage === pageNum;
-
-                            return (
-                              <li key={pageNum} className={`ant-pagination-item ${isActive ? 'ant-pagination-item-active' : ''}`}>
-                                <button
-                                  className="ant-pagination-item-link"
-                                  style={{
-                                    background: isActive
-                                      ? 'linear-gradient(45deg, #e74c3c, #c0392b)'
-                                      : 'linear-gradient(45deg, #34495e, #2c3e50)',
-                                    border: isActive
-                                      ? '2px solid #e74c3c'
-                                      : '1px solid rgba(52, 152, 219, 0.3)',
-                                    borderRadius: '8px',
-                                    color: '#ffffff',
-                                    padding: '6px 12px',
-                                    fontSize: '12px',
-                                    fontWeight: '700',
-                                    minWidth: '32px',
-                                    transition: 'all 0.3s ease',
-                                    boxShadow: isActive
-                                      ? '0 4px 12px rgba(231, 76, 60, 0.4)'
-                                      : '0 2px 8px rgba(52, 73, 94, 0.3)',
-                                    cursor: 'pointer'
-                                  }}
-                                  onClick={() => handlePageChange(pageNum)}
-                                  onMouseEnter={(e) => {
-                                    if (!isActive) {
-                                      e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
-                                      e.target.style.transform = 'translateY(-1px)';
-                                      e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
-                                    }
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    if (!isActive) {
-                                      e.target.style.background = 'linear-gradient(45deg, #34495e, #2c3e50)';
-                                      e.target.style.transform = 'translateY(0)';
-                                      e.target.style.boxShadow = '0 2px 8px rgba(52, 73, 94, 0.3)';
-                                    }
-                                  }}
-                                >
-                                  {pageNum}
-                                </button>
-                              </li>
-                            );
-                          })}
-
-                          <li className={`ant-pagination-next ${currentPage === actualTotalPages ? 'ant-pagination-disabled' : ''}`}>
-                            <button
-                              className="ant-pagination-item-link"
-                              style={{
-                                background: currentPage === actualTotalPages
-                                  ? 'rgba(52, 73, 94, 0.5)'
-                                  : 'linear-gradient(45deg, #3498db, #2980b9)',
-                                border: 'none',
-                                borderRadius: '8px',
-                                color: currentPage === actualTotalPages ? '#7f8c8d' : '#ffffff',
-                                padding: '6px 12px',
-                                fontSize: '12px',
-                                fontWeight: '600',
-                                transition: 'all 0.3s ease',
-                                boxShadow: currentPage === actualTotalPages
-                                  ? 'none'
-                                  : '0 2px 8px rgba(52, 152, 219, 0.3)',
-                                cursor: currentPage === actualTotalPages ? 'not-allowed' : 'pointer'
-                              }}
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              disabled={currentPage === actualTotalPages}
-                              onMouseEnter={(e) => {
-                                if (currentPage !== actualTotalPages) {
-                                  e.target.style.transform = 'translateY(-1px)';
-                                  e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                if (currentPage !== actualTotalPages) {
-                                  e.target.style.transform = 'translateY(0)';
-                                  e.target.style.boxShadow = '0 2px 8px rgba(52, 152, 219, 0.3)';
-                                }
-                              }}
-                            >
-                              Next →
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    )}
+                        return (
+                          <button
+                            key={pageNum}
+                            onClick={() => !loading && handlePageChange(pageNum)}
+                            disabled={loading}
+                            style={{
+                              background: loading
+                                ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
+                                : isActive
+                                ? 'linear-gradient(45deg, #f39c12, #e67e22)'
+                                : 'linear-gradient(45deg, #34495e, #2c3e50)',
+                              border: isActive
+                                ? '2px solid #f39c12'
+                                : '1px solid rgba(52, 152, 219, 0.3)',
+                              borderRadius: '50%',
+                              width: '32px',
+                              height: '32px',
+                              color: '#ffffff',
+                              fontSize: '14px',
+                              fontWeight: '700',
+                              cursor: loading ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s ease',
+                              boxShadow: loading
+                                ? 'none'
+                                : isActive
+                                ? '0 4px 12px rgba(243, 156, 18, 0.4)'
+                                : '0 2px 8px rgba(52, 73, 94, 0.3)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              opacity: loading ? 0.7 : 1
+                            }}
+                            onMouseEnter={(e) => {
+                              if (!isActive) {
+                                e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+                                e.target.style.transform = 'translateY(-2px)';
+                                e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!isActive) {
+                                e.target.style.background = 'linear-gradient(45deg, #34495e, #2c3e50)';
+                                e.target.style.transform = 'translateY(0)';
+                                e.target.style.boxShadow = '0 2px 8px rgba(52, 73, 94, 0.3)';
+                              }
+                            }}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </>
               )}
