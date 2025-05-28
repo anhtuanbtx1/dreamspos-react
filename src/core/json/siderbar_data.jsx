@@ -44,6 +44,8 @@ export const SidebarData = [
             },
               { label: "To Do", link: "/todo",showSubRoute: false,
             },
+               { label: "Việc làm", link: "/",showSubRoute: false,
+            },
               { label: "Notes", link: "/notes",showSubRoute: false,
             },
               { label: "File Manager", link: "/file-manager", showSubRoute: false,
@@ -59,7 +61,7 @@ export const SidebarData = [
         submenuHdr: "Inventory",
       
         submenuItems: [
-          { label: "Products", link: "/product-list", icon:<Icon.Box />,showSubRoute: false,submenu: false },
+          { label: "Sản phẩm", link: "/product-list", icon:<Icon.Box />,showSubRoute: false,submenu: false },
           { label: "Create Product", link: "/add-product", icon:  <Icon.PlusSquare />,showSubRoute: false, submenu: false },
           { label: "Expired Products", link: "/expired-products", icon:  <Icon.Codesandbox  />,showSubRoute: false,submenu: false },
           { label: "Low Stocks", link: "/low-stocks", icon: <Icon.TrendingDown  />,showSubRoute: false,submenu: false },

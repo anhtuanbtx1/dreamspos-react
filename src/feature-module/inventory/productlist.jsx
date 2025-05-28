@@ -106,6 +106,319 @@ if (typeof document !== 'undefined' && !document.getElementById('beautiful-pagin
       position: relative !important;
       z-index: 1 !important;
     }
+
+    /* Light mode pagination styling */
+    .custom-pagination-container.light-mode {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+      border: 1px solid rgba(0, 0, 0, 0.1) !important;
+      border-radius: 12px !important;
+      padding: 16px 20px !important;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+      margin-top: 20px !important;
+    }
+
+    /* Light mode text styling */
+    .custom-pagination-container.light-mode .pagination-info {
+      color: #2c3e50 !important;
+      font-weight: 500 !important;
+    }
+
+    /* Light mode select styling */
+    .custom-pagination-container.light-mode select {
+      background: #ffffff !important;
+      border: 1px solid #dee2e6 !important;
+      color: #495057 !important;
+      border-radius: 6px !important;
+    }
+
+    .custom-pagination-container.light-mode select:focus {
+      border-color: #80bdff !important;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+    }
+
+    /* Light mode pagination buttons */
+    .custom-pagination-container.light-mode button {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+      border: 1px solid #dee2e6 !important;
+      color: #495057 !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .custom-pagination-container.light-mode button:hover {
+      background: linear-gradient(135deg, #e9ecef, #f8f9fa) !important;
+      border-color: #adb5bd !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .custom-pagination-container.light-mode button.active {
+      background: linear-gradient(135deg, #007bff, #0056b3) !important;
+      border-color: #007bff !important;
+      color: #ffffff !important;
+      box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3) !important;
+    }
+
+    .custom-pagination-container.light-mode button:disabled {
+      background: #f8f9fa !important;
+      border-color: #dee2e6 !important;
+      color: #6c757d !important;
+      opacity: 0.6 !important;
+      cursor: not-allowed !important;
+    }
+
+    /* Light mode input-blocks styling */
+    .input-blocks.light-mode {
+      background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+      border: 1px solid rgba(0, 0, 0, 0.1) !important;
+      border-radius: 12px !important;
+      padding: 16px 20px !important;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+      margin-bottom: 20px !important;
+    }
+
+    /* Light mode custom-dropdown styling */
+    .input-blocks.light-mode .custom-select {
+      background: #ffffff !important;
+      border: 1px solid #dee2e6 !important;
+      color: #495057 !important;
+      border-radius: 6px !important;
+      padding: 8px 40px 8px 40px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      transition: all 0.3s ease !important;
+      height: 40px !important;
+      line-height: 24px !important;
+    }
+
+    .input-blocks.light-mode .custom-select:focus {
+      border-color: #80bdff !important;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+      outline: none !important;
+    }
+
+    .input-blocks.light-mode .custom-select:hover {
+      border-color: #adb5bd !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Light mode input styling */
+    .input-blocks.light-mode input[type="text"] {
+      background: #ffffff !important;
+      border: 1px solid #dee2e6 !important;
+      color: #495057 !important;
+      border-radius: 6px !important;
+      padding: 8px 12px !important;
+      font-size: 14px !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .input-blocks.light-mode input[type="text"]:focus {
+      border-color: #80bdff !important;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+      outline: none !important;
+    }
+
+    .input-blocks.light-mode input[type="text"]:hover {
+      border-color: #adb5bd !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    /* Light mode button styling in input-blocks */
+    .input-blocks.light-mode button {
+      background: linear-gradient(135deg, #007bff, #0056b3) !important;
+      border: 1px solid #007bff !important;
+      color: #ffffff !important;
+      border-radius: 6px !important;
+      padding: 8px 16px !important;
+      font-size: 14px !important;
+      font-weight: 500 !important;
+      transition: all 0.3s ease !important;
+      cursor: pointer !important;
+    }
+
+    .input-blocks.light-mode button:hover {
+      background: linear-gradient(135deg, #0056b3, #004085) !important;
+      border-color: #0056b3 !important;
+      transform: translateY(-1px) !important;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+    }
+
+    .input-blocks.light-mode button:active {
+      transform: translateY(0) !important;
+      box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2) !important;
+    }
+
+    /* Light mode search icon styling */
+    .input-blocks.light-mode .feather-search {
+      color: #ffffff !important;
+    }
+
+    /* Light mode filter icon styling */
+    .input-blocks.light-mode .feather-filter {
+      color: #495057 !important;
+    }
+
+    /* Light mode icon positioning fix */
+    .input-blocks.light-mode .info-img {
+      position: absolute !important;
+      left: 12px !important;
+      top: 50% !important;
+      transform: translateY(-50%) !important;
+      z-index: 2 !important;
+      pointer-events: none !important;
+      font-size: 16px !important;
+    }
+
+    /* Light mode custom-dropdown container positioning */
+    .input-blocks.light-mode.custom-dropdown {
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+    }
+
+    /* Override inline styles for light mode dropdowns */
+    .input-blocks.light-mode .custom-select {
+      background: #ffffff !important;
+      border: 1px solid #dee2e6 !important;
+      color: #495057 !important;
+    }
+
+    /* Light mode dropdown arrow styling */
+    .input-blocks.light-mode .custom-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23495057' viewBox='0 0 16 16'%3e%3cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3e%3c/svg%3e") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 12px !important;
+    }
+
+    /* Fix input-blocks positioning for icons */
+    .input-blocks {
+      position: relative !important;
+    }
+
+    /* Clean filter inputs styling */
+    .input-blocks input.form-control {
+      height: 40px !important;
+      padding-left: 40px !important;
+      background: #2c3e50 !important;
+      border: 1px solid rgba(52, 152, 219, 0.3) !important;
+      color: #ffffff !important;
+      border-radius: 6px !important;
+    }
+
+    .input-blocks input.form-control::placeholder {
+      color: #bdc3c7 !important;
+    }
+
+    .input-blocks input.form-control:focus {
+      border-color: #3498db !important;
+      box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
+      background: #34495e !important;
+    }
+
+    /* Custom dropdown styling */
+    .custom-dropdown select.custom-select {
+      height: 40px !important;
+      padding-left: 40px !important;
+      padding-right: 40px !important;
+      background: #2c3e50 !important;
+      border: 1px solid rgba(52, 152, 219, 0.3) !important;
+      color: #ffffff !important;
+      border-radius: 6px !important;
+      appearance: none !important;
+      cursor: pointer !important;
+    }
+
+    .custom-dropdown select.custom-select:focus {
+      border-color: #3498db !important;
+      box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
+      background: #34495e !important;
+      outline: none !important;
+    }
+
+    .custom-dropdown select.custom-select option {
+      background: #2c3e50 !important;
+      color: #ffffff !important;
+      padding: 8px 12px !important;
+      border: none !important;
+    }
+
+    .custom-dropdown select.custom-select option:hover {
+      background: #34495e !important;
+      color: #3498db !important;
+    }
+
+    .custom-dropdown select.custom-select option:checked {
+      background: #3498db !important;
+      color: #ffffff !important;
+    }
+
+    /* Hide ALL React Select elements completely */
+    .select,
+    .select *,
+    .css-*,
+    [class*="css-"],
+    [id*="react-select"],
+    .react-select__control,
+    .react-select__value-container,
+    .react-select__placeholder,
+    .react-select__single-value,
+    .react-select__indicators,
+    .react-select__indicator,
+    .react-select__dropdown-indicator,
+    .react-select__clear-indicator,
+    .react-select__loading-indicator,
+    .react-select__menu,
+    .react-select__menu-list,
+    .react-select__option,
+    .react-select__group,
+    .react-select__input,
+    .react-select__input-container,
+    .css-1jqq78o-placeholder,
+    .css-1dimb5e-singleValue,
+    .css-1fdsijx-ValueContainer,
+    .css-1hwfws3,
+    .css-15lsz6c-indicatorContainer,
+    .css-1okebmr-indicatorSeparator,
+    .css-tlfecz-indicatorContainer,
+    .css-1gtu0rj-indicatorContainer,
+    .css-1xc3v61-indicatorContainer,
+    .css-tj5bde-Svg,
+    .css-8mmkcg,
+    .css-1rhbuit-multiValue,
+    .css-12jo7m5,
+    .css-1u9des2-indicatorSeparator,
+    .css-1wa3eu0-placeholder,
+    .css-1uccc91-singleValue,
+    .css-qc6sy-singleValue,
+    .css-1pahdxg-control,
+    .css-yk16xz-control,
+    .css-1s2u09g-control,
+    .css-1hwfws3-placeholder,
+    .css-b62m3t-container,
+    .css-2b097c-container,
+    .css-hlgwow,
+    .css-art2ul-ValueContainer2,
+    .css-g1d714-ValueContainer,
+    .css-1d8n9bt,
+    .css-6j8wv5-Input,
+    .css-qbdosj-Input,
+    div[id*="react-select"][id*="placeholder"],
+    div[class*="css-"],
+    span[class*="css-"],
+    input[class*="css-"] {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      position: absolute !important;
+      left: -9999px !important;
+      top: -9999px !important;
+      z-index: -1 !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      pointer-events: none !important;
+    }
   `;
   document.head.appendChild(styleSheet);
 }
@@ -132,9 +445,42 @@ const ProductList = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Detect theme mode from document attribute
+  const [isDarkMode, setIsDarkMode] = useState(
+    document.documentElement.getAttribute('data-layout-mode') === 'dark_mode'
+  );
+
+  // Listen for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-layout-mode') {
+          const newTheme = document.documentElement.getAttribute('data-layout-mode');
+          setIsDarkMode(newTheme === 'dark_mode');
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-layout-mode']
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   // State for pagination - sync with Redux
   const [currentPage, setCurrentPage] = useState(reduxCurrentPage || 1);
   const [pageSize, setPageSize] = useState(reduxPageSize || 20);
+
+  // State for filter values
+  const [filterValues, setFilterValues] = useState({
+    product: '',
+    category: '',
+    subCategory: '',
+    brand: '',
+    priceRange: ''
+  });
 
   // Debounced search term
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -159,12 +505,17 @@ const ProductList = () => {
     const loadProducts = async () => {
       try {
         const searchParams = {
-          page: currentPage,
-          pageSize: pageSize,
-          searchTerm: debouncedSearchTerm
+          Page: currentPage,
+          PageSize: pageSize,
+          SearchTerm: debouncedSearchTerm || ''
         };
 
-        await dispatch(fetchProducts(searchParams));
+        // Remove empty parameters
+        const cleanParams = Object.fromEntries(
+          Object.entries(searchParams).filter(([, value]) => value !== '')
+        );
+
+        await dispatch(fetchProducts(cleanParams));
       } catch (error) {
         console.error('Failed to load products:', error);
       }
@@ -215,12 +566,17 @@ const ProductList = () => {
 
     // Dispatch action to fetch products for the new page
     const searchParams = {
-      page: page,
-      pageSize: pageSize,
-      searchTerm: debouncedSearchTerm
+      Page: page,
+      PageSize: pageSize,
+      SearchTerm: debouncedSearchTerm || ''
     };
 
-    dispatch(fetchProducts(searchParams));
+    // Remove empty parameters
+    const cleanParams = Object.fromEntries(
+      Object.entries(searchParams).filter(([, value]) => value !== '')
+    );
+
+    dispatch(fetchProducts(cleanParams));
   };
 
   // Handle page size change
@@ -230,12 +586,51 @@ const ProductList = () => {
 
     // Dispatch action to fetch products with new page size
     const searchParams = {
-      page: 1,
-      pageSize: newPageSize,
-      searchTerm: debouncedSearchTerm
+      Page: 1,
+      PageSize: newPageSize,
+      SearchTerm: debouncedSearchTerm || ''
     };
 
-    dispatch(fetchProducts(searchParams));
+    // Remove empty parameters
+    const cleanParams = Object.fromEntries(
+      Object.entries(searchParams).filter(([, value]) => value !== '')
+    );
+
+    dispatch(fetchProducts(cleanParams));
+  };
+
+  // Handle filter value changes
+  const handleFilterChange = (filterType, value) => {
+    setFilterValues(prev => ({
+      ...prev,
+      [filterType]: value
+    }));
+  };
+
+  // Handle search with filters
+  const handleSearchWithFilters = () => {
+    setCurrentPage(1); // Reset to first page when searching
+
+    // Combine search term with filter values
+    const searchParams = {
+      Page: 1,
+      PageSize: pageSize,
+      SearchTerm: debouncedSearchTerm || '',
+      // Map filter values to API expected parameters
+      ProductName: filterValues.product || '',
+      Category: filterValues.category || '',
+      SubCategory: filterValues.subCategory || '',
+      Brand: filterValues.brand || '',
+      PriceRange: filterValues.priceRange || ''
+    };
+
+    // Remove empty parameters to clean up API call
+    const cleanParams = Object.fromEntries(
+      Object.entries(searchParams).filter(([, value]) => value !== '')
+    );
+
+    console.log('Search with filters (clean params):', cleanParams);
+    dispatch(fetchProducts(cleanParams));
   };
 
   // Calculate pagination info
@@ -259,35 +654,11 @@ const ProductList = () => {
     { value: "140923", label: "14 09 23" },
     { value: "110923", label: "11 09 23" },
   ];
-  const productlist = [
-    { value: "choose", label: "Choose Product" },
-    { value: "lenovo", label: "Lenovo 3rd Generation" },
-    { value: "nike", label: "Nike Jordan" },
-  ];
-  const categorylist = [
-    { value: "choose", label: "Choose Category" },
-    { value: "laptop", label: "Laptop" },
-    { value: "shoe", label: "Shoe" },
-  ];
-  const subcategorylist = [
-    { value: "choose", label: "Choose Sub Category" },
-    { value: "computers", label: "Computers" },
-    { value: "fruits", label: "Fruits" },
-  ];
-  const brandlist = [
-    { value: "all", label: "All Brand" },
-    { value: "lenovo", label: "Lenovo" },
-    { value: "nike", label: "Nike" },
-  ];
-  const price = [
-    { value: "price", label: "Price" },
-    { value: "12500", label: "$12,500.00" },
-    { value: "13000", label: "$13,000.00" }, // Replace with your actual values
-  ];
+  // Removed unused select option arrays since we're using simple inputs now
 
   const columns = [
     {
-      title: "Product",
+      title: "Sản phẩm",
       dataIndex: "product",
       render: (text, record) => (
         <span className="productimgname">
@@ -303,7 +674,7 @@ const ProductList = () => {
       sorter: (a, b) => a.product.length - b.product.length,
     },
     {
-      title: "SKU",
+      title: "Mã",
       dataIndex: "sku",
       render: (_, record) => {
         const sku = record.sku || record.code || record.productCode || '-';
@@ -317,7 +688,7 @@ const ProductList = () => {
     },
 
     {
-      title: "Category",
+      title: "Danh mục",
       dataIndex: "category",
       render: (_, record) => {
         const category = record.category || record.categoryName || '-';
@@ -331,7 +702,7 @@ const ProductList = () => {
     },
 
     {
-      title: "Brand",
+      title: "Thương hiệu",
       dataIndex: "brand",
       render: (_, record) => {
         const brand = record.brand || record.brandName || '-';
@@ -344,7 +715,7 @@ const ProductList = () => {
       },
     },
     {
-      title: "Price",
+      title: "Giá",
       dataIndex: "price",
       render: (_, record) => {
         const price = record.price || record.salePrice || record.unitPrice || 0;
@@ -357,7 +728,7 @@ const ProductList = () => {
       },
     },
     {
-      title: "Unit",
+      title: "Đơn vị",
       dataIndex: "unit",
       render: (_, record) => {
         const unit = record.unit || record.unitOfMeasure || '-';
@@ -385,23 +756,19 @@ const ProductList = () => {
     },
 
     {
-      title: "Created By",
+      title: "Người tạo",
       dataIndex: "createdby",
       render: (text, record) => (
-        <span className="userimgname">
-          <Link to="/profile" className="product-img">
-            <ImageWithBasePath
-              alt={record.createdBy || text || "User"}
-              src={record.img || record.avatar || record.userImage}
-            />
+        <span className="created-by-text">
+          <Link to="/profile" style={{ color: '#3498db', textDecoration: 'none' }}>
+            {record.createdBy || text || "Admin"}
           </Link>
-          <Link to="/profile">{text}</Link>
         </span>
       ),
       sorter: (a, b) => a.createdby.length - b.createdby.length,
     },
     {
-      title: "Action",
+      title: "Thao tác",
       dataIndex: "action",
       render: (text, record) => (
         <td className="action-table-data">
@@ -485,8 +852,8 @@ const ProductList = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>Product List</h4>
-              <h6>Manage your products</h6>
+              <h4>Danh sách sản phẩm</h4>
+              <h6>Quản lý sản phẩm</h6>
             </div>
           </div>
           <ul className="table-top-head">
@@ -541,7 +908,7 @@ const ProductList = () => {
           <div className="page-btn">
             <Link to={route.addproduct} className="btn btn-added">
               <PlusCircle className="me-2 iconsize" />
-              Add New Product
+              Thêm mới
             </Link>
           </div>
           <div className="page-btn import">
@@ -552,7 +919,7 @@ const ProductList = () => {
               data-bs-target="#view-notes"
             >
               <Download className="me-2" />
-              Import Product
+              Nhập sản phẩm
             </Link>
           </div>
         </div>
@@ -613,66 +980,244 @@ const ProductList = () => {
                   <div className="col-lg-12 col-sm-12">
                     <div className="row">
                       <div className="col-lg-2 col-sm-6 col-12">
-                        <div className="input-blocks">
-                          <Box className="info-img" />
-                          <Select
-                            className="select"
-                            options={productlist}
-                            placeholder="Choose Product"
+                        <div className="input-blocks custom-dropdown">
+                          <select
+                            className="form-control custom-select"
+                            value={filterValues.product}
+                            onChange={(e) => handleFilterChange('product', e.target.value)}
+                            style={{
+                              paddingLeft: '40px',
+                              background: '#2c3e50',
+                              border: '1px solid rgba(52, 152, 219, 0.3)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              height: '40px',
+                              appearance: 'none',
+                              backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6,9 12,15 18,9\'%3e%3c/polyline%3e%3c/svg%3e")',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 12px center',
+                              backgroundSize: '16px',
+                              paddingRight: '40px'
+                            }}
+                          >
+                            <option value="">Choose Product</option>
+                            <option value="lenovo">Lenovo 3rd Generation</option>
+                            <option value="nike">Nike Jordan</option>
+                            <option value="apple">Apple iPhone</option>
+                            <option value="samsung">Samsung Galaxy</option>
+                          </select>
+                          <Box
+                            className="info-img"
+                            style={{
+                              position: 'absolute',
+                              left: '12px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              color: '#3498db',
+                              zIndex: 2,
+                              pointerEvents: 'none'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-2 col-sm-6 col-12">
+                        <div className="input-blocks custom-dropdown">
+                          <select
+                            className="form-control custom-select"
+                            value={filterValues.category}
+                            onChange={(e) => handleFilterChange('category', e.target.value)}
+                            style={{
+                              paddingLeft: '40px',
+                              background: '#2c3e50',
+                              border: '1px solid rgba(52, 152, 219, 0.3)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              height: '40px',
+                              appearance: 'none',
+                              backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23ffffff\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6,9 12,15 18,9\'%3e%3c/polyline%3e%3c/svg%3e")',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 12px center',
+                              backgroundSize: '16px',
+                              paddingRight: '40px'
+                            }}
+                          >
+                            <option value="">Choose Category</option>
+                            <option value="laptop">Laptop</option>
+                            <option value="phone">Phone</option>
+                            <option value="shoe">Shoe</option>
+                            <option value="clothing">Clothing</option>
+                          </select>
+                          <StopCircle
+                            className="info-img"
+                            style={{
+                              position: 'absolute',
+                              left: '12px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              color: '#e74c3c',
+                              zIndex: 2,
+                              pointerEvents: 'none'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-2 col-sm-6 col-12">
+                        <div className="input-blocks custom-dropdown">
+                          <select
+                            className="form-control custom-select"
+                            value={filterValues.subCategory}
+                            onChange={(e) => handleFilterChange('subCategory', e.target.value)}
+                            style={{
+                              paddingLeft: '40px',
+                              background: '#2c3e50',
+                              border: '1px solid rgba(52, 152, 219, 0.3)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              height: '40px',
+                              appearance: 'none',
+                              backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'white\' viewBox=\'0 0 16 16\'%3e%3cpath d=\'M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z\'/%3e%3c/svg%3e")',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 12px center',
+                              backgroundSize: '12px',
+                              paddingRight: '40px'
+                            }}
+                          >
+                            <option value="">Choose Sub Category</option>
+                            <option value="computers">Computers</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="sports">Sports</option>
+                            <option value="electronics">Electronics</option>
+                          </select>
+                          <GitMerge
+                            className="info-img"
+                            style={{
+                              position: 'absolute',
+                              left: '12px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              color: '#2ecc71',
+                              zIndex: 2,
+                              pointerEvents: 'none'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-2 col-sm-6 col-12">
+                        <div className="input-blocks custom-dropdown">
+                          <select
+                            className="form-control custom-select"
+                            value={filterValues.brand}
+                            onChange={(e) => handleFilterChange('brand', e.target.value)}
+                            style={{
+                              paddingLeft: '40px',
+                              background: '#2c3e50',
+                              border: '1px solid rgba(52, 152, 219, 0.3)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              height: '40px',
+                              appearance: 'none',
+                              backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'white\' viewBox=\'0 0 16 16\'%3e%3cpath d=\'M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z\'/%3e%3c/svg%3e")',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 12px center',
+                              backgroundSize: '12px',
+                              paddingRight: '40px'
+                            }}
+                          >
+                            <option value="">Choose Brand</option>
+                            <option value="lenovo">Lenovo</option>
+                            <option value="nike">Nike</option>
+                            <option value="apple">Apple</option>
+                            <option value="samsung">Samsung</option>
+                            <option value="adidas">Adidas</option>
+                          </select>
+                          <StopCircle
+                            className="info-img"
+                            style={{
+                              position: 'absolute',
+                              left: '12px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              color: '#f39c12',
+                              zIndex: 2,
+                              pointerEvents: 'none'
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="col-lg-2 col-sm-6 col-12">
+                        <div className="input-blocks custom-dropdown">
+                          <select
+                            className="form-control custom-select"
+                            value={filterValues.priceRange}
+                            onChange={(e) => handleFilterChange('priceRange', e.target.value)}
+                            style={{
+                              paddingLeft: '40px',
+                              background: '#2c3e50',
+                              border: '1px solid rgba(52, 152, 219, 0.3)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              height: '40px',
+                              appearance: 'none',
+                              backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'white\' viewBox=\'0 0 16 16\'%3e%3cpath d=\'M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z\'/%3e%3c/svg%3e")',
+                              backgroundRepeat: 'no-repeat',
+                              backgroundPosition: 'right 12px center',
+                              backgroundSize: '12px',
+                              paddingRight: '40px'
+                            }}
+                          >
+                            <option value="">Choose Price Range</option>
+                            <option value="0-100">$0 - $100</option>
+                            <option value="100-500">$100 - $500</option>
+                            <option value="500-1000">$500 - $1,000</option>
+                            <option value="1000+">$1,000+</option>
+                          </select>
+                          <i
+                            className="fas fa-money-bill info-img"
+                            style={{
+                              position: 'absolute',
+                              left: '12px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              color: '#9b59b6',
+                              zIndex: 2,
+                              pointerEvents: 'none'
+                            }}
                           />
                         </div>
                       </div>
                       <div className="col-lg-2 col-sm-6 col-12">
                         <div className="input-blocks">
-                          <StopCircle className="info-img" />
-                          <Select
-                            className="select"
-                            options={categorylist}
-                            placeholder="Choose Category"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-2 col-sm-6 col-12">
-                        <div className="input-blocks">
-                          <GitMerge className="info-img" />
-                          <Select
-                            className="select"
-                            options={subcategorylist}
-                            placeholder="Choose Sub Category"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-2 col-sm-6 col-12">
-                        <div className="input-blocks">
-                          <StopCircle className="info-img" />
-                          <Select
-                            className="select"
-                            options={brandlist}
-                            placeholder="Nike"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-2 col-sm-6 col-12">
-                        <div className="input-blocks">
-                          <i className="fas fa-money-bill info-img" />
-
-                          <Select
-                            className="select"
-                            options={price}
-                            placeholder="Price"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-lg-2 col-sm-6 col-12">
-                        <div className="input-blocks">
-                          <Link className="btn btn-filters ms-auto">
-                            {" "}
+                          <button
+                            className="btn btn-filters ms-auto"
+                            onClick={handleSearchWithFilters}
+                            type="button"
+                            style={{
+                              background: 'linear-gradient(45deg, #3498db, #2980b9)',
+                              border: '1px solid rgba(52, 152, 219, 0.3)',
+                              color: '#ffffff',
+                              borderRadius: '6px',
+                              padding: '8px 16px',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.background = 'linear-gradient(45deg, #2980b9, #3498db)';
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = 'none';
+                            }}
+                          >
                             <i
                               data-feather="search"
                               className="feather-search"
-                            />{" "}
-                            Search{" "}
-                          </Link>
+                              style={{ marginRight: '8px' }}
+                            />
+                            Search
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -707,9 +1252,9 @@ const ProductList = () => {
                     pagination={false} // Disable Ant Design pagination
                   />
 
-                  {/* Table Pagination like the image */}
+                  {/* Table Pagination with Theme Integration */}
                   <div
-                    className="custom-pagination-container"
+                    className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
                     style={{
                       background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
                       border: '1px solid rgba(52, 152, 219, 0.3)',
@@ -757,7 +1302,7 @@ const ProductList = () => {
                       }}
                     >
                       <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                        <span style={{color: '#bdc3c7', fontSize: '14px'}}>Row Per Page</span>
+                        <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Row Per Page</span>
                         <select
                           value={pageSize}
                           onChange={(e) => {
@@ -783,7 +1328,7 @@ const ProductList = () => {
                           <option value={50} style={{background: '#2c3e50', color: '#ffffff'}}>50</option>
                           <option value={100} style={{background: '#2c3e50', color: '#ffffff'}}>100</option>
                         </select>
-                        <span style={{color: '#bdc3c7', fontSize: '14px'}}>Entries</span>
+                        <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Entries</span>
                       </div>
 
                       <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
@@ -802,7 +1347,7 @@ const ProductList = () => {
                         >
                           📊
                         </div>
-                        <span style={{color: '#bdc3c7', fontSize: '14px'}}>
+                        <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>
                           Showing <strong style={{color: '#3498db'}}>{startRecord}</strong> to <strong style={{color: '#3498db'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c'}}>{totalRecords}</strong> entries
                           {debouncedSearchTerm && (
                             <span style={{color: '#2ecc71', marginLeft: '8px'}}>
@@ -834,6 +1379,7 @@ const ProductList = () => {
                             key={pageNum}
                             onClick={() => !loading && handlePageChange(pageNum)}
                             disabled={loading}
+                            className={isActive ? 'active' : ''}
                             style={{
                               background: loading
                                 ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
