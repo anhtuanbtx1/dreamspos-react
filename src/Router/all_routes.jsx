@@ -86,6 +86,7 @@ export const all_routes = {
   email: "/email",
   callhistory: "/call-history",
   todo: "/todo",
+  projecttracker: "/project-tracker",
   wizard: "/form-wizard",
   expiredproduct: "/expired-products",
   lowstock: "/low-stocks",

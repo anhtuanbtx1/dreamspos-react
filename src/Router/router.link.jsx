@@ -194,6 +194,8 @@ import CurrencySettings from "../feature-module/settings/financialsettings/curre
 import WareHouses from "../core/modals/peoples/warehouses";
 import Coupons from "../feature-module/coupons/coupons";
 import ApiTest from "../components/ApiTest";
+import TodoList from "../feature-module/todo/todolist";
+import ProjectTracker from "../feature-module/projects/projecttracker";
 import { all_routes } from "./all_routes";
 export const publicRoutes = [
   {
@@ -1397,13 +1399,27 @@ export const publicRoutes = [
   },
   {
     id: 116,
+    path: routes.todo,
+    name: "todo",
+    element: <TodoList />,
+    route: Route,
+  },
+  {
+    id: 117,
+    path: routes.projecttracker,
+    name: "projecttracker",
+    element: <ProjectTracker />,
+    route: Route,
+  },
+  {
+    id: 118,
     path: "/",
     name: "Root",
     element: <Navigate to="/" />,
     route: Route,
   },
   {
-    id: 117,
+    id: 119,
     path: "*",
     name: "NotFound",
     element: <Navigate to="/" />,
