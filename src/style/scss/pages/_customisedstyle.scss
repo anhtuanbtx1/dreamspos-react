@@ -27,8 +27,491 @@ $__basecolor: #2c3038;
   height: 40px;
 }
 
+// Project Date Picker Styling - Fix display issues
+.project-date-picker.ant-picker {
+  background: #ffffff !important;
+  border: 1px solid #dbe0e6 !important;
+  border-radius: 6px !important;
+  height: 42px !important;
+  width: 280px !important;
+  padding: 0 !important;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+
+  &:hover {
+    border-color: #ff9f43 !important;
+    box-shadow: 0 2px 6px rgba(255, 159, 67, 0.2) !important;
+  }
+
+  &:focus,
+  &.ant-picker-focused {
+    border-color: #ff9f43 !important;
+    box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2) !important;
+    outline: none !important;
+  }
+
+  .ant-picker-input {
+    padding: 8px 12px;
+
+    input {
+      font-size: 14px !important;
+      color: #333 !important;
+      border: none !important;
+      background: transparent !important;
+
+      &::placeholder {
+        color: #999 !important;
+        font-size: 13px !important;
+      }
+    }
+  }
+
+  .ant-picker-separator {
+    color: #ff9f43 !important;
+    font-weight: 600 !important;
+  }
+
+  .ant-picker-suffix {
+    display: flex !important;
+    color: #ff9f43 !important;
+    margin-right: 8px;
+  }
+
+  // Override any conflicting form-control styles
+  &.form-control {
+    padding: 0 !important;
+    height: 42px !important;
+    border: 1px solid #dbe0e6 !important;
+  }
+}
+
+// Date Picker Dropdown Styling
+:where(.css-dev-only-do-not-override-1ae8k9u).ant-picker-dropdown {
+  .ant-picker-panel-container {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e6e6e6;
+  }
+
+  .ant-picker-header {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 12px;
+
+    .ant-picker-header-view {
+      .ant-picker-month-btn,
+      .ant-picker-year-btn {
+        color: #333;
+        font-weight: 600;
+
+        &:hover {
+          color: #ff9f43;
+        }
+      }
+    }
+
+    .ant-picker-header-super-prev-btn,
+    .ant-picker-header-prev-btn,
+    .ant-picker-header-next-btn,
+    .ant-picker-header-super-next-btn {
+      color: #666;
+
+      &:hover {
+        color: #ff9f43;
+        background: rgba(255, 159, 67, 0.1);
+      }
+    }
+  }
+
+  .ant-picker-content {
+    .ant-picker-cell {
+      &:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end):not(.ant-picker-cell-range-hover-start):not(.ant-picker-cell-range-hover-end) .ant-picker-cell-inner {
+        background: rgba(255, 159, 67, 0.1);
+        color: #ff9f43;
+      }
+
+      &.ant-picker-cell-selected .ant-picker-cell-inner,
+      &.ant-picker-cell-range-start .ant-picker-cell-inner,
+      &.ant-picker-cell-range-end .ant-picker-cell-inner {
+        background: #ff9f43;
+        color: #ffffff;
+        font-weight: 600;
+      }
+
+      &.ant-picker-cell-in-range .ant-picker-cell-inner {
+        background: rgba(255, 159, 67, 0.2);
+        color: #ff9f43;
+      }
+
+      &.ant-picker-cell-today .ant-picker-cell-inner {
+        border: 1px solid #ff9f43;
+        color: #ff9f43;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .ant-picker-footer {
+    border-top: 1px solid #f0f0f0;
+    padding: 8px 12px;
+
+    .ant-picker-today-btn {
+      color: #ff9f43;
+      font-weight: 500;
+
+      &:hover {
+        color: #e8890a;
+      }
+    }
+  }
+}
+
+// Project Filter Select Styling - Fix display issues
+.project-filter-select.ant-select {
+  height: 42px !important;
+
+  .ant-select-selector {
+    background: #ffffff !important;
+    border: 1px solid #dbe0e6 !important;
+    border-radius: 6px !important;
+    height: 42px !important;
+    padding: 8px 12px !important;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+
+    &:hover {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 2px 6px rgba(255, 159, 67, 0.2) !important;
+    }
+
+    &:focus,
+    &.ant-select-focused {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2) !important;
+      outline: none !important;
+    }
+
+    .ant-select-selection-item {
+      color: #333 !important;
+      font-size: 14px !important;
+      line-height: 24px !important;
+      padding: 0 !important;
+    }
+
+    .ant-select-selection-placeholder {
+      color: #999 !important;
+      font-size: 13px !important;
+    }
+  }
+
+  .ant-select-arrow {
+    color: #ff9f43 !important;
+  }
+
+  &.ant-select-open .ant-select-selector {
+    border-color: #ff9f43 !important;
+    box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2) !important;
+  }
+
+  // Override any conflicting form-control styles
+  &.form-control {
+    padding: 0 !important;
+    height: 42px !important;
+    border: none !important;
+  }
+}
+
+// Project Filter Dropdown Styling
+.ant-select-dropdown {
+  .ant-select-item {
+    padding: 8px 12px !important;
+    font-size: 14px !important;
+
+    &:hover {
+      background: rgba(255, 159, 67, 0.1) !important;
+      color: #ff9f43 !important;
+    }
+
+    &.ant-select-item-option-selected {
+      background: #ff9f43 !important;
+      color: #ffffff !important;
+      font-weight: 500 !important;
+    }
+  }
+}
+
+// Fix any conflicts with existing ant-picker styles
 .ant-picker-suffix {
   display: none;
+}
+
+.project-date-picker .ant-picker-suffix {
+  display: flex !important;
+}
+
+// Ensure proper spacing for project tracker filters
+.search-path .d-flex.gap-3 > * {
+  margin-right: 0 !important;
+}
+
+// Override any Bootstrap form-control conflicts
+.project-date-picker.form-control,
+.project-filter-select.form-control {
+  padding: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+// Dark Mode Styles for Project Tracker Date Picker and Filters
+[data-layout-mode=dark_mode] {
+  // Project Date Picker Dark Mode
+  .project-date-picker.ant-picker {
+    background: #1d1d42 !important;
+    border: 1px solid #67748E !important;
+    color: #ffffff !important;
+
+    &:hover {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 2px 6px rgba(255, 159, 67, 0.3) !important;
+    }
+
+    &:focus,
+    &.ant-picker-focused {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.3) !important;
+    }
+
+    .ant-picker-input {
+      input {
+        color: #ffffff !important;
+        background: transparent !important;
+
+        &::placeholder {
+          color: #67748E !important;
+        }
+      }
+    }
+
+    .ant-picker-separator {
+      color: #ff9f43 !important;
+    }
+
+    .ant-picker-suffix {
+      color: #ff9f43 !important;
+    }
+  }
+
+  // Project Filter Select Dark Mode
+  .project-filter-select.ant-select {
+    .ant-select-selector {
+      background: #1d1d42 !important;
+      border: 1px solid #67748E !important;
+      color: #ffffff !important;
+
+      &:hover {
+        border-color: #ff9f43 !important;
+        box-shadow: 0 2px 6px rgba(255, 159, 67, 0.3) !important;
+      }
+
+      &:focus,
+      &.ant-select-focused {
+        border-color: #ff9f43 !important;
+        box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.3) !important;
+      }
+
+      .ant-select-selection-item {
+        color: #ffffff !important;
+      }
+
+      .ant-select-selection-placeholder {
+        color: #67748E !important;
+      }
+    }
+
+    .ant-select-arrow {
+      color: #ff9f43 !important;
+    }
+
+    &.ant-select-open .ant-select-selector {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.3) !important;
+    }
+  }
+
+  // Dark Mode Dropdown Styling
+  .ant-select-dropdown {
+    background: #1d1d42 !important;
+    border: 1px solid #67748E !important;
+
+    .ant-select-item {
+      color: #ffffff !important;
+      background: transparent !important;
+
+      &:hover {
+        background: rgba(255, 159, 67, 0.2) !important;
+        color: #ff9f43 !important;
+      }
+
+      &.ant-select-item-option-selected {
+        background: #ff9f43 !important;
+        color: #ffffff !important;
+      }
+    }
+  }
+
+  // Dark Mode Date Picker Dropdown
+  .ant-picker-dropdown {
+    .ant-picker-panel-container {
+      background: #1d1d42 !important;
+      border: 1px solid #67748E !important;
+    }
+
+    .ant-picker-header {
+      border-bottom: 1px solid #67748E !important;
+      background: #1d1d42 !important;
+
+      .ant-picker-header-view {
+        .ant-picker-month-btn,
+        .ant-picker-year-btn {
+          color: #ffffff !important;
+
+          &:hover {
+            color: #ff9f43 !important;
+          }
+        }
+      }
+
+      .ant-picker-header-super-prev-btn,
+      .ant-picker-header-prev-btn,
+      .ant-picker-header-next-btn,
+      .ant-picker-header-super-next-btn {
+        color: #67748E !important;
+
+        &:hover {
+          color: #ff9f43 !important;
+          background: rgba(255, 159, 67, 0.2) !important;
+        }
+      }
+    }
+
+    .ant-picker-content {
+      background: #1d1d42 !important;
+
+      .ant-picker-cell {
+        color: #ffffff !important;
+
+        &:hover:not(.ant-picker-cell-selected):not(.ant-picker-cell-range-start):not(.ant-picker-cell-range-end):not(.ant-picker-cell-range-hover-start):not(.ant-picker-cell-range-hover-end) .ant-picker-cell-inner {
+          background: rgba(255, 159, 67, 0.2) !important;
+          color: #ff9f43 !important;
+        }
+
+        &.ant-picker-cell-selected .ant-picker-cell-inner,
+        &.ant-picker-cell-range-start .ant-picker-cell-inner,
+        &.ant-picker-cell-range-end .ant-picker-cell-inner {
+          background: #ff9f43 !important;
+          color: #ffffff !important;
+        }
+
+        &.ant-picker-cell-in-range .ant-picker-cell-inner {
+          background: rgba(255, 159, 67, 0.3) !important;
+          color: #ff9f43 !important;
+        }
+
+        &.ant-picker-cell-today .ant-picker-cell-inner {
+          border: 1px solid #ff9f43 !important;
+          color: #ff9f43 !important;
+        }
+
+        &.ant-picker-cell-disabled .ant-picker-cell-inner {
+          color: #67748E !important;
+        }
+      }
+    }
+
+    .ant-picker-footer {
+      border-top: 1px solid #67748E !important;
+      background: #1d1d42 !important;
+
+      .ant-picker-today-btn {
+        color: #ff9f43 !important;
+
+        &:hover {
+          color: #e8890a !important;
+        }
+      }
+    }
+  }
+
+  // Additional Dark Mode Styles for Project Tracker
+  .card.table-list-card {
+    background: #1d1d42 !important;
+    border: 1px solid #67748E !important;
+
+    .card-body {
+      background: #1d1d42 !important;
+    }
+  }
+
+  .table-top {
+    .search-set {
+      .search-input {
+        span {
+          color: #ffffff !important;
+        }
+
+        .badge.badge-primary {
+          background: #ff9f43 !important;
+          color: #ffffff !important;
+        }
+      }
+    }
+  }
+
+  // Dark mode for table content
+  .table-responsive {
+    .ant-table {
+      background: #1d1d42 !important;
+
+      .ant-table-thead > tr > th {
+        background: #141432 !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid #67748E !important;
+      }
+
+      .ant-table-tbody > tr > td {
+        background: #1d1d42 !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid #67748E !important;
+      }
+
+      .ant-table-tbody > tr:hover > td {
+        background: rgba(255, 159, 67, 0.1) !important;
+      }
+    }
+  }
+
+  // Dark mode for progress bars
+  .ant-progress {
+    .ant-progress-bg {
+      background: #ff9f43 !important;
+    }
+
+    .ant-progress-outer {
+      .ant-progress-inner {
+        background: #67748E !important;
+      }
+    }
+  }
+
+  // Dark mode for tags
+  .ant-tag {
+    background: rgba(255, 159, 67, 0.2) !important;
+    border: 1px solid #ff9f43 !important;
+    color: #ff9f43 !important;
+  }
 }
 
 .swal2-confirm {

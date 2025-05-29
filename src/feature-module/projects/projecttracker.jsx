@@ -6,6 +6,7 @@ import {
   Trash2,
   Plus
 } from 'feather-icons-react';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -16,6 +17,10 @@ const ProjectTracker = () => {
   const [filterManager, setFilterManager] = useState('All Managers');
   const [filterPriority, setFilterPriority] = useState('All Priority');
   const [sortBy, setSortBy] = useState('Last 7 Days');
+  const [dateRange, setDateRange] = useState([
+    dayjs().subtract(7, 'day'),
+    dayjs()
+  ]);
 
   // Sample project data
   const projectData = [
@@ -367,17 +372,25 @@ const ProjectTracker = () => {
                 </div>
               </div>
               <div className="search-path">
-                <div className="d-flex align-items-center">
+                <div className="d-flex align-items-center gap-3">
                   <RangePicker
+                    value={dateRange}
+                    onChange={setDateRange}
                     placeholder={['Start Date', 'End Date']}
-                    className="form-control"
+                    className="project-date-picker"
+                    format="DD/MM/YYYY"
+                    allowClear={false}
+                    style={{
+                      height: '42px',
+                      width: '280px'
+                    }}
                   />
 
                   <Select
                     value={filterPriority}
                     onChange={setFilterPriority}
-                    className="form-control"
-                    style={{ width: 120 }}
+                    className="project-filter-select"
+                    style={{ width: 120, height: 42 }}
                   >
                     <Option value="All Priority">Priority</Option>
                     <Option value="High">High</Option>
@@ -388,8 +401,8 @@ const ProjectTracker = () => {
                   <Select
                     value={filterManager}
                     onChange={setFilterManager}
-                    className="form-control"
-                    style={{ width: 140 }}
+                    className="project-filter-select"
+                    style={{ width: 140, height: 42 }}
                   >
                     <Option value="All Managers">Manager</Option>
                     <Option value="John Smith">John Smith</Option>
@@ -400,8 +413,8 @@ const ProjectTracker = () => {
                   <Select
                     value={filterStatus}
                     onChange={setFilterStatus}
-                    className="form-control"
-                    style={{ width: 140 }}
+                    className="project-filter-select"
+                    style={{ width: 140, height: 42 }}
                   >
                     <Option value="All Status">Select Status</Option>
                     <Option value="Planning">Planning</Option>
@@ -413,8 +426,8 @@ const ProjectTracker = () => {
                   <Select
                     value={sortBy}
                     onChange={setSortBy}
-                    className="form-control"
-                    style={{ width: 140 }}
+                    className="project-filter-select"
+                    style={{ width: 140, height: 42 }}
                   >
                     <Option value="Last 7 Days">Sort By: Last 7 Days</Option>
                     <Option value="Last 30 Days">Last 30 Days</Option>
