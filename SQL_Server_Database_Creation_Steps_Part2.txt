@@ -1,0 +1,253 @@
+================================================================================
+                    SQL SERVER DATABASE CREATION - PART 2
+                         Remaining Steps (4C - 8)
+================================================================================
+
+================================================================================
+🗄️ STEP 4C: CREATE CLIENTS TABLE
+================================================================================
+
+-- STEP 4C: Create Clients Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[Clients] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [Name] NVARCHAR(255) NOT NULL,
+    [Email] NVARCHAR(255) NULL,
+    [Phone] NVARCHAR(20) NULL,
+    [Company] NVARCHAR(255) NULL,
+    [Address] NVARCHAR(MAX) NULL,
+    [ContactPerson] NVARCHAR(255) NULL,
+    [IsActive] BIT NOT NULL DEFAULT 1,
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [UpdatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE()
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_Clients_Name ON [dbo].[Clients]([Name]);
+CREATE NONCLUSTERED INDEX IX_Clients_Company ON [dbo].[Clients]([Company]);
+CREATE NONCLUSTERED INDEX IX_Clients_IsActive ON [dbo].[Clients]([IsActive]);
+GO
+
+PRINT 'STEP 4C COMPLETED: Clients table created!';
+
+================================================================================
+🗄️ STEP 5A: CREATE PROJECTACTIVITYLOGS TABLE
+================================================================================
+
+-- STEP 5A: Create ProjectActivityLogs Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectActivityLogs] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectId] BIGINT NOT NULL,
+    [UserId] BIGINT NOT NULL,
+    [Action] NVARCHAR(100) NOT NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [OldValues] NVARCHAR(MAX) NULL,
+    [NewValues] NVARCHAR(MAX) NULL,
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    
+    CONSTRAINT FK_ProjectActivityLogs_Project FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Projects]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_ProjectActivityLogs_User FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectActivityLogs_Project ON [dbo].[ProjectActivityLogs]([ProjectId]);
+CREATE NONCLUSTERED INDEX IX_ProjectActivityLogs_User ON [dbo].[ProjectActivityLogs]([UserId]);
+CREATE NONCLUSTERED INDEX IX_ProjectActivityLogs_Action ON [dbo].[ProjectActivityLogs]([Action]);
+CREATE NONCLUSTERED INDEX IX_ProjectActivityLogs_CreatedAt ON [dbo].[ProjectActivityLogs]([CreatedAt]);
+GO
+
+PRINT 'STEP 5A COMPLETED: ProjectActivityLogs table created!';
+
+================================================================================
+🗄️ STEP 5B: CREATE PROJECTTIMEENTRIES TABLE
+================================================================================
+
+-- STEP 5B: Create ProjectTimeEntries Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectTimeEntries] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectId] BIGINT NOT NULL,
+    [UserId] BIGINT NOT NULL,
+    [TaskDescription] NVARCHAR(MAX) NOT NULL,
+    [HoursWorked] DECIMAL(5,2) NOT NULL,
+    [WorkDate] DATE NOT NULL,
+    [Billable] BIT NOT NULL DEFAULT 1,
+    [HourlyRate] DECIMAL(8,2) NULL,
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [UpdatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    
+    CONSTRAINT FK_ProjectTimeEntries_Project FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Projects]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_ProjectTimeEntries_User FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id]),
+    CONSTRAINT CK_ProjectTimeEntries_HoursWorked CHECK ([HoursWorked] > 0 AND [HoursWorked] <= 24)
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectTimeEntries_Project ON [dbo].[ProjectTimeEntries]([ProjectId]);
+CREATE NONCLUSTERED INDEX IX_ProjectTimeEntries_User ON [dbo].[ProjectTimeEntries]([UserId]);
+CREATE NONCLUSTERED INDEX IX_ProjectTimeEntries_WorkDate ON [dbo].[ProjectTimeEntries]([WorkDate]);
+CREATE NONCLUSTERED INDEX IX_ProjectTimeEntries_Billable ON [dbo].[ProjectTimeEntries]([Billable]);
+GO
+
+PRINT 'STEP 5B COMPLETED: ProjectTimeEntries table created!';
+
+================================================================================
+🗄️ STEP 6: CREATE TRIGGERS FOR UPDATEDAT
+================================================================================
+
+-- STEP 6: Create Triggers for UpdatedAt
+USE ProjectManagementDB;
+GO
+
+-- Trigger for Projects
+CREATE TRIGGER TR_Projects_UpdatedAt ON [dbo].[Projects]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [dbo].[Projects] 
+    SET [UpdatedAt] = GETUTCDATE() 
+    FROM [dbo].[Projects] p
+    INNER JOIN inserted i ON p.[Id] = i.[Id];
+END;
+GO
+
+-- Trigger for ProjectCategories
+CREATE TRIGGER TR_ProjectCategories_UpdatedAt ON [dbo].[ProjectCategories]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [dbo].[ProjectCategories] 
+    SET [UpdatedAt] = GETUTCDATE() 
+    FROM [dbo].[ProjectCategories] pc
+    INNER JOIN inserted i ON pc.[Id] = i.[Id];
+END;
+GO
+
+-- Trigger for Users
+CREATE TRIGGER TR_Users_UpdatedAt ON [dbo].[Users]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [dbo].[Users] 
+    SET [UpdatedAt] = GETUTCDATE() 
+    FROM [dbo].[Users] u
+    INNER JOIN inserted i ON u.[Id] = i.[Id];
+END;
+GO
+
+-- Trigger for Clients
+CREATE TRIGGER TR_Clients_UpdatedAt ON [dbo].[Clients]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [dbo].[Clients] 
+    SET [UpdatedAt] = GETUTCDATE() 
+    FROM [dbo].[Clients] c
+    INNER JOIN inserted i ON c.[Id] = i.[Id];
+END;
+GO
+
+-- Trigger for ProjectTimeEntries
+CREATE TRIGGER TR_ProjectTimeEntries_UpdatedAt ON [dbo].[ProjectTimeEntries]
+AFTER UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE [dbo].[ProjectTimeEntries] 
+    SET [UpdatedAt] = GETUTCDATE() 
+    FROM [dbo].[ProjectTimeEntries] pte
+    INNER JOIN inserted i ON pte.[Id] = i.[Id];
+END;
+GO
+
+PRINT 'STEP 6 COMPLETED: All triggers created!';
+
+================================================================================
+🗄️ STEP 7: CREATE VIEWS
+================================================================================
+
+-- STEP 7A: Create ProjectSummary view
+USE ProjectManagementDB;
+GO
+
+CREATE VIEW [dbo].[vw_ProjectSummary]
+AS
+SELECT 
+    p.[Id],
+    p.[ProjectName],
+    p.[ClientName],
+    pc.[Name] as [CategoryName],
+    pc.[Color] as [CategoryColor],
+    p.[Priority],
+    p.[Status],
+    p.[StartDate],
+    p.[EndDate],
+    p.[Budget],
+    p.[ProgressPercentage],
+    DATEDIFF(DAY, p.[StartDate], p.[EndDate]) as [DurationDays],
+    DATEDIFF(DAY, GETDATE(), p.[EndDate]) as [DaysRemaining],
+    (SELECT COUNT(*) FROM [dbo].[ProjectManagers] pm WHERE pm.[ProjectId] = p.[Id]) as [ManagerCount],
+    (SELECT COUNT(*) FROM [dbo].[ProjectTeamMembers] ptm WHERE ptm.[ProjectId] = p.[Id] AND ptm.[RemovedAt] IS NULL) as [TeamMemberCount],
+    u.[FullName] as [CreatedByName],
+    p.[CreatedAt],
+    p.[UpdatedAt]
+FROM [dbo].[Projects] p
+INNER JOIN [dbo].[ProjectCategories] pc ON p.[CategoryId] = pc.[Id]
+INNER JOIN [dbo].[Users] u ON p.[CreatedBy] = u.[Id]
+WHERE p.[DeletedAt] IS NULL;
+GO
+
+PRINT 'STEP 7A COMPLETED: ProjectSummary view created!';
+
+-- STEP 7B: Create ProjectTeam view
+CREATE VIEW [dbo].[vw_ProjectTeam]
+AS
+SELECT 
+    p.[Id] as [ProjectId],
+    p.[ProjectName],
+    u.[Id] as [UserId],
+    u.[FullName],
+    u.[Email],
+    u.[Role] as [UserRole],
+    'Manager' as [ProjectRole],
+    pm.[IsPrimary],
+    pm.[AssignedAt],
+    NULL as [RemovedAt]
+FROM [dbo].[Projects] p
+INNER JOIN [dbo].[ProjectManagers] pm ON p.[Id] = pm.[ProjectId]
+INNER JOIN [dbo].[Users] u ON pm.[UserId] = u.[Id]
+WHERE p.[DeletedAt] IS NULL
+
+UNION ALL
+
+SELECT 
+    p.[Id] as [ProjectId],
+    p.[ProjectName],
+    u.[Id] as [UserId],
+    u.[FullName],
+    u.[Email],
+    u.[Role] as [UserRole],
+    COALESCE(ptm.[Role], 'Team Member') as [ProjectRole],
+    0 as [IsPrimary],
+    ptm.[AssignedAt],
+    ptm.[RemovedAt]
+FROM [dbo].[Projects] p
+INNER JOIN [dbo].[ProjectTeamMembers] ptm ON p.[Id] = ptm.[ProjectId]
+INNER JOIN [dbo].[Users] u ON ptm.[UserId] = u.[Id]
+WHERE p.[DeletedAt] IS NULL;
+GO
+
+PRINT 'STEP 7B COMPLETED: ProjectTeam view created!';

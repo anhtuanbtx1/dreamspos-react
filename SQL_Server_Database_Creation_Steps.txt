@@ -1,0 +1,290 @@
+================================================================================
+                    SQL SERVER DATABASE CREATION - STEP BY STEP GUIDE
+                         Project Management System Database
+================================================================================
+
+📋 OVERVIEW:
+- Database Name: ProjectManagementDB
+- Total Steps: 8 main steps
+- Estimated Time: 15-20 minutes
+- Prerequisites: SQL Server Management Studio (SSMS)
+
+================================================================================
+🗄️ STEP 1: CREATE DATABASE
+================================================================================
+
+-- STEP 1: Create Database
+USE master;
+GO
+
+-- Drop database if exists (optional - for clean start)
+IF EXISTS (SELECT name FROM sys.databases WHERE name = N'ProjectManagementDB')
+BEGIN
+    ALTER DATABASE ProjectManagementDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE ProjectManagementDB;
+END
+GO
+
+-- Create new database
+CREATE DATABASE ProjectManagementDB
+ON 
+( NAME = 'ProjectManagementDB_Data',
+  FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\ProjectManagementDB.mdf',
+  SIZE = 100MB,
+  MAXSIZE = 1GB,
+  FILEGROWTH = 10MB )
+LOG ON 
+( NAME = 'ProjectManagementDB_Log',
+  FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER\MSSQL\DATA\ProjectManagementDB.ldf',
+  SIZE = 10MB,
+  MAXSIZE = 100MB,
+  FILEGROWTH = 1MB );
+GO
+
+-- Switch to new database
+USE ProjectManagementDB;
+GO
+
+PRINT 'STEP 1 COMPLETED: Database created successfully!';
+
+================================================================================
+🗄️ STEP 2A: CREATE PROJECTCATEGORIES TABLE
+================================================================================
+
+-- STEP 2A: Create ProjectCategories Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectCategories] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [Name] NVARCHAR(100) NOT NULL,
+    [Slug] NVARCHAR(100) NOT NULL,
+    [Color] NVARCHAR(20) NOT NULL,
+    [Icon] NVARCHAR(50) NULL,
+    [Description] NVARCHAR(MAX) NULL,
+    [IsActive] BIT NOT NULL DEFAULT 1,
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [UpdatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    
+    CONSTRAINT UQ_ProjectCategories_Name UNIQUE ([Name]),
+    CONSTRAINT UQ_ProjectCategories_Slug UNIQUE ([Slug])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectCategories_IsActive ON [dbo].[ProjectCategories]([IsActive]);
+CREATE NONCLUSTERED INDEX IX_ProjectCategories_Slug ON [dbo].[ProjectCategories]([Slug]);
+GO
+
+PRINT 'STEP 2A COMPLETED: ProjectCategories table created!';
+
+================================================================================
+🗄️ STEP 2B: CREATE USERS TABLE
+================================================================================
+
+-- STEP 2B: Create Users Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[Users] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [Username] NVARCHAR(100) NOT NULL,
+    [Email] NVARCHAR(255) NOT NULL,
+    [FirstName] NVARCHAR(100) NOT NULL,
+    [LastName] NVARCHAR(100) NOT NULL,
+    [FullName] AS (CONCAT([FirstName], ' ', [LastName])) PERSISTED,
+    [Initials] AS (CONCAT(LEFT([FirstName], 1), LEFT([LastName], 1))) PERSISTED,
+    [AvatarUrl] NVARCHAR(500) NULL,
+    [Phone] NVARCHAR(20) NULL,
+    [Role] NVARCHAR(20) NOT NULL 
+        CONSTRAINT CK_Users_Role CHECK ([Role] IN ('admin', 'manager', 'developer', 'designer', 'client')),
+    [Department] NVARCHAR(100) NULL,
+    [IsActive] BIT NOT NULL DEFAULT 1,
+    [EmailVerifiedAt] DATETIME2(7) NULL,
+    [PasswordHash] NVARCHAR(255) NOT NULL,
+    [RememberToken] NVARCHAR(100) NULL,
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [UpdatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    
+    CONSTRAINT UQ_Users_Username UNIQUE ([Username]),
+    CONSTRAINT UQ_Users_Email UNIQUE ([Email])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_Users_Email ON [dbo].[Users]([Email]);
+CREATE NONCLUSTERED INDEX IX_Users_Role ON [dbo].[Users]([Role]);
+CREATE NONCLUSTERED INDEX IX_Users_IsActive ON [dbo].[Users]([IsActive]);
+CREATE NONCLUSTERED INDEX IX_Users_FullName ON [dbo].[Users]([FullName]);
+GO
+
+PRINT 'STEP 2B COMPLETED: Users table created!';
+
+================================================================================
+🗄️ STEP 2C: CREATE PROJECTS TABLE
+================================================================================
+
+-- STEP 2C: Create Projects Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[Projects] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectName] NVARCHAR(255) NOT NULL,
+    [Description] NVARCHAR(MAX) NOT NULL,
+    [ClientName] NVARCHAR(255) NOT NULL,
+    [CategoryId] BIGINT NOT NULL,
+    [Priority] NVARCHAR(10) NOT NULL DEFAULT 'medium'
+        CONSTRAINT CK_Projects_Priority CHECK ([Priority] IN ('low', 'medium', 'high')),
+    [Status] NVARCHAR(20) NOT NULL DEFAULT 'planning'
+        CONSTRAINT CK_Projects_Status CHECK ([Status] IN ('planning', 'in-progress', 'review', 'completed', 'on-hold')),
+    [StartDate] DATE NOT NULL,
+    [EndDate] DATE NOT NULL,
+    [Budget] DECIMAL(15,2) NOT NULL,
+    [ActualCost] DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    [ProgressPercentage] TINYINT NOT NULL DEFAULT 0
+        CONSTRAINT CK_Projects_Progress CHECK ([ProgressPercentage] BETWEEN 0 AND 100),
+    [CreatedBy] BIGINT NOT NULL,
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [UpdatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [DeletedAt] DATETIME2(7) NULL,
+
+    CONSTRAINT FK_Projects_Category FOREIGN KEY ([CategoryId]) REFERENCES [dbo].[ProjectCategories]([Id]),
+    CONSTRAINT FK_Projects_CreatedBy FOREIGN KEY ([CreatedBy]) REFERENCES [dbo].[Users]([Id]),
+    CONSTRAINT CK_Projects_EndDate CHECK ([EndDate] >= [StartDate])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_Projects_Status ON [dbo].[Projects]([Status]);
+CREATE NONCLUSTERED INDEX IX_Projects_Priority ON [dbo].[Projects]([Priority]);
+CREATE NONCLUSTERED INDEX IX_Projects_Dates ON [dbo].[Projects]([StartDate], [EndDate]);
+CREATE NONCLUSTERED INDEX IX_Projects_CreatedBy ON [dbo].[Projects]([CreatedBy]);
+CREATE NONCLUSTERED INDEX IX_Projects_Category ON [dbo].[Projects]([CategoryId]);
+CREATE NONCLUSTERED INDEX IX_Projects_DeletedAt ON [dbo].[Projects]([DeletedAt]);
+GO
+
+PRINT 'STEP 2C COMPLETED: Projects table created!';
+
+================================================================================
+🗄️ STEP 3A: CREATE PROJECTMANAGERS TABLE
+================================================================================
+
+-- STEP 3A: Create ProjectManagers Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectManagers] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectId] BIGINT NOT NULL,
+    [UserId] BIGINT NOT NULL,
+    [AssignedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [AssignedBy] BIGINT NOT NULL,
+    [IsPrimary] BIT NOT NULL DEFAULT 0,
+
+    CONSTRAINT FK_ProjectManagers_Project FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Projects]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_ProjectManagers_User FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id]),
+    CONSTRAINT FK_ProjectManagers_AssignedBy FOREIGN KEY ([AssignedBy]) REFERENCES [dbo].[Users]([Id]),
+    CONSTRAINT UQ_ProjectManagers_ProjectUser UNIQUE ([ProjectId], [UserId])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectManagers_Project ON [dbo].[ProjectManagers]([ProjectId]);
+CREATE NONCLUSTERED INDEX IX_ProjectManagers_User ON [dbo].[ProjectManagers]([UserId]);
+CREATE NONCLUSTERED INDEX IX_ProjectManagers_IsPrimary ON [dbo].[ProjectManagers]([IsPrimary]);
+GO
+
+PRINT 'STEP 3A COMPLETED: ProjectManagers table created!';
+
+================================================================================
+🗄️ STEP 3B: CREATE PROJECTTEAMMEMBERS TABLE
+================================================================================
+
+-- STEP 3B: Create ProjectTeamMembers Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectTeamMembers] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectId] BIGINT NOT NULL,
+    [UserId] BIGINT NOT NULL,
+    [Role] NVARCHAR(100) NULL,
+    [HourlyRate] DECIMAL(8,2) NULL,
+    [AssignedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+    [AssignedBy] BIGINT NOT NULL,
+    [RemovedAt] DATETIME2(7) NULL,
+
+    CONSTRAINT FK_ProjectTeamMembers_Project FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Projects]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_ProjectTeamMembers_User FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users]([Id]),
+    CONSTRAINT FK_ProjectTeamMembers_AssignedBy FOREIGN KEY ([AssignedBy]) REFERENCES [dbo].[Users]([Id])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectTeamMembers_Project ON [dbo].[ProjectTeamMembers]([ProjectId]);
+CREATE NONCLUSTERED INDEX IX_ProjectTeamMembers_User ON [dbo].[ProjectTeamMembers]([UserId]);
+CREATE NONCLUSTERED INDEX IX_ProjectTeamMembers_RemovedAt ON [dbo].[ProjectTeamMembers]([RemovedAt]);
+CREATE UNIQUE NONCLUSTERED INDEX UQ_ProjectTeamMembers_Active
+ON [dbo].[ProjectTeamMembers]([ProjectId], [UserId])
+WHERE [RemovedAt] IS NULL;
+GO
+
+PRINT 'STEP 3B COMPLETED: ProjectTeamMembers table created!';
+
+================================================================================
+🗄️ STEP 4A: CREATE PROJECTTAGS TABLE
+================================================================================
+
+-- STEP 4A: Create ProjectTags Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectTags] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectId] BIGINT NOT NULL,
+    [TagName] NVARCHAR(50) NOT NULL,
+    [Color] NVARCHAR(20) NOT NULL DEFAULT 'gray',
+    [CreatedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+
+    CONSTRAINT FK_ProjectTags_Project FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Projects]([Id]) ON DELETE CASCADE
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectTags_Project ON [dbo].[ProjectTags]([ProjectId]);
+CREATE NONCLUSTERED INDEX IX_ProjectTags_TagName ON [dbo].[ProjectTags]([TagName]);
+GO
+
+PRINT 'STEP 4A COMPLETED: ProjectTags table created!';
+
+================================================================================
+🗄️ STEP 4B: CREATE PROJECTATTACHMENTS TABLE
+================================================================================
+
+-- STEP 4B: Create ProjectAttachments Table
+USE ProjectManagementDB;
+GO
+
+CREATE TABLE [dbo].[ProjectAttachments] (
+    [Id] BIGINT IDENTITY(1,1) PRIMARY KEY,
+    [ProjectId] BIGINT NOT NULL,
+    [FileName] NVARCHAR(255) NOT NULL,
+    [OriginalName] NVARCHAR(255) NOT NULL,
+    [FilePath] NVARCHAR(500) NOT NULL,
+    [FileSize] BIGINT NOT NULL,
+    [MimeType] NVARCHAR(100) NOT NULL,
+    [UploadedBy] BIGINT NOT NULL,
+    [UploadedAt] DATETIME2(7) NOT NULL DEFAULT GETUTCDATE(),
+
+    CONSTRAINT FK_ProjectAttachments_Project FOREIGN KEY ([ProjectId]) REFERENCES [dbo].[Projects]([Id]) ON DELETE CASCADE,
+    CONSTRAINT FK_ProjectAttachments_UploadedBy FOREIGN KEY ([UploadedBy]) REFERENCES [dbo].[Users]([Id])
+);
+GO
+
+-- Create indexes
+CREATE NONCLUSTERED INDEX IX_ProjectAttachments_Project ON [dbo].[ProjectAttachments]([ProjectId]);
+CREATE NONCLUSTERED INDEX IX_ProjectAttachments_UploadedBy ON [dbo].[ProjectAttachments]([UploadedBy]);
+GO
+
+PRINT 'STEP 4B COMPLETED: ProjectAttachments table created!';

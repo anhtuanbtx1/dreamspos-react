@@ -1,0 +1,215 @@
+================================================================================
+                    SQL SERVER SAMPLE DATA INSERTION
+                         Project Management System Database
+================================================================================
+
+📋 OVERVIEW:
+- Insert sample data for testing
+- Categories, Users, and initial project data
+- Run after all tables are created
+
+================================================================================
+🗄️ STEP 8A: INSERT SAMPLE CATEGORIES
+================================================================================
+
+-- STEP 8A: Insert sample project categories
+USE ProjectManagementDB;
+GO
+
+SET IDENTITY_INSERT [dbo].[ProjectCategories] ON;
+
+INSERT INTO [dbo].[ProjectCategories] ([Id], [Name], [Slug], [Color], [Icon], [Description]) VALUES
+(1, N'Web Development', N'web-development', N'blue', N'fas fa-code', N'Frontend and backend web applications'),
+(2, N'Mobile App', N'mobile-app', N'green', N'fas fa-mobile-alt', N'iOS and Android mobile applications'),
+(3, N'Design', N'design', N'purple', N'fas fa-palette', N'UI/UX design and branding projects'),
+(4, N'Marketing', N'marketing', N'orange', N'fas fa-bullhorn', N'Digital marketing and campaigns'),
+(5, N'DevOps', N'devops', N'cyan', N'fas fa-server', N'Infrastructure and deployment projects'),
+(6, N'Data Science', N'data-science', N'red', N'fas fa-chart-line', N'Analytics and machine learning projects');
+
+SET IDENTITY_INSERT [dbo].[ProjectCategories] OFF;
+GO
+
+PRINT 'STEP 8A COMPLETED: Sample categories inserted!';
+
+================================================================================
+🗄️ STEP 8B: INSERT SAMPLE USERS
+================================================================================
+
+-- STEP 8B: Insert sample users
+USE ProjectManagementDB;
+GO
+
+SET IDENTITY_INSERT [dbo].[Users] ON;
+
+INSERT INTO [dbo].[Users] ([Id], [Username], [Email], [FirstName], [LastName], [Role], [Department], [IsActive], [PasswordHash]) VALUES
+(1, N'john.smith', N'john.smith@company.com', N'John', N'Smith', N'manager', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(2, N'sarah.johnson', N'sarah.johnson@company.com', N'Sarah', N'Johnson', N'manager', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(3, N'mike.wilson', N'mike.wilson@company.com', N'Mike', N'Wilson', N'manager', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(4, N'lisa.chen', N'lisa.chen@company.com', N'Lisa', N'Chen', N'manager', N'Design', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(5, N'alex.rodriguez', N'alex.rodriguez@company.com', N'Alex', N'Rodriguez', N'developer', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(6, N'maria.garcia', N'maria.garcia@company.com', N'Maria', N'Garcia', N'designer', N'Design', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(7, N'david.brown', N'david.brown@company.com', N'David', N'Brown', N'developer', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(8, N'emma.davis', N'emma.davis@company.com', N'Emma', N'Davis', N'developer', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(9, N'james.miller', N'james.miller@company.com', N'James', N'Miller', N'developer', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
+(10, N'admin', N'admin@company.com', N'System', N'Administrator', N'admin', N'IT', 1, N'$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+
+SET IDENTITY_INSERT [dbo].[Users] OFF;
+GO
+
+PRINT 'STEP 8B COMPLETED: Sample users inserted!';
+
+================================================================================
+🗄️ STEP 8C: INSERT SAMPLE CLIENTS
+================================================================================
+
+-- STEP 8C: Insert sample clients
+USE ProjectManagementDB;
+GO
+
+SET IDENTITY_INSERT [dbo].[Clients] ON;
+
+INSERT INTO [dbo].[Clients] ([Id], [Name], [Email], [Phone], [Company], [ContactPerson]) VALUES
+(1, N'ABC Corporation', N'contact@abc-corp.com', N'+1-555-0101', N'ABC Corporation', N'Robert Johnson'),
+(2, N'XYZ Tech Solutions', N'info@xyz-tech.com', N'+1-555-0102', N'XYZ Tech Solutions', N'Jennifer Smith'),
+(3, N'Global Enterprises', N'hello@global-ent.com', N'+1-555-0103', N'Global Enterprises', N'Michael Brown'),
+(4, N'StartupCo', N'team@startupco.com', N'+1-555-0104', N'StartupCo', N'Sarah Wilson'),
+(5, N'Enterprise Solutions Ltd', N'contact@enterprise-sol.com', N'+1-555-0105', N'Enterprise Solutions Ltd', N'David Lee');
+
+SET IDENTITY_INSERT [dbo].[Clients] OFF;
+GO
+
+PRINT 'STEP 8C COMPLETED: Sample clients inserted!';
+
+================================================================================
+🗄️ STEP 8D: INSERT SAMPLE PROJECT
+================================================================================
+
+-- STEP 8D: Insert a sample project
+USE ProjectManagementDB;
+GO
+
+SET IDENTITY_INSERT [dbo].[Projects] ON;
+
+INSERT INTO [dbo].[Projects] (
+    [Id], [ProjectName], [Description], [ClientName], [CategoryId], 
+    [Priority], [Status], [StartDate], [EndDate], [Budget], [CreatedBy]
+) VALUES (
+    1, 
+    N'E-commerce Website Development', 
+    N'Build a modern e-commerce platform with React frontend and .NET Core backend. Features include product catalog, shopping cart, payment integration, and admin dashboard.',
+    N'ABC Corporation',
+    1, -- Web Development category
+    N'high',
+    N'planning',
+    '2024-01-15',
+    '2024-04-15',
+    50000.00,
+    1 -- Created by John Smith
+);
+
+SET IDENTITY_INSERT [dbo].[Projects] OFF;
+GO
+
+-- Insert project managers
+INSERT INTO [dbo].[ProjectManagers] ([ProjectId], [UserId], [AssignedBy], [IsPrimary]) VALUES
+(1, 1, 10, 1), -- John Smith as primary manager
+(1, 2, 10, 0); -- Sarah Johnson as secondary manager
+
+-- Insert team members
+INSERT INTO [dbo].[ProjectTeamMembers] ([ProjectId], [UserId], [Role], [HourlyRate], [AssignedBy]) VALUES
+(1, 5, N'Frontend Developer', 75.00, 1), -- Alex Rodriguez
+(1, 6, N'UI/UX Designer', 65.00, 1),     -- Maria Garcia
+(1, 7, N'Backend Developer', 80.00, 1);  -- David Brown
+
+-- Insert project tags
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+(1, N'react', N'blue'),
+(1, N'dotnet', N'purple'),
+(1, N'ecommerce', N'orange'),
+(1, N'responsive', N'green');
+
+-- Insert activity log
+INSERT INTO [dbo].[ProjectActivityLogs] ([ProjectId], [UserId], [Action], [Description]) VALUES
+(1, 1, N'created', N'Project created with initial team assignment');
+
+PRINT 'STEP 8D COMPLETED: Sample project inserted!';
+
+================================================================================
+🗄️ STEP 8E: VERIFICATION QUERIES
+================================================================================
+
+-- STEP 8E: Verify data insertion
+USE ProjectManagementDB;
+GO
+
+-- Check all tables have data
+SELECT 'ProjectCategories' as TableName, COUNT(*) as RecordCount FROM [dbo].[ProjectCategories]
+UNION ALL
+SELECT 'Users', COUNT(*) FROM [dbo].[Users]
+UNION ALL
+SELECT 'Clients', COUNT(*) FROM [dbo].[Clients]
+UNION ALL
+SELECT 'Projects', COUNT(*) FROM [dbo].[Projects]
+UNION ALL
+SELECT 'ProjectManagers', COUNT(*) FROM [dbo].[ProjectManagers]
+UNION ALL
+SELECT 'ProjectTeamMembers', COUNT(*) FROM [dbo].[ProjectTeamMembers]
+UNION ALL
+SELECT 'ProjectTags', COUNT(*) FROM [dbo].[ProjectTags]
+UNION ALL
+SELECT 'ProjectActivityLogs', COUNT(*) FROM [dbo].[ProjectActivityLogs];
+
+-- Test the views
+SELECT TOP 5 * FROM [dbo].[vw_ProjectSummary];
+SELECT TOP 10 * FROM [dbo].[vw_ProjectTeam];
+
+-- Test API-ready queries
+-- Get categories for dropdown
+SELECT [Id], [Name], [Slug], [Color] FROM [dbo].[ProjectCategories] WHERE [IsActive] = 1;
+
+-- Get managers for multi-select
+SELECT [Id], [Username], [FullName], [Initials] FROM [dbo].[Users] WHERE [Role] = 'manager' AND [IsActive] = 1;
+
+-- Get developers/designers for team selection
+SELECT [Id], [Username], [FullName], [Initials], [Role] FROM [dbo].[Users] 
+WHERE [Role] IN ('developer', 'designer') AND [IsActive] = 1;
+
+PRINT 'STEP 8E COMPLETED: Data verification completed!';
+PRINT '================================================================================';
+PRINT 'DATABASE SETUP COMPLETED SUCCESSFULLY!';
+PRINT 'You can now use the database with your Create Project form.';
+PRINT '================================================================================';
+
+================================================================================
+🗄️ USEFUL QUERIES FOR TESTING
+================================================================================
+
+-- Get project details with team
+SELECT 
+    p.ProjectName,
+    p.ClientName,
+    pc.Name as Category,
+    p.Priority,
+    p.Status,
+    p.Budget,
+    STRING_AGG(DISTINCT um.FullName, ', ') as Managers,
+    STRING_AGG(DISTINCT ut.FullName, ', ') as TeamMembers
+FROM Projects p
+LEFT JOIN ProjectCategories pc ON p.CategoryId = pc.Id
+LEFT JOIN ProjectManagers pm ON p.Id = pm.ProjectId
+LEFT JOIN Users um ON pm.UserId = um.Id
+LEFT JOIN ProjectTeamMembers ptm ON p.Id = ptm.ProjectId AND ptm.RemovedAt IS NULL
+LEFT JOIN Users ut ON ptm.UserId = ut.Id
+WHERE p.DeletedAt IS NULL
+GROUP BY p.Id, p.ProjectName, p.ClientName, pc.Name, p.Priority, p.Status, p.Budget;
+
+-- Get project activity timeline
+SELECT 
+    pal.Action,
+    pal.Description,
+    u.FullName as PerformedBy,
+    pal.CreatedAt
+FROM ProjectActivityLogs pal
+JOIN Users u ON pal.UserId = u.Id
+WHERE pal.ProjectId = 1
+ORDER BY pal.CreatedAt DESC;

@@ -1,0 +1,459 @@
+================================================================================
+                    SQL SERVER STORED PROCEDURES
+                         Project Management System Database
+================================================================================
+
+📋 OVERVIEW:
+- Stored procedures for Create Project functionality
+- API-ready procedures for frontend integration
+- Error handling and transaction management
+
+================================================================================
+🗄️ STEP 9A: CREATE PROJECT PROCEDURE
+================================================================================
+
+-- STEP 9A: Create stored procedure for creating projects
+USE ProjectManagementDB;
+GO
+
+CREATE PROCEDURE [dbo].[sp_CreateProject]
+    @ProjectName NVARCHAR(255),
+    @Description NVARCHAR(MAX),
+    @ClientName NVARCHAR(255),
+    @CategoryId BIGINT,
+    @Priority NVARCHAR(10) = 'medium',
+    @Status NVARCHAR(20) = 'planning',
+    @StartDate DATE,
+    @EndDate DATE,
+    @Budget DECIMAL(15,2),
+    @CreatedBy BIGINT,
+    @Managers NVARCHAR(MAX), -- JSON array of user IDs: [1,2,3]
+    @TeamMembers NVARCHAR(MAX) = NULL, -- JSON array of user IDs: [4,5,6]
+    @Tags NVARCHAR(MAX) = NULL -- JSON array of tag names: ["react","nodejs"]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @ProjectId BIGINT;
+    DECLARE @ErrorMessage NVARCHAR(4000);
+    
+    BEGIN TRY
+        BEGIN TRANSACTION;
+        
+        -- Validate inputs
+        IF LEN(TRIM(@ProjectName)) = 0
+            THROW 50001, 'Project name is required', 1;
+            
+        IF LEN(TRIM(@Description)) = 0
+            THROW 50002, 'Project description is required', 1;
+            
+        IF LEN(TRIM(@ClientName)) = 0
+            THROW 50003, 'Client name is required', 1;
+            
+        IF @Budget <= 0
+            THROW 50004, 'Budget must be greater than 0', 1;
+            
+        IF @EndDate <= @StartDate
+            THROW 50005, 'End date must be after start date', 1;
+        
+        -- Insert project
+        INSERT INTO [dbo].[Projects] (
+            [ProjectName], [Description], [ClientName], [CategoryId], 
+            [Priority], [Status], [StartDate], [EndDate], [Budget], [CreatedBy]
+        )
+        VALUES (
+            @ProjectName, @Description, @ClientName, @CategoryId,
+            @Priority, @Status, @StartDate, @EndDate, @Budget, @CreatedBy
+        );
+        
+        SET @ProjectId = SCOPE_IDENTITY();
+        
+        -- Insert managers
+        IF @Managers IS NOT NULL AND @Managers != '[]'
+        BEGIN
+            INSERT INTO [dbo].[ProjectManagers] ([ProjectId], [UserId], [AssignedBy], [IsPrimary])
+            SELECT 
+                @ProjectId, 
+                CAST([value] AS BIGINT), 
+                @CreatedBy,
+                CASE WHEN ROW_NUMBER() OVER (ORDER BY [key]) = 1 THEN 1 ELSE 0 END -- First manager is primary
+            FROM OPENJSON(@Managers);
+        END
+        
+        -- Insert team members
+        IF @TeamMembers IS NOT NULL AND @TeamMembers != '[]'
+        BEGIN
+            INSERT INTO [dbo].[ProjectTeamMembers] ([ProjectId], [UserId], [AssignedBy])
+            SELECT @ProjectId, CAST([value] AS BIGINT), @CreatedBy
+            FROM OPENJSON(@TeamMembers);
+        END
+        
+        -- Insert tags
+        IF @Tags IS NOT NULL AND @Tags != '[]'
+        BEGIN
+            INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName])
+            SELECT @ProjectId, [value]
+            FROM OPENJSON(@Tags);
+        END
+        
+        -- Log activity
+        INSERT INTO [dbo].[ProjectActivityLogs] ([ProjectId], [UserId], [Action], [Description])
+        VALUES (@ProjectId, @CreatedBy, 'created', 'Project created with initial setup');
+        
+        COMMIT TRANSACTION;
+        
+        -- Return project details
+        SELECT 
+            p.[Id],
+            p.[ProjectName],
+            p.[Description],
+            p.[ClientName],
+            p.[CategoryId],
+            pc.[Name] as [CategoryName],
+            pc.[Color] as [CategoryColor],
+            p.[Priority],
+            p.[Status],
+            p.[StartDate],
+            p.[EndDate],
+            p.[Budget],
+            p.[ProgressPercentage],
+            u.[FullName] as [CreatedByName],
+            p.[CreatedAt],
+            p.[UpdatedAt]
+        FROM [dbo].[Projects] p
+        INNER JOIN [dbo].[ProjectCategories] pc ON p.[CategoryId] = pc.[Id]
+        INNER JOIN [dbo].[Users] u ON p.[CreatedBy] = u.[Id]
+        WHERE p.[Id] = @ProjectId;
+        
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+            
+        SET @ErrorMessage = ERROR_MESSAGE();
+        THROW 50000, @ErrorMessage, 1;
+    END CATCH
+END;
+GO
+
+PRINT 'STEP 9A COMPLETED: sp_CreateProject procedure created!';
+
+================================================================================
+🗄️ STEP 9B: GET PROJECT DETAILS PROCEDURE
+================================================================================
+
+-- STEP 9B: Create stored procedure for getting project details
+USE ProjectManagementDB;
+GO
+
+CREATE PROCEDURE [dbo].[sp_GetProjectDetails]
+    @ProjectId BIGINT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    -- Project basic info
+    SELECT 
+        p.[Id],
+        p.[ProjectName],
+        p.[Description],
+        p.[ClientName],
+        p.[CategoryId],
+        pc.[Name] as [CategoryName],
+        pc.[Color] as [CategoryColor],
+        pc.[Icon] as [CategoryIcon],
+        p.[Priority],
+        p.[Status],
+        p.[StartDate],
+        p.[EndDate],
+        p.[Budget],
+        p.[ActualCost],
+        p.[ProgressPercentage],
+        u.[FullName] as [CreatedByName],
+        p.[CreatedAt],
+        p.[UpdatedAt]
+    FROM [dbo].[Projects] p
+    INNER JOIN [dbo].[ProjectCategories] pc ON p.[CategoryId] = pc.[Id]
+    INNER JOIN [dbo].[Users] u ON p.[CreatedBy] = u.[Id]
+    WHERE p.[Id] = @ProjectId AND p.[DeletedAt] IS NULL;
+    
+    -- Project managers
+    SELECT 
+        u.[Id],
+        u.[Username],
+        u.[FullName],
+        u.[Email],
+        u.[Initials],
+        u.[Role],
+        pm.[IsPrimary],
+        pm.[AssignedAt]
+    FROM [dbo].[ProjectManagers] pm
+    INNER JOIN [dbo].[Users] u ON pm.[UserId] = u.[Id]
+    WHERE pm.[ProjectId] = @ProjectId
+    ORDER BY pm.[IsPrimary] DESC, u.[FullName];
+    
+    -- Project team members
+    SELECT 
+        u.[Id],
+        u.[Username],
+        u.[FullName],
+        u.[Email],
+        u.[Initials],
+        u.[Role] as [UserRole],
+        ptm.[Role] as [ProjectRole],
+        ptm.[HourlyRate],
+        ptm.[AssignedAt]
+    FROM [dbo].[ProjectTeamMembers] ptm
+    INNER JOIN [dbo].[Users] u ON ptm.[UserId] = u.[Id]
+    WHERE ptm.[ProjectId] = @ProjectId AND ptm.[RemovedAt] IS NULL
+    ORDER BY u.[FullName];
+    
+    -- Project tags
+    SELECT [TagName], [Color]
+    FROM [dbo].[ProjectTags]
+    WHERE [ProjectId] = @ProjectId
+    ORDER BY [TagName];
+    
+    -- Project attachments
+    SELECT 
+        [Id],
+        [FileName], 
+        [OriginalName], 
+        [FileSize], 
+        [MimeType],
+        [UploadedAt],
+        u.[FullName] as [UploadedByName]
+    FROM [dbo].[ProjectAttachments] pa
+    INNER JOIN [dbo].[Users] u ON pa.[UploadedBy] = u.[Id]
+    WHERE pa.[ProjectId] = @ProjectId
+    ORDER BY pa.[UploadedAt] DESC;
+    
+    -- Recent activity (last 10)
+    SELECT TOP 10
+        pal.[Action],
+        pal.[Description],
+        u.[FullName] as [PerformedBy],
+        pal.[CreatedAt]
+    FROM [dbo].[ProjectActivityLogs] pal
+    INNER JOIN [dbo].[Users] u ON pal.[UserId] = u.[Id]
+    WHERE pal.[ProjectId] = @ProjectId
+    ORDER BY pal.[CreatedAt] DESC;
+END;
+GO
+
+PRINT 'STEP 9B COMPLETED: sp_GetProjectDetails procedure created!';
+
+================================================================================
+🗄️ STEP 9C: GET FORM DATA PROCEDURES
+================================================================================
+
+-- STEP 9C: Procedures for populating form dropdowns
+USE ProjectManagementDB;
+GO
+
+-- Get categories for dropdown
+CREATE PROCEDURE [dbo].[sp_GetProjectCategories]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        [Id],
+        [Name],
+        [Slug],
+        [Color],
+        [Icon],
+        [Description]
+    FROM [dbo].[ProjectCategories]
+    WHERE [IsActive] = 1
+    ORDER BY [Name];
+END;
+GO
+
+-- Get managers for multi-select
+CREATE PROCEDURE [dbo].[sp_GetManagers]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        [Id],
+        [Username],
+        [FullName],
+        [Email],
+        [Initials],
+        [Department]
+    FROM [dbo].[Users]
+    WHERE [Role] = 'manager' AND [IsActive] = 1
+    ORDER BY [FullName];
+END;
+GO
+
+-- Get team members for multi-select
+CREATE PROCEDURE [dbo].[sp_GetTeamMembers]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        [Id],
+        [Username],
+        [FullName],
+        [Email],
+        [Initials],
+        [Role],
+        [Department]
+    FROM [dbo].[Users]
+    WHERE [Role] IN ('developer', 'designer') AND [IsActive] = 1
+    ORDER BY [Role], [FullName];
+END;
+GO
+
+-- Get all active users
+CREATE PROCEDURE [dbo].[sp_GetActiveUsers]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        [Id],
+        [Username],
+        [FullName],
+        [Email],
+        [Initials],
+        [Role],
+        [Department]
+    FROM [dbo].[Users]
+    WHERE [IsActive] = 1
+    ORDER BY [Role], [FullName];
+END;
+GO
+
+PRINT 'STEP 9C COMPLETED: Form data procedures created!';
+
+================================================================================
+🗄️ STEP 9D: PROJECT SEARCH AND LISTING PROCEDURES
+================================================================================
+
+-- STEP 9D: Procedures for project listing and search
+USE ProjectManagementDB;
+GO
+
+CREATE PROCEDURE [dbo].[sp_GetProjects]
+    @Status NVARCHAR(20) = NULL,
+    @Priority NVARCHAR(10) = NULL,
+    @CategoryId BIGINT = NULL,
+    @SearchTerm NVARCHAR(255) = NULL,
+    @PageNumber INT = 1,
+    @PageSize INT = 10
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    DECLARE @Offset INT = (@PageNumber - 1) * @PageSize;
+    
+    -- Get projects with filters
+    SELECT 
+        p.[Id],
+        p.[ProjectName],
+        p.[ClientName],
+        pc.[Name] as [CategoryName],
+        pc.[Color] as [CategoryColor],
+        p.[Priority],
+        p.[Status],
+        p.[StartDate],
+        p.[EndDate],
+        p.[Budget],
+        p.[ProgressPercentage],
+        DATEDIFF(DAY, GETDATE(), p.[EndDate]) as [DaysRemaining],
+        (SELECT COUNT(*) FROM [dbo].[ProjectManagers] pm WHERE pm.[ProjectId] = p.[Id]) as [ManagerCount],
+        (SELECT COUNT(*) FROM [dbo].[ProjectTeamMembers] ptm WHERE ptm.[ProjectId] = p.[Id] AND ptm.[RemovedAt] IS NULL) as [TeamMemberCount],
+        u.[FullName] as [CreatedByName],
+        p.[CreatedAt]
+    FROM [dbo].[Projects] p
+    INNER JOIN [dbo].[ProjectCategories] pc ON p.[CategoryId] = pc.[Id]
+    INNER JOIN [dbo].[Users] u ON p.[CreatedBy] = u.[Id]
+    WHERE p.[DeletedAt] IS NULL
+        AND (@Status IS NULL OR p.[Status] = @Status)
+        AND (@Priority IS NULL OR p.[Priority] = @Priority)
+        AND (@CategoryId IS NULL OR p.[CategoryId] = @CategoryId)
+        AND (@SearchTerm IS NULL OR 
+             p.[ProjectName] LIKE '%' + @SearchTerm + '%' OR 
+             p.[Description] LIKE '%' + @SearchTerm + '%' OR
+             p.[ClientName] LIKE '%' + @SearchTerm + '%')
+    ORDER BY p.[CreatedAt] DESC
+    OFFSET @Offset ROWS
+    FETCH NEXT @PageSize ROWS ONLY;
+    
+    -- Get total count for pagination
+    SELECT COUNT(*) as [TotalCount]
+    FROM [dbo].[Projects] p
+    WHERE p.[DeletedAt] IS NULL
+        AND (@Status IS NULL OR p.[Status] = @Status)
+        AND (@Priority IS NULL OR p.[Priority] = @Priority)
+        AND (@CategoryId IS NULL OR p.[CategoryId] = @CategoryId)
+        AND (@SearchTerm IS NULL OR 
+             p.[ProjectName] LIKE '%' + @SearchTerm + '%' OR 
+             p.[Description] LIKE '%' + @SearchTerm + '%' OR
+             p.[ClientName] LIKE '%' + @SearchTerm + '%');
+END;
+GO
+
+PRINT 'STEP 9D COMPLETED: Project listing procedures created!';
+
+================================================================================
+🗄️ STEP 9E: TESTING THE PROCEDURES
+================================================================================
+
+-- STEP 9E: Test the stored procedures
+USE ProjectManagementDB;
+GO
+
+-- Test creating a new project
+DECLARE @TestResult TABLE (
+    Id BIGINT,
+    ProjectName NVARCHAR(255),
+    CategoryName NVARCHAR(100),
+    CreatedByName NVARCHAR(255)
+);
+
+INSERT INTO @TestResult
+EXEC [dbo].[sp_CreateProject]
+    @ProjectName = N'Mobile App Development',
+    @Description = N'Develop a cross-platform mobile application using React Native',
+    @ClientName = N'XYZ Tech Solutions',
+    @CategoryId = 2,
+    @Priority = N'medium',
+    @Status = N'planning',
+    @StartDate = '2024-02-01',
+    @EndDate = '2024-05-01',
+    @Budget = 35000.00,
+    @CreatedBy = 1,
+    @Managers = N'[2,3]',
+    @TeamMembers = N'[5,8,9]',
+    @Tags = N'["react-native","mobile","cross-platform"]';
+
+SELECT * FROM @TestResult;
+
+-- Test getting project details
+EXEC [dbo].[sp_GetProjectDetails] @ProjectId = 1;
+
+-- Test getting form data
+EXEC [dbo].[sp_GetProjectCategories];
+EXEC [dbo].[sp_GetManagers];
+EXEC [dbo].[sp_GetTeamMembers];
+
+-- Test project listing
+EXEC [dbo].[sp_GetProjects] 
+    @Status = NULL,
+    @Priority = NULL,
+    @CategoryId = NULL,
+    @SearchTerm = NULL,
+    @PageNumber = 1,
+    @PageSize = 10;
+
+PRINT 'STEP 9E COMPLETED: All procedures tested successfully!';
+PRINT '================================================================================';
+PRINT 'STORED PROCEDURES SETUP COMPLETED!';
+PRINT 'Your database is now ready for API integration.';
+PRINT '================================================================================';
