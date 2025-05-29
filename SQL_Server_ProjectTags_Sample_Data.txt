@@ -1,0 +1,362 @@
+================================================================================
+                    SQL SERVER PROJECT TAGS SAMPLE DATA
+                         Project Management System Database
+================================================================================
+
+📋 OVERVIEW:
+- Sample ProjectTags data for testing and development
+- Organized by categories and technology stacks
+- Color-coded tags for better visual organization
+- Ready-to-use INSERT statements
+
+================================================================================
+🏷️ STEP 1: INSERT TECHNOLOGY TAGS
+================================================================================
+
+-- STEP 1: Insert Technology Stack Tags
+USE ProjectManagementDB;
+GO
+
+-- Frontend Technologies
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+-- For Project 1 (E-commerce Website)
+(1, N'react', N'blue'),
+(1, N'javascript', N'yellow'),
+(1, N'typescript', N'blue'),
+(1, N'html5', N'orange'),
+(1, N'css3', N'blue'),
+(1, N'sass', N'pink'),
+(1, N'bootstrap', N'purple'),
+(1, N'responsive', N'green'),
+(1, N'pwa', N'purple');
+
+-- Backend Technologies  
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+(1, N'dotnet', N'purple'),
+(1, N'csharp', N'green'),
+(1, N'asp-net-core', N'blue'),
+(1, N'web-api', N'orange'),
+(1, N'entity-framework', N'red'),
+(1, N'sql-server', N'red'),
+(1, N'azure', N'blue');
+
+PRINT 'STEP 1 COMPLETED: Technology tags inserted!';
+
+================================================================================
+🏷️ STEP 2: INSERT PROJECT TYPE TAGS
+================================================================================
+
+-- STEP 2: Insert Project Type and Domain Tags
+USE ProjectManagementDB;
+GO
+
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+-- Business Domain Tags
+(1, N'ecommerce', N'orange'),
+(1, N'retail', N'green'),
+(1, N'payment-gateway', N'red'),
+(1, N'inventory-management', N'blue'),
+(1, N'user-authentication', N'purple'),
+(1, N'admin-dashboard', N'cyan'),
+(1, N'shopping-cart', N'orange'),
+(1, N'product-catalog', N'green');
+
+-- Project Characteristics
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+(1, N'full-stack', N'purple'),
+(1, N'scalable', N'blue'),
+(1, N'secure', N'red'),
+(1, N'high-performance', N'green'),
+(1, N'seo-optimized', N'orange'),
+(1, N'mobile-friendly', N'cyan');
+
+PRINT 'STEP 2 COMPLETED: Project type tags inserted!';
+
+================================================================================
+🏷️ STEP 3: CREATE ADDITIONAL SAMPLE PROJECTS WITH TAGS
+================================================================================
+
+-- STEP 3: Create more sample projects with diverse tags
+USE ProjectManagementDB;
+GO
+
+-- Insert Mobile App Project
+SET IDENTITY_INSERT [dbo].[Projects] ON;
+
+INSERT INTO [dbo].[Projects] (
+    [Id], [ProjectName], [Description], [ClientName], [CategoryId], 
+    [Priority], [Status], [StartDate], [EndDate], [Budget], [CreatedBy]
+) VALUES (
+    2, 
+    N'Mobile Banking App', 
+    N'Develop a secure mobile banking application with biometric authentication, real-time transactions, and comprehensive financial management features.',
+    N'XYZ Tech Solutions',
+    2, -- Mobile App category
+    N'high',
+    N'in-progress',
+    '2024-01-01',
+    '2024-06-01',
+    75000.00,
+    2 -- Created by Sarah Johnson
+);
+
+-- Insert Design Project
+INSERT INTO [dbo].[Projects] (
+    [Id], [ProjectName], [Description], [ClientName], [CategoryId], 
+    [Priority], [Status], [StartDate], [EndDate], [Budget], [CreatedBy]
+) VALUES (
+    3, 
+    N'Brand Identity Redesign', 
+    N'Complete brand identity redesign including logo, color palette, typography, and brand guidelines for digital and print media.',
+    N'Global Enterprises',
+    3, -- Design category
+    N'medium',
+    N'planning',
+    '2024-02-15',
+    '2024-04-15',
+    25000.00,
+    4 -- Created by Lisa Chen
+);
+
+-- Insert Data Science Project
+INSERT INTO [dbo].[Projects] (
+    [Id], [ProjectName], [Description], [ClientName], [CategoryId], 
+    [Priority], [Status], [StartDate], [EndDate], [Budget], [CreatedBy]
+) VALUES (
+    4, 
+    N'Customer Analytics Platform', 
+    N'Build a comprehensive customer analytics platform using machine learning to predict customer behavior and optimize marketing strategies.',
+    N'StartupCo',
+    6, -- Data Science category
+    N'high',
+    N'review',
+    '2023-10-01',
+    '2024-03-01',
+    90000.00,
+    1 -- Created by John Smith
+);
+
+SET IDENTITY_INSERT [dbo].[Projects] OFF;
+GO
+
+PRINT 'STEP 3A COMPLETED: Additional sample projects created!';
+
+-- Insert tags for Mobile Banking App (Project 2)
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+-- Mobile Technologies
+(2, N'react-native', N'blue'),
+(2, N'expo', N'black'),
+(2, N'ios', N'gray'),
+(2, N'android', N'green'),
+(2, N'cross-platform', N'purple'),
+
+-- Backend & Security
+(2, N'nodejs', N'green'),
+(2, N'express', N'gray'),
+(2, N'mongodb', N'green'),
+(2, N'jwt-authentication', N'orange'),
+(2, N'biometric-auth', N'red'),
+(2, N'encryption', N'red'),
+(2, N'pci-compliance', N'blue'),
+
+-- Banking Features
+(2, N'banking', N'blue'),
+(2, N'fintech', N'green'),
+(2, N'real-time-transactions', N'orange'),
+(2, N'push-notifications', N'purple'),
+(2, N'offline-support', N'gray'),
+(2, N'financial-management', N'cyan');
+
+-- Insert tags for Brand Identity Redesign (Project 3)
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+-- Design Tools & Technologies
+(3, N'adobe-illustrator', N'orange'),
+(3, N'adobe-photoshop', N'blue'),
+(3, N'figma', N'purple'),
+(3, N'sketch', N'orange'),
+(3, N'adobe-indesign', N'red'),
+
+-- Design Categories
+(3, N'logo-design', N'red'),
+(3, N'brand-identity', N'purple'),
+(3, N'typography', N'blue'),
+(3, N'color-theory', N'rainbow'),
+(3, N'print-design', N'gray'),
+(3, N'digital-design', N'cyan'),
+(3, N'brand-guidelines', N'green'),
+(3, N'visual-identity', N'orange');
+
+-- Insert tags for Customer Analytics Platform (Project 4)
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+-- Data Science & ML
+(4, N'python', N'blue'),
+(4, N'machine-learning', N'orange'),
+(4, N'data-science', N'purple'),
+(4, N'pandas', N'blue'),
+(4, N'numpy', N'blue'),
+(4, N'scikit-learn', N'orange'),
+(4, N'tensorflow', N'orange'),
+(4, N'jupyter', N'orange'),
+
+-- Analytics & Visualization
+(4, N'data-visualization', N'green'),
+(4, N'tableau', N'blue'),
+(4, N'power-bi', N'yellow'),
+(4, N'plotly', N'blue'),
+(4, N'customer-analytics', N'purple'),
+(4, N'predictive-modeling', N'red'),
+(4, N'big-data', N'orange'),
+
+-- Infrastructure
+(4, N'aws', N'orange'),
+(4, N'docker', N'blue'),
+(4, N'kubernetes', N'blue'),
+(4, N'apache-spark', N'orange'),
+(4, N'elasticsearch', N'yellow');
+
+PRINT 'STEP 3B COMPLETED: Tags for all sample projects inserted!';
+
+================================================================================
+🏷️ STEP 4: INSERT COMMON METHODOLOGY TAGS
+================================================================================
+
+-- STEP 4: Insert common project methodology and process tags
+USE ProjectManagementDB;
+GO
+
+-- Add methodology tags to existing projects
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+-- Project Management Methodologies
+(1, N'agile', N'green'),
+(1, N'scrum', N'blue'),
+(1, N'sprint-planning', N'purple'),
+(1, N'continuous-integration', N'orange'),
+(1, N'devops', N'blue'),
+
+(2, N'agile', N'green'),
+(2, N'kanban', N'yellow'),
+(2, N'user-stories', N'purple'),
+(2, N'test-driven-development', N'red'),
+
+(3, N'design-thinking', N'purple'),
+(3, N'user-research', N'blue'),
+(3, N'prototyping', N'orange'),
+(3, N'iterative-design', N'green'),
+
+(4, N'data-driven', N'blue'),
+(4, N'agile', N'green'),
+(4, N'mvp', N'orange'),
+(4, N'proof-of-concept', N'purple');
+
+-- Add quality and compliance tags
+INSERT INTO [dbo].[ProjectTags] ([ProjectId], [TagName], [Color]) VALUES
+(1, N'unit-testing', N'green'),
+(1, N'integration-testing', N'blue'),
+(1, N'code-review', N'purple'),
+(1, N'documentation', N'gray'),
+
+(2, N'security-testing', N'red'),
+(2, N'performance-testing', N'orange'),
+(2, N'accessibility', N'blue'),
+(2, N'gdpr-compliant', N'green'),
+
+(3, N'brand-consistency', N'purple'),
+(3, N'style-guide', N'blue'),
+(3, N'design-system', N'orange'),
+
+(4, N'data-privacy', N'red'),
+(4, N'model-validation', N'green'),
+(4, N'performance-monitoring', N'orange');
+
+PRINT 'STEP 4 COMPLETED: Methodology and process tags inserted!';
+
+================================================================================
+🏷️ STEP 5: VERIFICATION AND STATISTICS
+================================================================================
+
+-- STEP 5: Verify tag data and show statistics
+USE ProjectManagementDB;
+GO
+
+-- Count tags by project
+SELECT 
+    p.ProjectName,
+    COUNT(pt.Id) as TagCount,
+    STRING_AGG(pt.TagName, ', ') as Tags
+FROM Projects p
+LEFT JOIN ProjectTags pt ON p.Id = pt.ProjectId
+GROUP BY p.Id, p.ProjectName
+ORDER BY p.Id;
+
+-- Count tags by color
+SELECT 
+    Color,
+    COUNT(*) as TagCount,
+    STRING_AGG(TagName, ', ') as SampleTags
+FROM ProjectTags
+GROUP BY Color
+ORDER BY COUNT(*) DESC;
+
+-- Most popular tags across all projects
+SELECT 
+    TagName,
+    COUNT(*) as UsageCount,
+    STRING_AGG(CAST(ProjectId AS NVARCHAR), ', ') as UsedInProjects
+FROM ProjectTags
+GROUP BY TagName
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC;
+
+-- Tags by category (based on project category)
+SELECT 
+    pc.Name as CategoryName,
+    COUNT(pt.Id) as TagCount,
+    STRING_AGG(DISTINCT pt.TagName, ', ') as UniqueTags
+FROM ProjectCategories pc
+INNER JOIN Projects p ON pc.Id = p.CategoryId
+LEFT JOIN ProjectTags pt ON p.Id = pt.ProjectId
+GROUP BY pc.Id, pc.Name
+ORDER BY COUNT(pt.Id) DESC;
+
+PRINT 'STEP 5 COMPLETED: Tag verification and statistics generated!';
+
+================================================================================
+🏷️ USEFUL QUERIES FOR TAG MANAGEMENT
+================================================================================
+
+-- Get all tags for a specific project
+SELECT TagName, Color 
+FROM ProjectTags 
+WHERE ProjectId = 1 
+ORDER BY TagName;
+
+-- Search projects by tag
+SELECT DISTINCT p.ProjectName, p.Status, p.Priority
+FROM Projects p
+INNER JOIN ProjectTags pt ON p.Id = pt.ProjectId
+WHERE pt.TagName IN ('react', 'nodejs', 'agile')
+ORDER BY p.ProjectName;
+
+-- Get tag suggestions (most used tags)
+SELECT TOP 20 
+    TagName, 
+    COUNT(*) as UsageCount,
+    Color
+FROM ProjectTags
+GROUP BY TagName, Color
+ORDER BY COUNT(*) DESC;
+
+-- Projects with specific technology stack
+SELECT p.ProjectName, STRING_AGG(pt.TagName, ', ') as TechStack
+FROM Projects p
+INNER JOIN ProjectTags pt ON p.Id = pt.ProjectId
+WHERE pt.TagName IN ('react', 'nodejs', 'mongodb', 'python', 'dotnet')
+GROUP BY p.Id, p.ProjectName
+HAVING COUNT(pt.TagName) >= 2;
+
+PRINT '================================================================================';
+PRINT 'PROJECT TAGS SAMPLE DATA COMPLETED!';
+PRINT 'Total Projects: 4';
+PRINT 'Total Tags: 80+';
+PRINT 'Tag Categories: Technology, Domain, Methodology, Quality';
+PRINT '================================================================================';

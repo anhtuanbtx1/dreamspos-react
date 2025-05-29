@@ -1,0 +1,402 @@
+================================================================================
+                    PROJECT TAGS TEMPLATES AND CATEGORIES
+                         For Create Project Form Integration
+================================================================================
+
+📋 OVERVIEW:
+- Pre-defined tag categories for easy selection
+- Color-coded tag system
+- JSON format for frontend integration
+- Organized by technology stacks and domains
+
+================================================================================
+🎨 TAG COLOR SYSTEM
+================================================================================
+
+Color Meanings:
+- blue: Frontend technologies, frameworks
+- green: Backend technologies, databases
+- orange: Cloud services, deployment
+- purple: Design tools, methodologies
+- red: Security, testing, compliance
+- yellow: Build tools, utilities
+- cyan: Mobile technologies
+- gray: Documentation, processes
+- pink: CSS frameworks, styling
+
+================================================================================
+🏷️ FRONTEND TECHNOLOGIES
+================================================================================
+
+JavaScript Frameworks & Libraries:
+- react (blue)
+- vue (green)
+- angular (red)
+- svelte (orange)
+- nextjs (black)
+- nuxtjs (green)
+- gatsby (purple)
+
+JavaScript Core:
+- javascript (yellow)
+- typescript (blue)
+- es6 (yellow)
+- webpack (blue)
+- babel (yellow)
+- npm (red)
+- yarn (blue)
+
+CSS & Styling:
+- css3 (blue)
+- sass (pink)
+- less (blue)
+- bootstrap (purple)
+- tailwind (cyan)
+- material-ui (blue)
+- styled-components (pink)
+- responsive (green)
+
+HTML & Markup:
+- html5 (orange)
+- pwa (purple)
+- seo-optimized (orange)
+- accessibility (blue)
+- semantic-html (green)
+
+================================================================================
+🏷️ BACKEND TECHNOLOGIES
+================================================================================
+
+Programming Languages:
+- nodejs (green)
+- python (blue)
+- csharp (green)
+- java (orange)
+- php (purple)
+- ruby (red)
+- go (cyan)
+- rust (orange)
+
+Frameworks:
+- express (gray)
+- fastapi (green)
+- django (green)
+- flask (blue)
+- asp-net-core (blue)
+- spring-boot (green)
+- laravel (red)
+- rails (red)
+
+Databases:
+- sql-server (red)
+- mysql (blue)
+- postgresql (blue)
+- mongodb (green)
+- redis (red)
+- elasticsearch (yellow)
+- sqlite (blue)
+
+ORM & Data Access:
+- entity-framework (red)
+- sequelize (blue)
+- mongoose (green)
+- prisma (purple)
+- typeorm (blue)
+
+================================================================================
+🏷️ CLOUD & DEVOPS
+================================================================================
+
+Cloud Platforms:
+- aws (orange)
+- azure (blue)
+- gcp (red)
+- heroku (purple)
+- vercel (black)
+- netlify (cyan)
+- digitalocean (blue)
+
+DevOps & CI/CD:
+- docker (blue)
+- kubernetes (blue)
+- jenkins (blue)
+- github-actions (black)
+- gitlab-ci (orange)
+- terraform (purple)
+- ansible (red)
+
+Monitoring & Analytics:
+- google-analytics (orange)
+- sentry (purple)
+- datadog (purple)
+- new-relic (blue)
+- prometheus (orange)
+- grafana (orange)
+
+================================================================================
+🏷️ MOBILE TECHNOLOGIES
+================================================================================
+
+Mobile Frameworks:
+- react-native (blue)
+- flutter (blue)
+- ionic (blue)
+- xamarin (purple)
+- cordova (gray)
+- expo (black)
+
+Native Development:
+- ios (gray)
+- android (green)
+- swift (orange)
+- kotlin (purple)
+- objective-c (blue)
+
+Mobile Features:
+- cross-platform (purple)
+- push-notifications (purple)
+- offline-support (gray)
+- biometric-auth (red)
+- geolocation (green)
+- camera-integration (blue)
+
+================================================================================
+🏷️ DESIGN & UX
+================================================================================
+
+Design Tools:
+- figma (purple)
+- sketch (orange)
+- adobe-xd (purple)
+- adobe-illustrator (orange)
+- adobe-photoshop (blue)
+- adobe-indesign (red)
+- invision (pink)
+
+Design Processes:
+- ui-design (purple)
+- ux-design (blue)
+- user-research (blue)
+- prototyping (orange)
+- wireframing (gray)
+- design-thinking (purple)
+- user-testing (green)
+
+Visual Design:
+- logo-design (red)
+- brand-identity (purple)
+- typography (blue)
+- color-theory (rainbow)
+- iconography (orange)
+- illustration (pink)
+
+================================================================================
+🏷️ PROJECT DOMAINS
+================================================================================
+
+Business Domains:
+- ecommerce (orange)
+- fintech (green)
+- healthcare (red)
+- education (blue)
+- real-estate (green)
+- travel (cyan)
+- food-delivery (orange)
+- social-media (blue)
+- gaming (purple)
+- enterprise (gray)
+
+Application Types:
+- web-application (blue)
+- mobile-app (cyan)
+- desktop-app (gray)
+- api-service (green)
+- microservices (orange)
+- saas (purple)
+- cms (blue)
+- crm (green)
+- erp (red)
+
+Features:
+- user-authentication (purple)
+- payment-gateway (red)
+- real-time-chat (green)
+- file-upload (blue)
+- search-functionality (yellow)
+- admin-dashboard (cyan)
+- reporting (orange)
+- analytics (purple)
+
+================================================================================
+🏷️ METHODOLOGIES & PROCESSES
+================================================================================
+
+Project Management:
+- agile (green)
+- scrum (blue)
+- kanban (yellow)
+- waterfall (gray)
+- lean (green)
+- sprint-planning (purple)
+- user-stories (purple)
+
+Development Practices:
+- test-driven-development (red)
+- behavior-driven-development (red)
+- continuous-integration (orange)
+- continuous-deployment (orange)
+- code-review (purple)
+- pair-programming (blue)
+- refactoring (green)
+
+Quality Assurance:
+- unit-testing (green)
+- integration-testing (blue)
+- e2e-testing (red)
+- performance-testing (orange)
+- security-testing (red)
+- load-testing (orange)
+- manual-testing (gray)
+
+================================================================================
+🏷️ SECURITY & COMPLIANCE
+================================================================================
+
+Security:
+- authentication (red)
+- authorization (red)
+- encryption (red)
+- ssl-tls (red)
+- oauth (purple)
+- jwt (orange)
+- two-factor-auth (red)
+- penetration-testing (red)
+
+Compliance:
+- gdpr-compliant (green)
+- hipaa-compliant (blue)
+- pci-compliance (blue)
+- sox-compliance (red)
+- iso-27001 (gray)
+- data-privacy (red)
+
+================================================================================
+🏷️ DATA & ANALYTICS
+================================================================================
+
+Data Science:
+- machine-learning (orange)
+- artificial-intelligence (purple)
+- deep-learning (red)
+- natural-language-processing (blue)
+- computer-vision (green)
+- data-mining (orange)
+- predictive-modeling (red)
+
+Data Tools:
+- pandas (blue)
+- numpy (blue)
+- scikit-learn (orange)
+- tensorflow (orange)
+- pytorch (red)
+- jupyter (orange)
+- tableau (blue)
+- power-bi (yellow)
+
+Big Data:
+- apache-spark (orange)
+- hadoop (yellow)
+- kafka (black)
+- airflow (blue)
+- snowflake (cyan)
+- databricks (red)
+
+================================================================================
+🏷️ JSON FORMAT FOR FRONTEND
+================================================================================
+
+// Tag categories for Create Project form
+const tagCategories = {
+  "frontend": [
+    { name: "react", color: "blue" },
+    { name: "vue", color: "green" },
+    { name: "angular", color: "red" },
+    { name: "javascript", color: "yellow" },
+    { name: "typescript", color: "blue" },
+    { name: "css3", color: "blue" },
+    { name: "sass", color: "pink" },
+    { name: "bootstrap", color: "purple" },
+    { name: "responsive", color: "green" }
+  ],
+  "backend": [
+    { name: "nodejs", color: "green" },
+    { name: "python", color: "blue" },
+    { name: "dotnet", color: "purple" },
+    { name: "express", color: "gray" },
+    { name: "django", color: "green" },
+    { name: "asp-net-core", color: "blue" },
+    { name: "sql-server", color: "red" },
+    { name: "mongodb", color: "green" }
+  ],
+  "mobile": [
+    { name: "react-native", color: "blue" },
+    { name: "flutter", color: "blue" },
+    { name: "ios", color: "gray" },
+    { name: "android", color: "green" },
+    { name: "cross-platform", color: "purple" }
+  ],
+  "cloud": [
+    { name: "aws", color: "orange" },
+    { name: "azure", color: "blue" },
+    { name: "docker", color: "blue" },
+    { name: "kubernetes", color: "blue" }
+  ],
+  "methodology": [
+    { name: "agile", color: "green" },
+    { name: "scrum", color: "blue" },
+    { name: "kanban", color: "yellow" },
+    { name: "test-driven-development", color: "red" }
+  ]
+};
+
+// Popular tags for quick selection
+const popularTags = [
+  "react", "nodejs", "javascript", "typescript", "python", 
+  "dotnet", "sql-server", "mongodb", "aws", "azure", 
+  "agile", "scrum", "responsive", "api", "full-stack"
+];
+
+================================================================================
+🏷️ USAGE RECOMMENDATIONS
+================================================================================
+
+For Web Development Projects:
+- Frontend: react, javascript, css3, responsive
+- Backend: nodejs, express, mongodb
+- Methodology: agile, scrum
+- Features: user-authentication, api
+
+For Mobile App Projects:
+- Mobile: react-native, cross-platform, ios, android
+- Backend: nodejs, firebase
+- Features: push-notifications, offline-support
+- Methodology: agile, user-stories
+
+For Design Projects:
+- Tools: figma, adobe-illustrator, sketch
+- Process: design-thinking, prototyping, user-research
+- Output: brand-identity, ui-design, style-guide
+
+For Data Science Projects:
+- Languages: python, r
+- Tools: pandas, scikit-learn, jupyter
+- Infrastructure: aws, docker
+- Process: data-driven, proof-of-concept
+
+================================================================================
+INTEGRATION NOTES:
+- Use autocomplete with these predefined tags
+- Allow custom tags with default gray color
+- Implement tag suggestions based on project category
+- Store tag usage statistics for better recommendations
+================================================================================
