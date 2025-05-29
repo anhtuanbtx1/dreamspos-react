@@ -514,6 +514,362 @@ $__basecolor: #2c3038;
   }
 }
 
+// Create Project Form Styling
+.form-group-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+
+  .form-group-icon {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #ff9f43, #e8890a);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 159, 67, 0.3);
+  }
+
+  h5 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  [data-layout-mode="dark_mode"] & {
+    border-bottom-color: #67748E;
+
+    h5 {
+      color: #ffffff;
+    }
+  }
+}
+
+.project-select {
+  width: 100% !important;
+
+  .ant-select-selector {
+    background: #ffffff !important;
+    border: 1px solid #dbe0e6 !important;
+    border-radius: 6px !important;
+    min-height: 42px !important;
+    padding: 8px 12px !important;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+
+    &:hover {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 2px 6px rgba(255, 159, 67, 0.2) !important;
+    }
+
+    &:focus,
+    &.ant-select-focused {
+      border-color: #ff9f43 !important;
+      box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2) !important;
+    }
+
+    .ant-select-selection-search {
+      .ant-select-selection-search-input {
+        height: 24px !important;
+      }
+    }
+
+    .ant-select-selection-item {
+      color: #333 !important;
+      font-size: 14px !important;
+      line-height: 24px !important;
+      padding: 0 !important;
+    }
+
+    .ant-select-selection-placeholder {
+      color: #999 !important;
+      font-size: 13px !important;
+      line-height: 24px !important;
+    }
+  }
+
+  .ant-select-arrow {
+    color: #ff9f43 !important;
+  }
+
+  &.ant-select-open .ant-select-selector {
+    border-color: #ff9f43 !important;
+    box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2) !important;
+  }
+
+  // Multiple selection styling
+  &.ant-select-multiple {
+    .ant-select-selector {
+      min-height: 42px !important;
+      padding: 4px 8px !important;
+    }
+
+    .ant-select-selection-item {
+      background: rgba(255, 159, 67, 0.1) !important;
+      border: 1px solid #ff9f43 !important;
+      border-radius: 4px !important;
+      color: #ff9f43 !important;
+      font-weight: 500 !important;
+      margin: 2px 4px 2px 0 !important;
+      padding: 2px 8px !important;
+      height: auto !important;
+      line-height: 20px !important;
+      display: flex !important;
+      align-items: center !important;
+
+      .ant-select-selection-item-content {
+        flex: 1;
+      }
+
+      .ant-select-selection-item-remove {
+        color: #ff9f43 !important;
+        margin-left: 4px !important;
+
+        &:hover {
+          color: #e8890a !important;
+        }
+      }
+    }
+  }
+
+  // Dark mode
+  [data-layout-mode="dark_mode"] & {
+    .ant-select-selector {
+      background: #1d1d42 !important;
+      border-color: #67748E !important;
+      color: #ffffff !important;
+
+      .ant-select-selection-item {
+        color: #ffffff !important;
+      }
+
+      .ant-select-selection-placeholder {
+        color: #67748E !important;
+      }
+    }
+
+    &.ant-select-multiple .ant-select-selection-item {
+      background: rgba(255, 159, 67, 0.2) !important;
+      color: #ff9f43 !important;
+    }
+  }
+}
+
+// Dropdown styling for project selects
+.ant-select-dropdown {
+  .ant-select-item {
+    padding: 8px 12px !important;
+
+    &:hover {
+      background: rgba(255, 159, 67, 0.1) !important;
+    }
+
+    &.ant-select-item-option-selected {
+      background: rgba(255, 159, 67, 0.2) !important;
+      color: #ff9f43 !important;
+      font-weight: 500 !important;
+    }
+  }
+
+  // Dark mode dropdown
+  [data-layout-mode="dark_mode"] & {
+    background: #1d1d42 !important;
+    border: 1px solid #67748E !important;
+
+    .ant-select-item {
+      color: #ffffff !important;
+
+      &:hover {
+        background: rgba(255, 159, 67, 0.2) !important;
+        color: #ff9f43 !important;
+      }
+
+      &.ant-select-item-option-selected {
+        background: rgba(255, 159, 67, 0.3) !important;
+        color: #ff9f43 !important;
+      }
+    }
+  }
+}
+
+// Form validation styling
+.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.2) !important;
+}
+
+// Create Project Button Styling
+.create-project-btn {
+  min-width: 140px !important;
+  height: 40px !important;
+  padding: 8px 20px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+
+  &.loading-button {
+    .loading-content {
+      font-size: 14px !important;
+    }
+
+    .loading-spinner {
+      width: 16px !important;
+      height: 16px !important;
+    }
+  }
+}
+
+.btn-cancel-project {
+  min-width: 100px !important;
+  height: 40px !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 6px !important;
+  background: #f8f9fa !important;
+  border: 1px solid #dee2e6 !important;
+  color: #6c757d !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s ease !important;
+
+  &:hover {
+    background: #e9ecef !important;
+    border-color: #adb5bd !important;
+    color: #495057 !important;
+    text-decoration: none !important;
+  }
+
+  // Dark mode
+  [data-layout-mode="dark_mode"] & {
+    background: #1d1d42 !important;
+    border-color: #67748E !important;
+    color: #ffffff !important;
+
+    &:hover {
+      background: #2a2a5a !important;
+      border-color: #7b8ab8 !important;
+    }
+  }
+}
+
+// Button container styling
+.btn-addproduct {
+  padding: 20px 0 !important;
+
+  &.d-flex {
+    justify-content: flex-start !important;
+
+    .create-project-btn,
+    .btn-cancel-project {
+      margin: 0 !important;
+    }
+  }
+}
+
+.invalid-feedback {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  font-size: 13px;
+  color: #dc3545;
+  font-weight: 500;
+}
+
+// Input group styling
+.input-group {
+  .input-group-text {
+    background: #f8f9fa;
+    border: 1px solid #dbe0e6;
+    border-right: none;
+    color: #ff9f43;
+    font-weight: 500;
+
+    [data-layout-mode="dark_mode"] & {
+      background: #67748E;
+      border-color: #67748E;
+      color: #ff9f43;
+    }
+  }
+
+  .form-control {
+    border-left: none;
+
+    &:focus {
+      border-color: #ff9f43;
+      box-shadow: 0 0 0 2px rgba(255, 159, 67, 0.2);
+    }
+  }
+}
+
+// Avatar styling in selects
+.avatar {
+  &.avatar-xs {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
+
+// Button styling improvements
+.btn-addproduct {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: 30px;
+
+  [data-layout-mode="dark_mode"] & {
+    border-top-color: #67748E;
+  }
+}
+
+.btn-cancel {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #5a6268;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4);
+  }
+}
+
+// Badge styling in options
+.badge {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  &.badge-blue { background: #007bff; }
+  &.badge-green { background: #28a745; }
+  &.badge-purple { background: #6f42c1; }
+  &.badge-orange { background: #fd7e14; }
+  &.badge-cyan { background: #17a2b8; }
+  &.badge-red { background: #dc3545; }
+  &.badge-success { background: #28a745; }
+  &.badge-warning { background: #ffc107; }
+  &.badge-danger { background: #dc3545; }
+}
+
 .swal2-confirm {
   background-color: #ff8d1f !important;
   border: 1px solid #ff8d1f !important;

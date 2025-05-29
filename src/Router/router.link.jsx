@@ -196,6 +196,8 @@ import Coupons from "../feature-module/coupons/coupons";
 import ApiTest from "../components/ApiTest";
 import TodoList from "../feature-module/todo/todolist";
 import ProjectTracker from "../feature-module/projects/projecttracker";
+import CreateProject from "../feature-module/projects/createproject";
+import EnhancedLoaders from "../feature-module/uiinterface/enhanced-loaders";
 import { all_routes } from "./all_routes";
 export const publicRoutes = [
   {
@@ -409,6 +411,13 @@ export const publicRoutes = [
     path: routes.spinner,
     name: "spinner",
     element: <Spinner />,
+    route: Route,
+  },
+  {
+    id: 29.1,
+    path: "/enhanced-loaders",
+    name: "enhanced-loaders",
+    element: <EnhancedLoaders />,
     route: Route,
   },
   {
@@ -1409,6 +1418,13 @@ export const publicRoutes = [
     path: routes.projecttracker,
     name: "projecttracker",
     element: <ProjectTracker />,
+    route: Route,
+  },
+  {
+    id: 117.1,
+    path: "/create-project",
+    name: "createproject",
+    element: <CreateProject />,
     route: Route,
   },
   {

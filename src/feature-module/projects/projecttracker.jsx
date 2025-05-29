@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Table, Progress, Tag, Avatar, Button, DatePicker, Select } from 'antd';
 import {
   Star,
@@ -349,13 +350,15 @@ const ProjectTracker = () => {
             </div>
           </div>
           <div className="page-btn">
-            <Button
-              type="primary"
-              icon={<Plus size={16} />}
-              className="btn btn-added"
-            >
-              Create New Project
-            </Button>
+            <Link to="/create-project">
+              <Button
+                type="primary"
+                icon={<Plus size={16} />}
+                className="btn btn-added"
+              >
+                Create New Project
+              </Button>
+            </Link>
           </div>
         </div>
 
