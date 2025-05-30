@@ -17,20 +17,18 @@ const ProjectTracker = () => {
   // Theme state for force re-render
   const [themeKey, setThemeKey] = useState(0);
 
+  // Get theme from Redux
+  const reduxTheme = useSelector((state) => state.theme?.isDarkMode);
+
   // Get theme from multiple sources with real-time detection
-  const getIsDarkMode = () => {
-    const reduxTheme = useSelector((state) => state.theme?.isDarkMode);
-    const localStorageTheme = localStorage.getItem('colorschema') === 'dark_mode';
-    const documentTheme = document.documentElement.getAttribute('data-layout-mode') === 'dark_mode';
+  const localStorageTheme = localStorage.getItem('colorschema') === 'dark_mode';
+  const documentTheme = document.documentElement.getAttribute('data-layout-mode') === 'dark_mode';
 
-    return reduxTheme || localStorageTheme || documentTheme;
-  };
-
-  const isDarkMode = getIsDarkMode();
+  const isDarkMode = reduxTheme || localStorageTheme || documentTheme;
 
   // Debug theme state
   console.log('Theme Debug:', {
-    reduxTheme: useSelector((state) => state.theme),
+    reduxTheme: reduxTheme,
     localStorage: localStorage.getItem('colorschema'),
     documentAttribute: document.documentElement.getAttribute('data-layout-mode'),
     isDarkMode: isDarkMode,
