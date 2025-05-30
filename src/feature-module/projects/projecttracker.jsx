@@ -14,8 +14,28 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const ProjectTracker = () => {
-  // Get theme from Redux
-  const isDarkMode = useSelector((state) => state.theme?.isDarkMode);
+  // Theme state for force re-render
+  const [themeKey, setThemeKey] = useState(0);
+
+  // Get theme from multiple sources with real-time detection
+  const getIsDarkMode = () => {
+    const reduxTheme = useSelector((state) => state.theme?.isDarkMode);
+    const localStorageTheme = localStorage.getItem('colorschema') === 'dark_mode';
+    const documentTheme = document.documentElement.getAttribute('data-layout-mode') === 'dark_mode';
+
+    return reduxTheme || localStorageTheme || documentTheme;
+  };
+
+  const isDarkMode = getIsDarkMode();
+
+  // Debug theme state
+  console.log('Theme Debug:', {
+    reduxTheme: useSelector((state) => state.theme),
+    localStorage: localStorage.getItem('colorschema'),
+    documentAttribute: document.documentElement.getAttribute('data-layout-mode'),
+    isDarkMode: isDarkMode,
+    themeKey: themeKey
+  });
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [filterStatus, setFilterStatus] = useState('All Status');
@@ -151,6 +171,43 @@ const ProjectTracker = () => {
   // Load data on component mount
   useEffect(() => {
     loadProjects();
+  }, []);
+
+  // Listen for theme changes
+  useEffect(() => {
+    const handleThemeChange = () => {
+      // Force re-render when theme changes
+      console.log('Theme changed, forcing re-render');
+      setThemeKey(prev => prev + 1);
+    };
+
+    // Listen for data-layout-mode attribute changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-layout-mode') {
+          handleThemeChange();
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-layout-mode']
+    });
+
+    // Also listen for localStorage changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'colorschema') {
+        handleThemeChange();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   // Handle pagination change
@@ -657,6 +714,7 @@ const ProjectTracker = () => {
 
           {/* Custom Pagination */}
           <div
+            key={`pagination-${themeKey}`}
             className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
             style={{
               background: isDarkMode
