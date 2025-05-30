@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Progress, Tag, Avatar, Button, DatePicker, Select } from 'antd';
+import { Table, Progress, Tag, Avatar, Button, DatePicker, Select, Spin } from 'antd';
 import {
   Star,
   Edit,
@@ -23,169 +23,101 @@ const ProjectTracker = () => {
     dayjs()
   ]);
 
-  // Sample project data
-  const projectData = [
-    {
-      key: '1',
-      id: 1,
-      projectName: 'E-commerce Website Development',
-      category: ['Web Development'],
-      categoryColor: 'blue',
-      manager: [
-        { name: 'John Smith', avatar: 'assets/img/profiles/avatar-01.jpg' },
-        { name: 'Sarah Johnson', avatar: 'assets/img/profiles/avatar-02.jpg' }
-      ],
-      startDate: '01 Jan 2024',
-      progress: 85,
-      deadline: '15 Mar 2024',
-      status: 'In Progress',
-      statusColor: 'warning',
-      priority: 'high',
-      starred: true,
-      budget: '$45,000',
-      client: 'TechCorp Inc.'
-    },
-    {
-      key: '2',
-      id: 2,
-      projectName: 'Mobile App UI/UX Design',
-      category: ['Design'],
-      categoryColor: 'purple',
-      manager: [
-        { name: 'Mike Wilson', avatar: 'assets/img/profiles/avatar-03.jpg' },
-        { name: 'Lisa Chen', avatar: 'assets/img/profiles/avatar-04.jpg' }
-      ],
-      startDate: '15 Feb 2024',
-      progress: 60,
-      deadline: '30 Apr 2024',
-      status: 'In Progress',
-      statusColor: 'warning',
-      priority: 'medium',
-      starred: false,
-      budget: '$28,000',
-      client: 'StartupXYZ'
-    },
-    {
-      key: '3',
-      id: 3,
-      projectName: 'Database Migration Project',
-      category: ['Backend'],
-      categoryColor: 'green',
-      manager: [
-        { name: 'David Brown', avatar: 'assets/img/profiles/avatar-05.jpg' },
-        { name: 'Emma Davis', avatar: 'assets/img/profiles/avatar-06.jpg' }
-      ],
-      startDate: '10 Mar 2024',
-      progress: 100,
-      deadline: '25 Mar 2024',
-      status: 'Completed',
-      statusColor: 'success',
-      priority: 'high',
-      starred: true,
-      budget: '$35,000',
-      client: 'DataFlow Ltd.'
-    },
-    {
-      key: '4',
-      id: 4,
-      projectName: 'Marketing Campaign Platform',
-      category: ['Marketing'],
-      categoryColor: 'orange',
-      manager: [
-        { name: 'Tom Anderson', avatar: 'assets/img/profiles/avatar-07.jpg' },
-        { name: 'Jessica White', avatar: 'assets/img/profiles/avatar-08.jpg' }
-      ],
-      startDate: '20 Mar 2024',
-      progress: 40,
-      deadline: '15 Jun 2024',
-      status: 'In Progress',
-      statusColor: 'warning',
-      priority: 'medium',
-      starred: false,
-      budget: '$52,000',
-      client: 'MarketPro Agency'
-    },
-    {
-      key: '5',
-      id: 5,
-      projectName: 'Cloud Infrastructure Setup',
-      category: ['DevOps'],
-      categoryColor: 'cyan',
-      manager: [
-        { name: 'Alex Rodriguez', avatar: 'assets/img/profiles/avatar-09.jpg' },
-        { name: 'Maria Garcia', avatar: 'assets/img/profiles/avatar-10.jpg' }
-      ],
-      startDate: '05 Apr 2024',
-      progress: 75,
-      deadline: '20 May 2024',
-      status: 'In Progress',
-      statusColor: 'warning',
-      priority: 'high',
-      starred: true,
-      budget: '$38,000',
-      client: 'CloudTech Solutions'
-    },
-    {
-      key: '6',
-      id: 6,
-      projectName: 'AI Chatbot Development',
-      category: ['AI/ML'],
-      categoryColor: 'red',
-      manager: [
-        { name: 'Robert Lee', avatar: 'assets/img/profiles/avatar-11.jpg' },
-        { name: 'Sophie Turner', avatar: 'assets/img/profiles/avatar-12.jpg' }
-      ],
-      startDate: '12 Apr 2024',
-      progress: 30,
-      deadline: '30 Jul 2024',
-      status: 'Planning',
-      statusColor: 'default',
-      priority: 'low',
-      starred: false,
-      budget: '$65,000',
-      client: 'AI Innovations'
-    },
-    {
-      key: '7',
-      id: 7,
-      projectName: 'Security Audit & Compliance',
-      category: ['Security'],
-      categoryColor: 'red',
-      manager: [
-        { name: 'Michael Brown', avatar: 'assets/img/profiles/avatar-13.jpg' },
-        { name: 'Rachel Davis', avatar: 'assets/img/profiles/avatar-14.jpg' }
-      ],
-      startDate: '25 Apr 2024',
-      progress: 90,
-      deadline: '10 May 2024',
-      status: 'Review',
-      statusColor: 'processing',
-      priority: 'high',
-      starred: true,
-      budget: '$42,000',
-      client: 'SecureBank Corp'
-    },
-    {
-      key: '8',
-      id: 8,
-      projectName: 'Content Management System',
-      category: ['Web Development'],
-      categoryColor: 'blue',
-      manager: [
-        { name: 'Daniel Wilson', avatar: 'assets/img/profiles/avatar-15.jpg' },
-        { name: 'Amanda Johnson', avatar: 'assets/img/profiles/avatar-16.jpg' }
-      ],
-      startDate: '01 May 2024',
-      progress: 55,
-      deadline: '15 Aug 2024',
-      status: 'In Progress',
-      statusColor: 'warning',
-      priority: 'medium',
-      starred: false,
-      budget: '$48,000',
-      client: 'ContentHub Media'
+  // API data state
+  const [projectData, setProjectData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    pageSize: 10,
+    totalCount: 0,
+    totalPages: 1
+  });
+
+  // Load projects from API
+  const loadProjects = async (page = 1, pageSize = 10) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/Projects?page=${page}&pageSize=${pageSize}`);
+      const result = await response.json();
+
+      if (result.data) {
+        // Map API data to table format
+        const mappedData = result.data.map(project => ({
+          key: project.id.toString(),
+          id: project.id,
+          projectName: project.projectName,
+          category: [project.categoryName],
+          categoryColor: getCategoryColor(project.categoryName),
+          manager: [
+            { name: project.createdByName, avatar: 'assets/img/profiles/avatar-01.jpg' }
+          ],
+          startDate: dayjs(project.startDate).format('DD MMM YYYY'),
+          progress: project.progressPercentage,
+          deadline: dayjs(project.endDate).format('DD MMM YYYY'),
+          status: formatStatus(project.status),
+          statusColor: getStatusColor(project.status),
+          priority: project.priority,
+          starred: false,
+          budget: `$${project.budget.toLocaleString()}`,
+          client: project.clientName
+        }));
+
+        setProjectData(mappedData);
+        setPagination(result.pagination);
+      }
+    } catch (error) {
+      console.error('Error loading projects:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  // Helper functions for mapping
+  const getCategoryColor = (categoryName) => {
+    const colorMap = {
+      'Web Development': 'blue',
+      'Mobile App': 'green',
+      'Design': 'purple',
+      'Marketing': 'orange',
+      'DevOps': 'cyan',
+      'Data Science': 'red',
+      'Security': 'red',
+      'AI/ML': 'red'
+    };
+    return colorMap[categoryName] || 'blue';
+  };
+
+  const getStatusColor = (status) => {
+    const colorMap = {
+      'planning': 'default',
+      'in-progress': 'warning',
+      'review': 'processing',
+      'completed': 'success',
+      'on-hold': 'error'
+    };
+    return colorMap[status] || 'default';
+  };
+
+  const formatStatus = (status) => {
+    const statusMap = {
+      'planning': 'Planning',
+      'in-progress': 'In Progress',
+      'review': 'Review',
+      'completed': 'Completed',
+      'on-hold': 'On Hold'
+    };
+    return statusMap[status] || status;
+  };
+
+  // Load data on component mount
+  useEffect(() => {
+    loadProjects();
+  }, []);
+
+  // Handle pagination change
+  const handleTableChange = (paginationInfo) => {
+    loadProjects(paginationInfo.current, paginationInfo.pageSize);
+  };
 
   // Table columns configuration
   const columns = [
@@ -443,18 +375,24 @@ const ProjectTracker = () => {
           </div>
 
           <div className="table-responsive">
-            <Table
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={projectData}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `Row Per Page: ${range[1] - range[0] + 1} Entries | Showing ${range[0]} to ${range[1]} of ${total} entries`
-              }}
-            />
+            <Spin spinning={loading}>
+              <Table
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={projectData}
+                loading={loading}
+                onChange={handleTableChange}
+                pagination={{
+                  current: pagination.currentPage,
+                  pageSize: pagination.pageSize,
+                  total: pagination.totalCount,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `Row Per Page: ${range[1] - range[0] + 1} Entries | Showing ${range[0]} to ${range[1]} of ${total} entries`
+                }}
+              />
+            </Spin>
           </div>
         </div>
       </div>
