@@ -462,35 +462,120 @@ const ProjectTracker = () => {
                   opacity: 1 !important;
                   position: relative !important;
                   z-index: 1 !important;
+                  transition: all 0.3s ease !important;
+                }
+
+                /* Dark mode pagination styling (default) */
+                .custom-pagination-container {
+                  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+                  border: 1px solid rgba(52, 152, 219, 0.3) !important;
+                  border-radius: 12px !important;
+                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1) !important;
+                  backdrop-filter: blur(10px) !important;
+                  padding: 16px 24px !important;
+                  margin: 16px 0 !important;
+                }
+
+                /* Dark mode text styling */
+                .custom-pagination-container .pagination-info {
+                  color: #bdc3c7 !important;
+                  font-weight: 500 !important;
+                  font-size: 14px !important;
+                }
+
+                /* Dark mode select styling */
+                .custom-pagination-container select {
+                  background: linear-gradient(45deg, #34495e, #2c3e50) !important;
+                  border: 1px solid rgba(52, 152, 219, 0.3) !important;
+                  border-radius: 6px !important;
+                  color: #ffffff !important;
+                  padding: 4px 8px !important;
+                  font-size: 14px !important;
+                  cursor: pointer !important;
+                  transition: all 0.3s ease !important;
+                }
+
+                .custom-pagination-container select:focus {
+                  border-color: #3498db !important;
+                  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
+                  outline: none !important;
+                }
+
+                .custom-pagination-container select option {
+                  background: #2c3e50 !important;
+                  color: #ffffff !important;
+                }
+
+                /* Dark mode pagination buttons */
+                .custom-pagination-container button {
+                  background: linear-gradient(45deg, #34495e, #2c3e50) !important;
+                  border: 1px solid rgba(52, 152, 219, 0.3) !important;
+                  border-radius: 50% !important;
+                  width: 32px !important;
+                  height: 32px !important;
+                  color: #ffffff !important;
+                  font-size: 14px !important;
+                  font-weight: 700 !important;
+                  cursor: pointer !important;
+                  transition: all 0.3s ease !important;
+                  box-shadow: 0 2px 8px rgba(52, 73, 94, 0.3) !important;
+                  display: flex !important;
+                  align-items: center !important;
+                  justify-content: center !important;
+                }
+
+                .custom-pagination-container button:hover {
+                  background: linear-gradient(45deg, #3498db, #2980b9) !important;
+                  transform: scale(1.1) !important;
+                  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
+                }
+
+                .custom-pagination-container button.active {
+                  background: linear-gradient(45deg, #f39c12, #e67e22) !important;
+                  border: 2px solid #f39c12 !important;
+                  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4) !important;
+                }
+
+                .custom-pagination-container button:disabled {
+                  background: linear-gradient(45deg, #7f8c8d, #95a5a6) !important;
+                  border-color: #7f8c8d !important;
+                  color: #bdc3c7 !important;
+                  opacity: 0.6 !important;
+                  cursor: not-allowed !important;
+                  transform: none !important;
+                  box-shadow: none !important;
                 }
 
                 /* Light mode pagination styling */
                 .custom-pagination-container.light-mode {
                   background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
                   border: 1px solid rgba(0, 0, 0, 0.1) !important;
-                  border-radius: 12px !important;
-                  padding: 16px 20px !important;
                   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
-                  margin-top: 20px !important;
+                  backdrop-filter: none !important;
                 }
 
                 /* Light mode text styling */
                 .custom-pagination-container.light-mode .pagination-info {
                   color: #2c3e50 !important;
-                  font-weight: 500 !important;
+                  font-weight: 600 !important;
                 }
 
                 /* Light mode select styling */
                 .custom-pagination-container.light-mode select {
-                  background: #ffffff !important;
+                  background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
                   border: 1px solid #dee2e6 !important;
                   color: #495057 !important;
-                  border-radius: 6px !important;
+                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
                 }
 
                 .custom-pagination-container.light-mode select:focus {
                   border-color: #80bdff !important;
                   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+                }
+
+                .custom-pagination-container.light-mode select option {
+                  background: #ffffff !important;
+                  color: #495057 !important;
                 }
 
                 /* Light mode pagination buttons */
@@ -504,8 +589,9 @@ const ProjectTracker = () => {
                 .custom-pagination-container.light-mode button:hover {
                   background: linear-gradient(135deg, #e9ecef, #f8f9fa) !important;
                   border-color: #adb5bd !important;
-                  transform: translateY(-1px) !important;
-                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+                  transform: translateY(-1px) scale(1.05) !important;
+                  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+                  color: #495057 !important;
                 }
 
                 .custom-pagination-container.light-mode button.active {
@@ -516,11 +602,43 @@ const ProjectTracker = () => {
                 }
 
                 .custom-pagination-container.light-mode button:disabled {
-                  background: #f8f9fa !important;
+                  background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
                   border-color: #dee2e6 !important;
                   color: #6c757d !important;
                   opacity: 0.6 !important;
                   cursor: not-allowed !important;
+                  transform: none !important;
+                  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+                }
+
+                /* Icon styling for both modes */
+                .custom-pagination-container .pagination-icon {
+                  background: linear-gradient(45deg, #3498db, #2ecc71) !important;
+                  border-radius: 50% !important;
+                  width: 24px !important;
+                  height: 24px !important;
+                  display: flex !important;
+                  align-items: center !important;
+                  justify-content: center !important;
+                  font-size: 12px !important;
+                  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+                  transition: all 0.3s ease !important;
+                }
+
+                .custom-pagination-container.light-mode .pagination-icon {
+                  background: linear-gradient(45deg, #007bff, #28a745) !important;
+                  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2) !important;
+                }
+
+                /* Hover effects for container */
+                .custom-pagination-container:hover {
+                  transform: translateY(-2px) !important;
+                  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2) !important;
+                }
+
+                .custom-pagination-container.light-mode:hover {
+                  transform: translateY(-2px) !important;
+                  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
                 }
               `}
             </style>
@@ -538,29 +656,7 @@ const ProjectTracker = () => {
           </div>
 
           {/* Custom Pagination */}
-          <div
-            className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
-            style={{
-              background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
-              border: '1px solid rgba(52, 152, 219, 0.3)',
-              borderRadius: '12px',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)',
-              backdropFilter: 'blur(10px)',
-              transition: 'all 0.3s ease',
-              position: 'relative',
-              overflow: 'hidden',
-              padding: '16px 24px',
-              margin: '16px 0'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)';
-            }}
-          >
+          <div className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}>
             {/* Pagination Info */}
             <div
               style={{
@@ -573,7 +669,7 @@ const ProjectTracker = () => {
               }}
             >
               <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Row Per Page</span>
+                <span className="pagination-info">Row Per Page</span>
                 <select
                   value={pageSize}
                   onChange={(e) => {
@@ -581,45 +677,21 @@ const ProjectTracker = () => {
                     handlePageSizeChange(newPageSize);
                   }}
                   disabled={loading}
-                  style={{
-                    background: loading
-                      ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
-                      : 'linear-gradient(45deg, #34495e, #2c3e50)',
-                    border: '1px solid rgba(52, 152, 219, 0.3)',
-                    borderRadius: '6px',
-                    color: '#ffffff',
-                    padding: '4px 8px',
-                    fontSize: '14px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.7 : 1
-                  }}
                 >
-                  <option value={10} style={{background: '#2c3e50', color: '#ffffff'}}>10</option>
-                  <option value={20} style={{background: '#2c3e50', color: '#ffffff'}}>20</option>
-                  <option value={50} style={{background: '#2c3e50', color: '#ffffff'}}>50</option>
-                  <option value={100} style={{background: '#2c3e50', color: '#ffffff'}}>100</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
                 </select>
-                <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Entries</span>
+                <span className="pagination-info">Entries</span>
               </div>
 
               <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                <div
-                  style={{
-                    background: 'linear-gradient(45deg, #3498db, #2ecc71)',
-                    borderRadius: '50%',
-                    width: '24px',
-                    height: '24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)'
-                  }}
-                >
+                <div className="pagination-icon">
                   📊
                 </div>
-                <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>
-                  Showing <strong style={{color: '#3498db'}}>{startRecord}</strong> to <strong style={{color: '#3498db'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c'}}>{totalCount}</strong> entries
+                <span className="pagination-info">
+                  Showing <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{startRecord}</strong> to <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{endRecord}</strong> of <strong style={{color: isDarkMode ? '#e74c3c' : '#dc3545'}}>{totalCount}</strong> entries
                 </span>
               </div>
             </div>
@@ -646,47 +718,6 @@ const ProjectTracker = () => {
                     onClick={() => !loading && handlePageChange(pageNum)}
                     disabled={loading}
                     className={isActive ? 'active' : ''}
-                    style={{
-                      background: loading
-                        ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
-                        : isActive
-                        ? 'linear-gradient(45deg, #f39c12, #e67e22)'
-                        : 'linear-gradient(45deg, #34495e, #2c3e50)',
-                      border: isActive
-                        ? '2px solid #f39c12'
-                        : '1px solid rgba(52, 152, 219, 0.3)',
-                      borderRadius: '50%',
-                      width: '32px',
-                      height: '32px',
-                      color: '#ffffff',
-                      fontSize: '14px',
-                      fontWeight: '700',
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      transition: 'all 0.3s ease',
-                      boxShadow: loading
-                        ? 'none'
-                        : isActive
-                        ? '0 4px 12px rgba(243, 156, 18, 0.4)'
-                        : '0 2px 8px rgba(52, 73, 94, 0.3)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: loading ? 0.6 : 1
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!loading && !isActive) {
-                        e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
-                        e.target.style.transform = 'scale(1.1)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!loading && !isActive) {
-                        e.target.style.background = 'linear-gradient(45deg, #34495e, #2c3e50)';
-                        e.target.style.transform = 'scale(1)';
-                        e.target.style.boxShadow = '0 2px 8px rgba(52, 73, 94, 0.3)';
-                      }
-                    }}
                   >
                     {pageNum}
                   </button>
