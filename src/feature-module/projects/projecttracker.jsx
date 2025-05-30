@@ -420,7 +420,7 @@ const ProjectTracker = () => {
                   <span style={{ fontSize: '16px', fontWeight: '500' }}>
                     Project Lists
                   </span>
-                  <span className="badge badge-primary ms-2">Active Projects</span>
+              
                 </div>
               </div>
               <div className="search-path">
