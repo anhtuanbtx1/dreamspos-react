@@ -446,29 +446,7 @@ const ProductList = () => {
   const [isFilterVisible, setIsFilterVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Detect theme mode from document attribute
-  const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.getAttribute('data-layout-mode') === 'dark_mode'
-  );
 
-  // Listen for theme changes
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-layout-mode') {
-          const newTheme = document.documentElement.getAttribute('data-layout-mode');
-          setIsDarkMode(newTheme === 'dark_mode');
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-layout-mode']
-    });
-
-    return () => observer.disconnect();
-  }, []);
 
   // State for pagination - sync with Redux
   const [currentPage, setCurrentPage] = useState(reduxCurrentPage || 1);
@@ -638,9 +616,6 @@ const ProductList = () => {
   const totalRecords = totalProducts || dataSource.length;
   const calculatedTotalPages = Math.ceil(totalRecords / pageSize);
   const actualTotalPages = totalPages || calculatedTotalPages;
-
-  const startRecord = totalRecords > 0 ? (currentPage - 1) * pageSize + 1 : 0;
-  const endRecord = Math.min(currentPage * pageSize, totalRecords);
 
   // Debug logs removed for production
 
