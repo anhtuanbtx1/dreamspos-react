@@ -37,8 +37,23 @@ const ProjectTracker = () => {
   const loadProjects = async (page = 1, pageSize = 10) => {
     setLoading(true);
     try {
-      const response = await fetch(`/api/Projects?page=${page}&pageSize=${pageSize}`);
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
+      console.log('Loading projects from:', `${apiBaseUrl}Projects`);
+
+      const response = await fetch(`${apiBaseUrl}Projects?page=${page}&pageSize=${pageSize}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
+      console.log('API Response:', result);
 
       if (result.data) {
         // Map API data to table format
@@ -63,10 +78,28 @@ const ProjectTracker = () => {
         }));
 
         setProjectData(mappedData);
-        setPagination(result.pagination);
+        setPagination(result.pagination || {
+          currentPage: 1,
+          pageSize: 10,
+          totalCount: result.data.length,
+          totalPages: 1
+        });
+
+        console.log('Mapped data:', mappedData);
+      } else {
+        console.warn('No data found in API response');
+        setProjectData([]);
       }
     } catch (error) {
       console.error('Error loading projects:', error);
+      // Set empty data on error
+      setProjectData([]);
+      setPagination({
+        currentPage: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPages: 1
+      });
     } finally {
       setLoading(false);
     }
