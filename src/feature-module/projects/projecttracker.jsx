@@ -656,7 +656,39 @@ const ProjectTracker = () => {
           </div>
 
           {/* Custom Pagination */}
-          <div className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}>
+          <div
+            className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
+            style={{
+              background: isDarkMode
+                ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)'
+                : 'linear-gradient(135deg, #ffffff, #f8f9fa)',
+              border: isDarkMode
+                ? '1px solid rgba(52, 152, 219, 0.3)'
+                : '1px solid rgba(0, 0, 0, 0.1)',
+              borderRadius: '12px',
+              boxShadow: isDarkMode
+                ? '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)'
+                : '0 2px 12px rgba(0, 0, 0, 0.08)',
+              backdropFilter: isDarkMode ? 'blur(10px)' : 'none',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              padding: '16px 24px',
+              margin: '16px 0'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = isDarkMode
+                ? '0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2)'
+                : '0 4px 20px rgba(0, 0, 0, 0.12)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = isDarkMode
+                ? '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)'
+                : '0 2px 12px rgba(0, 0, 0, 0.08)';
+            }}
+          >
             {/* Pagination Info */}
             <div
               style={{
@@ -669,7 +701,7 @@ const ProjectTracker = () => {
               }}
             >
               <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                <span className="pagination-info">Row Per Page</span>
+                <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: '14px', fontWeight: '500'}}>Row Per Page</span>
                 <select
                   value={pageSize}
                   onChange={(e) => {
@@ -677,20 +709,52 @@ const ProjectTracker = () => {
                     handlePageSizeChange(newPageSize);
                   }}
                   disabled={loading}
+                  style={{
+                    background: loading
+                      ? (isDarkMode ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)' : 'linear-gradient(135deg, #f8f9fa, #e9ecef)')
+                      : (isDarkMode ? 'linear-gradient(45deg, #34495e, #2c3e50)' : 'linear-gradient(135deg, #ffffff, #f8f9fa)'),
+                    border: isDarkMode
+                      ? '1px solid rgba(52, 152, 219, 0.3)'
+                      : '1px solid #dee2e6',
+                    borderRadius: '6px',
+                    color: isDarkMode ? '#ffffff' : '#495057',
+                    padding: '4px 8px',
+                    fontSize: '14px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    opacity: loading ? 0.7 : 1,
+                    boxShadow: isDarkMode ? 'none' : '0 1px 3px rgba(0, 0, 0, 0.1)'
+                  }}
                 >
-                  <option value={10}>10</option>
-                  <option value={20}>20</option>
-                  <option value={50}>50</option>
-                  <option value={100}>100</option>
+                  <option value={10} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>10</option>
+                  <option value={20} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>20</option>
+                  <option value={50} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>50</option>
+                  <option value={100} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>100</option>
                 </select>
-                <span className="pagination-info">Entries</span>
+                <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: '14px', fontWeight: '500'}}>Entries</span>
               </div>
 
               <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                <div className="pagination-icon">
+                <div
+                  style={{
+                    background: isDarkMode
+                      ? 'linear-gradient(45deg, #3498db, #2ecc71)'
+                      : 'linear-gradient(45deg, #007bff, #28a745)',
+                    borderRadius: '50%',
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    boxShadow: isDarkMode
+                      ? '0 2px 8px rgba(52, 152, 219, 0.3)'
+                      : '0 2px 8px rgba(0, 123, 255, 0.2)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
                   📊
                 </div>
-                <span className="pagination-info">
+                <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: '14px', fontWeight: '500'}}>
                   Showing <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{startRecord}</strong> to <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{endRecord}</strong> of <strong style={{color: isDarkMode ? '#e74c3c' : '#dc3545'}}>{totalCount}</strong> entries
                 </span>
               </div>
@@ -717,7 +781,59 @@ const ProjectTracker = () => {
                     key={pageNum}
                     onClick={() => !loading && handlePageChange(pageNum)}
                     disabled={loading}
-                    className={isActive ? 'active' : ''}
+                    style={{
+                      background: loading
+                        ? (isDarkMode ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)' : 'linear-gradient(135deg, #f8f9fa, #e9ecef)')
+                        : isActive
+                        ? (isDarkMode ? 'linear-gradient(45deg, #f39c12, #e67e22)' : 'linear-gradient(135deg, #007bff, #0056b3)')
+                        : (isDarkMode ? 'linear-gradient(45deg, #34495e, #2c3e50)' : 'linear-gradient(135deg, #ffffff, #f8f9fa)'),
+                      border: isActive
+                        ? (isDarkMode ? '2px solid #f39c12' : '2px solid #007bff')
+                        : (isDarkMode ? '1px solid rgba(52, 152, 219, 0.3)' : '1px solid #dee2e6'),
+                      borderRadius: '50%',
+                      width: '32px',
+                      height: '32px',
+                      color: isActive
+                        ? '#ffffff'
+                        : (isDarkMode ? '#ffffff' : '#495057'),
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: loading
+                        ? 'none'
+                        : isActive
+                        ? (isDarkMode ? '0 4px 12px rgba(243, 156, 18, 0.4)' : '0 3px 8px rgba(0, 123, 255, 0.3)')
+                        : (isDarkMode ? '0 2px 8px rgba(52, 73, 94, 0.3)' : '0 1px 3px rgba(0, 0, 0, 0.1)'),
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: loading ? 0.6 : 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading && !isActive) {
+                        e.target.style.background = isDarkMode
+                          ? 'linear-gradient(45deg, #3498db, #2980b9)'
+                          : 'linear-gradient(135deg, #e9ecef, #f8f9fa)';
+                        e.target.style.transform = isDarkMode ? 'scale(1.1)' : 'translateY(-1px) scale(1.05)';
+                        e.target.style.boxShadow = isDarkMode
+                          ? '0 4px 12px rgba(52, 152, 219, 0.4)'
+                          : '0 3px 8px rgba(0, 0, 0, 0.15)';
+                        e.target.style.borderColor = isDarkMode ? '#3498db' : '#adb5bd';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!loading && !isActive) {
+                        e.target.style.background = isDarkMode
+                          ? 'linear-gradient(45deg, #34495e, #2c3e50)'
+                          : 'linear-gradient(135deg, #ffffff, #f8f9fa)';
+                        e.target.style.transform = 'scale(1)';
+                        e.target.style.boxShadow = isDarkMode
+                          ? '0 2px 8px rgba(52, 73, 94, 0.3)'
+                          : '0 1px 3px rgba(0, 0, 0, 0.1)';
+                        e.target.style.borderColor = isDarkMode ? 'rgba(52, 152, 219, 0.3)' : '#dee2e6';
+                      }
+                    }}
                   >
                     {pageNum}
                   </button>
