@@ -8,32 +8,12 @@ import {
   Plus
 } from 'feather-icons-react';
 import dayjs from 'dayjs';
-import { useSelector } from 'react-redux';
+import CustomPagination from '../../components/CustomPagination';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const ProjectTracker = () => {
-  // Theme state for force re-render
-  const [themeKey, setThemeKey] = useState(0);
-
-  // Get theme from Redux
-  const reduxTheme = useSelector((state) => state.theme?.isDarkMode);
-
-  // Get theme from multiple sources with real-time detection
-  const localStorageTheme = localStorage.getItem('colorschema') === 'dark_mode';
-  const documentTheme = document.documentElement.getAttribute('data-layout-mode') === 'dark_mode';
-
-  const isDarkMode = reduxTheme || localStorageTheme || documentTheme;
-
-  // Debug theme state
-  console.log('Theme Debug:', {
-    reduxTheme: reduxTheme,
-    localStorage: localStorage.getItem('colorschema'),
-    documentAttribute: document.documentElement.getAttribute('data-layout-mode'),
-    isDarkMode: isDarkMode,
-    themeKey: themeKey
-  });
 
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [filterStatus, setFilterStatus] = useState('All Status');
@@ -171,42 +151,7 @@ const ProjectTracker = () => {
     loadProjects();
   }, []);
 
-  // Listen for theme changes
-  useEffect(() => {
-    const handleThemeChange = () => {
-      // Force re-render when theme changes
-      console.log('Theme changed, forcing re-render');
-      setThemeKey(prev => prev + 1);
-    };
 
-    // Listen for data-layout-mode attribute changes
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-layout-mode') {
-          handleThemeChange();
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-layout-mode']
-    });
-
-    // Also listen for localStorage changes
-    const handleStorageChange = (e) => {
-      if (e.key === 'colorschema') {
-        handleThemeChange();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
 
   // Handle pagination change
   const handlePageChange = (page) => {
@@ -231,9 +176,7 @@ const ProjectTracker = () => {
     }
   };
 
-  // Calculate pagination info
-  const startRecord = totalCount > 0 ? (currentPage - 1) * pageSize + 1 : 0;
-  const endRecord = Math.min(currentPage * pageSize, totalCount);
+
 
   // Table columns configuration
   const columns = [
@@ -710,182 +653,21 @@ const ProjectTracker = () => {
             </Spin>
           </div>
 
-          {/* Custom Pagination - Compact Size */}
-          <div
-            key={`pagination-${themeKey}`}
-            className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
-            style={{
-              background: isDarkMode
-                ? 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)'
-                : 'linear-gradient(135deg, #ffffff, #f8f9fa)',
-              border: isDarkMode
-                ? '1px solid rgba(52, 152, 219, 0.3)'
-                : '1px solid rgba(0, 0, 0, 0.1)',
-              borderRadius: '8px',
-              boxShadow: isDarkMode
-                ? '0 4px 16px rgba(0, 0, 0, 0.2), 0 1px 4px rgba(52, 152, 219, 0.1)'
-                : '0 1px 6px rgba(0, 0, 0, 0.06)',
-              backdropFilter: isDarkMode ? 'blur(8px)' : 'none',
-              transition: 'all 0.2s ease',
-              position: 'relative',
-              overflow: 'hidden',
-              padding: '8px 16px',
-              margin: '8px 0',
-              fontSize: '13px'
-            }}
-          >
-            {/* Pagination Info - Compact */}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '8px',
-                flexWrap: 'wrap',
-                gap: '8px'
-              }}
-            >
-              <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-                <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: '12px', fontWeight: '500'}}>Row Per Page</span>
-                <select
-                  value={pageSize}
-                  onChange={(e) => {
-                    const newPageSize = parseInt(e.target.value);
-                    handlePageSizeChange(newPageSize);
-                  }}
-                  disabled={loading}
-                  style={{
-                    background: loading
-                      ? (isDarkMode ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)' : 'linear-gradient(135deg, #f8f9fa, #e9ecef)')
-                      : (isDarkMode ? 'linear-gradient(45deg, #34495e, #2c3e50)' : 'linear-gradient(135deg, #ffffff, #f8f9fa)'),
-                    border: isDarkMode
-                      ? '1px solid rgba(52, 152, 219, 0.3)'
-                      : '1px solid #dee2e6',
-                    borderRadius: '4px',
-                    color: isDarkMode ? '#ffffff' : '#495057',
-                    padding: '2px 6px',
-                    fontSize: '12px',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    opacity: loading ? 0.7 : 1,
-                    boxShadow: isDarkMode ? 'none' : '0 1px 2px rgba(0, 0, 0, 0.05)'
-                  }}
-                >
-                  <option value={10} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>10</option>
-                  <option value={20} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>20</option>
-                  <option value={50} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>50</option>
-                  <option value={100} style={{background: isDarkMode ? '#2c3e50' : '#ffffff', color: isDarkMode ? '#ffffff' : '#495057'}}>100</option>
-                </select>
-                <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: '12px', fontWeight: '500'}}>Entries</span>
-              </div>
-
-              <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
-                <div
-                  style={{
-                    background: isDarkMode
-                      ? 'linear-gradient(45deg, #3498db, #2ecc71)'
-                      : 'linear-gradient(45deg, #007bff, #28a745)',
-                    borderRadius: '50%',
-                    width: '16px',
-                    height: '16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '8px',
-                    boxShadow: isDarkMode
-                      ? '0 1px 4px rgba(52, 152, 219, 0.3)'
-                      : '0 1px 4px rgba(0, 123, 255, 0.2)',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  📊
-                </div>
-                <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: '12px', fontWeight: '500'}}>
-                  Showing <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{startRecord}</strong> to <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{endRecord}</strong> of <strong style={{color: isDarkMode ? '#e74c3c' : '#dc3545'}}>{totalCount}</strong> entries
-                </span>
-              </div>
-            </div>
-
-            {/* Pagination Buttons - Compact */}
-            <div
-              style={{
-                position: 'relative',
-                zIndex: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-            >
-              {/* Numbered Pagination Buttons */}
-              {Array.from({ length: totalPages }, (_, i) => {
-                const pageNum = i + 1;
-                const isActive = currentPage === pageNum;
-
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => !loading && handlePageChange(pageNum)}
-                    disabled={loading}
-                    style={{
-                      background: loading
-                        ? (isDarkMode ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)' : 'linear-gradient(135deg, #f8f9fa, #e9ecef)')
-                        : isActive
-                        ? (isDarkMode ? 'linear-gradient(45deg, #f39c12, #e67e22)' : 'linear-gradient(135deg, #007bff, #0056b3)')
-                        : (isDarkMode ? 'linear-gradient(45deg, #34495e, #2c3e50)' : 'linear-gradient(135deg, #ffffff, #f8f9fa)'),
-                      border: isActive
-                        ? (isDarkMode ? '1px solid #f39c12' : '1px solid #007bff')
-                        : (isDarkMode ? '1px solid rgba(52, 152, 219, 0.3)' : '1px solid #dee2e6'),
-                      borderRadius: '50%',
-                      width: '24px',
-                      height: '24px',
-                      color: isActive
-                        ? '#ffffff'
-                        : (isDarkMode ? '#ffffff' : '#495057'),
-                      fontSize: '11px',
-                      fontWeight: '600',
-                      cursor: loading ? 'not-allowed' : 'pointer',
-                      transition: 'all 0.2s ease',
-                      boxShadow: loading
-                        ? 'none'
-                        : isActive
-                        ? (isDarkMode ? '0 2px 6px rgba(243, 156, 18, 0.3)' : '0 2px 4px rgba(0, 123, 255, 0.2)')
-                        : (isDarkMode ? '0 1px 4px rgba(52, 73, 94, 0.2)' : '0 1px 2px rgba(0, 0, 0, 0.08)'),
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      opacity: loading ? 0.6 : 1
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!loading && !isActive) {
-                        e.target.style.background = isDarkMode
-                          ? 'linear-gradient(45deg, #3498db, #2980b9)'
-                          : 'linear-gradient(135deg, #e9ecef, #f8f9fa)';
-                        e.target.style.transform = isDarkMode ? 'scale(1.05)' : 'translateY(-1px) scale(1.02)';
-                        e.target.style.boxShadow = isDarkMode
-                          ? '0 2px 6px rgba(52, 152, 219, 0.3)'
-                          : '0 2px 4px rgba(0, 0, 0, 0.12)';
-                        e.target.style.borderColor = isDarkMode ? '#3498db' : '#adb5bd';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!loading && !isActive) {
-                        e.target.style.background = isDarkMode
-                          ? 'linear-gradient(45deg, #34495e, #2c3e50)'
-                          : 'linear-gradient(135deg, #ffffff, #f8f9fa)';
-                        e.target.style.transform = 'scale(1)';
-                        e.target.style.boxShadow = isDarkMode
-                          ? '0 1px 4px rgba(52, 73, 94, 0.2)'
-                          : '0 1px 2px rgba(0, 0, 0, 0.08)';
-                        e.target.style.borderColor = isDarkMode ? 'rgba(52, 152, 219, 0.3)' : '#dee2e6';
-                      }
-                    }}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          {/* Reusable Custom Pagination Component */}
+          <CustomPagination
+            currentPage={currentPage}
+            pageSize={pageSize}
+            totalCount={totalCount}
+            totalPages={totalPages}
+            loading={loading}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            pageSizeOptions={[10, 20, 50, 100]}
+            showInfo={true}
+            showPageSizeSelector={true}
+            compact={true}
+            className="project-tracker-pagination"
+          />
         </div>
       </div>
 

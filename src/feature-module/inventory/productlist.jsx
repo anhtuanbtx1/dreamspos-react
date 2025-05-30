@@ -30,6 +30,7 @@ import {
   deleteProduct,
   clearProductError
 } from "../../core/redux/actions/productActions";
+import CustomPagination from '../../components/CustomPagination';
 
 // Add CSS animations for beautiful UI
 const shimmerKeyframes = `
@@ -1252,182 +1253,21 @@ const ProductList = () => {
                     pagination={false} // Disable Ant Design pagination
                   />
 
-                  {/* Table Pagination with Theme Integration */}
-                  <div
-                    className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
-                    style={{
-                      background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
-                      border: '1px solid rgba(52, 152, 219, 0.3)',
-                      borderRadius: '12px',
-                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)',
-                      backdropFilter: 'blur(10px)',
-                      transition: 'all 0.3s ease',
-                      position: 'relative',
-                      overflow: 'hidden',
-                      padding: '16px 24px',
-                      margin: '16px 0'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)';
-                    }}
-                  >
-                    {/* Animated background glow */}
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent)',
-                        animation: 'shimmer 3s infinite',
-                        pointerEvents: 'none'
-                      }}
-                    />
-
-                    {/* Row Per Page Section */}
-                    <div
-                      style={{
-                        position: 'relative',
-                        zIndex: 1,
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        marginBottom: '16px'
-                      }}
-                    >
-                      <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                        <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Row Per Page</span>
-                        <select
-                          value={pageSize}
-                          onChange={(e) => {
-                            const newPageSize = parseInt(e.target.value);
-                            handlePageSizeChange(newPageSize);
-                          }}
-                          disabled={loading}
-                          style={{
-                            background: loading
-                              ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
-                              : 'linear-gradient(45deg, #34495e, #2c3e50)',
-                            border: '1px solid rgba(52, 152, 219, 0.3)',
-                            borderRadius: '6px',
-                            color: '#ffffff',
-                            padding: '4px 8px',
-                            fontSize: '14px',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            opacity: loading ? 0.7 : 1
-                          }}
-                        >
-                          <option value={10} style={{background: '#2c3e50', color: '#ffffff'}}>10</option>
-                          <option value={20} style={{background: '#2c3e50', color: '#ffffff'}}>20</option>
-                          <option value={50} style={{background: '#2c3e50', color: '#ffffff'}}>50</option>
-                          <option value={100} style={{background: '#2c3e50', color: '#ffffff'}}>100</option>
-                        </select>
-                        <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Entries</span>
-                      </div>
-
-                      <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
-                        <div
-                          style={{
-                            background: 'linear-gradient(45deg, #3498db, #2ecc71)',
-                            borderRadius: '50%',
-                            width: '24px',
-                            height: '24px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: '12px',
-                            boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)'
-                          }}
-                        >
-                          📊
-                        </div>
-                        <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>
-                          Showing <strong style={{color: '#3498db'}}>{startRecord}</strong> to <strong style={{color: '#3498db'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c'}}>{totalRecords}</strong> entries
-                          {debouncedSearchTerm && (
-                            <span style={{color: '#2ecc71', marginLeft: '8px'}}>
-                              (filtered from <strong style={{color: '#f39c12'}}>{totalProducts || totalRecords}</strong> total)
-                            </span>
-                          )}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Pagination Section like the image */}
-                    <div
-                      style={{
-                        position: 'relative',
-                        zIndex: 1,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        gap: '8px'
-                      }}
-                    >
-                      {/* Numbered Pagination Buttons */}
-                      {Array.from({ length: actualTotalPages }, (_, i) => {
-                        const pageNum = i + 1;
-                        const isActive = currentPage === pageNum;
-
-                        return (
-                          <button
-                            key={pageNum}
-                            onClick={() => !loading && handlePageChange(pageNum)}
-                            disabled={loading}
-                            className={isActive ? 'active' : ''}
-                            style={{
-                              background: loading
-                                ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
-                                : isActive
-                                ? 'linear-gradient(45deg, #f39c12, #e67e22)'
-                                : 'linear-gradient(45deg, #34495e, #2c3e50)',
-                              border: isActive
-                                ? '2px solid #f39c12'
-                                : '1px solid rgba(52, 152, 219, 0.3)',
-                              borderRadius: '50%',
-                              width: '32px',
-                              height: '32px',
-                              color: '#ffffff',
-                              fontSize: '14px',
-                              fontWeight: '700',
-                              cursor: loading ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.3s ease',
-                              boxShadow: loading
-                                ? 'none'
-                                : isActive
-                                ? '0 4px 12px rgba(243, 156, 18, 0.4)'
-                                : '0 2px 8px rgba(52, 73, 94, 0.3)',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              opacity: loading ? 0.7 : 1
-                            }}
-                            onMouseEnter={(e) => {
-                              if (!isActive) {
-                                e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
-                                e.target.style.transform = 'translateY(-2px)';
-                                e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (!isActive) {
-                                e.target.style.background = 'linear-gradient(45deg, #34495e, #2c3e50)';
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 2px 8px rgba(52, 73, 94, 0.3)';
-                              }
-                            }}
-                          >
-                            {pageNum}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+                  {/* Reusable Custom Pagination Component */}
+                  <CustomPagination
+                    currentPage={currentPage}
+                    pageSize={pageSize}
+                    totalCount={totalRecords}
+                    totalPages={actualTotalPages}
+                    loading={loading}
+                    onPageChange={handlePageChange}
+                    onPageSizeChange={handlePageSizeChange}
+                    pageSizeOptions={[10, 20, 50, 100]}
+                    showInfo={true}
+                    showPageSizeSelector={true}
+                    compact={false}
+                    className="product-list-pagination"
+                  />
                 </>
               )}
             </div>
