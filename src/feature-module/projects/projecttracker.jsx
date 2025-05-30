@@ -8,11 +8,15 @@ import {
   Plus
 } from 'feather-icons-react';
 import dayjs from 'dayjs';
+import { useSelector } from 'react-redux';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const ProjectTracker = () => {
+  // Get theme from Redux
+  const isDarkMode = useSelector((state) => state.theme?.isDarkMode);
+
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [filterStatus, setFilterStatus] = useState('All Status');
   const [filterManager, setFilterManager] = useState('All Managers');
@@ -26,21 +30,21 @@ const ProjectTracker = () => {
   // API data state
   const [projectData, setProjectData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    pageSize: 10,
-    totalCount: 0,
-    totalPages: 1
-  });
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   // Load projects from API
-  const loadProjects = async (page = 1, pageSize = 10) => {
+  const loadProjects = async (page = currentPage, size = pageSize) => {
     setLoading(true);
     try {
       const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
       console.log('Loading projects from:', `${apiBaseUrl}Projects`);
 
-      const response = await fetch(`${apiBaseUrl}Projects?page=${page}&pageSize=${pageSize}`, {
+      const response = await fetch(`${apiBaseUrl}Projects?page=${page}&pageSize=${size}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -78,28 +82,30 @@ const ProjectTracker = () => {
         }));
 
         setProjectData(mappedData);
-        setPagination(result.pagination || {
-          currentPage: 1,
-          pageSize: 10,
-          totalCount: result.data.length,
-          totalPages: 1
-        });
+
+        // Update pagination state
+        if (result.pagination) {
+          setCurrentPage(result.pagination.currentPage);
+          setTotalCount(result.pagination.totalCount);
+          setTotalPages(result.pagination.totalPages);
+        } else {
+          setTotalCount(result.data.length);
+          setTotalPages(Math.ceil(result.data.length / size));
+        }
 
         console.log('Mapped data:', mappedData);
       } else {
         console.warn('No data found in API response');
         setProjectData([]);
+        setTotalCount(0);
+        setTotalPages(1);
       }
     } catch (error) {
       console.error('Error loading projects:', error);
       // Set empty data on error
       setProjectData([]);
-      setPagination({
-        currentPage: 1,
-        pageSize: 10,
-        totalCount: 0,
-        totalPages: 1
-      });
+      setTotalCount(0);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -148,9 +154,31 @@ const ProjectTracker = () => {
   }, []);
 
   // Handle pagination change
-  const handleTableChange = (paginationInfo) => {
-    loadProjects(paginationInfo.current, paginationInfo.pageSize);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    loadProjects(page, pageSize);
   };
+
+  // Handle page size change
+  const handlePageSizeChange = (newPageSize) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1); // Reset to first page when changing page size
+    loadProjects(1, newPageSize);
+  };
+
+  // Handle table change (for Ant Design Table)
+  const handleTableChange = (paginationInfo) => {
+    if (paginationInfo.current !== currentPage) {
+      handlePageChange(paginationInfo.current);
+    }
+    if (paginationInfo.pageSize !== pageSize) {
+      handlePageSizeChange(paginationInfo.pageSize);
+    }
+  };
+
+  // Calculate pagination info
+  const startRecord = totalCount > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+  const endRecord = Math.min(currentPage * pageSize, totalCount);
 
   // Table columns configuration
   const columns = [
@@ -168,13 +196,13 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: '',
+      title: 'Mức độ',
       dataIndex: 'priority',
-      width: 20,
+      width: 30,
       render: (priority) => (
         <div
           style={{
-            width: '4px',
+            width: '50px',
             height: '40px',
             backgroundColor: priority === 'high' ? '#dc3545' : priority === 'medium' ? '#ffc107' : '#28a745',
             borderRadius: '2px'
@@ -191,8 +219,9 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Category',
+      title: 'Danh mục',
       dataIndex: 'category',
+      width: 100,
       key: 'category',
       render: (category, record) => (
         <Tag color={record.categoryColor} style={{ borderRadius: '12px', fontSize: '12px' }}>
@@ -408,6 +437,94 @@ const ProjectTracker = () => {
           </div>
 
           <div className="table-responsive">
+            <style>
+              {`
+                /* Hide default Ant Design pagination */
+                .ant-pagination-total-text,
+                .ant-table-wrapper .ant-pagination,
+                .ant-spin-container .ant-pagination {
+                  display: none !important;
+                  visibility: hidden !important;
+                  opacity: 0 !important;
+                  position: absolute !important;
+                  left: -9999px !important;
+                  top: -9999px !important;
+                  z-index: -1 !important;
+                  width: 0 !important;
+                  height: 0 !important;
+                  overflow: hidden !important;
+                }
+
+                /* Ensure our custom pagination is visible */
+                .custom-pagination-container {
+                  display: block !important;
+                  visibility: visible !important;
+                  opacity: 1 !important;
+                  position: relative !important;
+                  z-index: 1 !important;
+                }
+
+                /* Light mode pagination styling */
+                .custom-pagination-container.light-mode {
+                  background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+                  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+                  border-radius: 12px !important;
+                  padding: 16px 20px !important;
+                  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
+                  margin-top: 20px !important;
+                }
+
+                /* Light mode text styling */
+                .custom-pagination-container.light-mode .pagination-info {
+                  color: #2c3e50 !important;
+                  font-weight: 500 !important;
+                }
+
+                /* Light mode select styling */
+                .custom-pagination-container.light-mode select {
+                  background: #ffffff !important;
+                  border: 1px solid #dee2e6 !important;
+                  color: #495057 !important;
+                  border-radius: 6px !important;
+                }
+
+                .custom-pagination-container.light-mode select:focus {
+                  border-color: #80bdff !important;
+                  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+                }
+
+                /* Light mode pagination buttons */
+                .custom-pagination-container.light-mode button {
+                  background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
+                  border: 1px solid #dee2e6 !important;
+                  color: #495057 !important;
+                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+                }
+
+                .custom-pagination-container.light-mode button:hover {
+                  background: linear-gradient(135deg, #e9ecef, #f8f9fa) !important;
+                  border-color: #adb5bd !important;
+                  transform: translateY(-1px) !important;
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+                }
+
+                .custom-pagination-container.light-mode button.active {
+                  background: linear-gradient(135deg, #007bff, #0056b3) !important;
+                  border-color: #007bff !important;
+                  color: #ffffff !important;
+                  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3) !important;
+                }
+
+                .custom-pagination-container.light-mode button:disabled {
+                  background: #f8f9fa !important;
+                  border-color: #dee2e6 !important;
+                  color: #6c757d !important;
+                  opacity: 0.6 !important;
+                  cursor: not-allowed !important;
+                }
+              `}
+            </style>
+
             <Spin spinning={loading}>
               <Table
                 rowSelection={rowSelection}
@@ -415,17 +532,167 @@ const ProjectTracker = () => {
                 dataSource={projectData}
                 loading={loading}
                 onChange={handleTableChange}
-                pagination={{
-                  current: pagination.currentPage,
-                  pageSize: pagination.pageSize,
-                  total: pagination.totalCount,
-                  showSizeChanger: true,
-                  showQuickJumper: true,
-                  showTotal: (total, range) =>
-                    `Row Per Page: ${range[1] - range[0] + 1} Entries | Showing ${range[0]} to ${range[1]} of ${total} entries`
-                }}
+                pagination={false}
               />
             </Spin>
+          </div>
+
+          {/* Custom Pagination */}
+          <div
+            className={`custom-pagination-container ${isDarkMode ? '' : 'light-mode'}`}
+            style={{
+              background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+              border: '1px solid rgba(52, 152, 219, 0.3)',
+              borderRadius: '12px',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden',
+              padding: '16px 24px',
+              margin: '16px 0'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1)';
+            }}
+          >
+            {/* Pagination Info */}
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '16px',
+                flexWrap: 'wrap',
+                gap: '12px'
+              }}
+            >
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Row Per Page</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    const newPageSize = parseInt(e.target.value);
+                    handlePageSizeChange(newPageSize);
+                  }}
+                  disabled={loading}
+                  style={{
+                    background: loading
+                      ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
+                      : 'linear-gradient(45deg, #34495e, #2c3e50)',
+                    border: '1px solid rgba(52, 152, 219, 0.3)',
+                    borderRadius: '6px',
+                    color: '#ffffff',
+                    padding: '4px 8px',
+                    fontSize: '14px',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    opacity: loading ? 0.7 : 1
+                  }}
+                >
+                  <option value={10} style={{background: '#2c3e50', color: '#ffffff'}}>10</option>
+                  <option value={20} style={{background: '#2c3e50', color: '#ffffff'}}>20</option>
+                  <option value={50} style={{background: '#2c3e50', color: '#ffffff'}}>50</option>
+                  <option value={100} style={{background: '#2c3e50', color: '#ffffff'}}>100</option>
+                </select>
+                <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>Entries</span>
+              </div>
+
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                <div
+                  style={{
+                    background: 'linear-gradient(45deg, #3498db, #2ecc71)',
+                    borderRadius: '50%',
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    boxShadow: '0 2px 8px rgba(52, 152, 219, 0.3)'
+                  }}
+                >
+                  📊
+                </div>
+                <span className="pagination-info" style={{color: '#bdc3c7', fontSize: '14px'}}>
+                  Showing <strong style={{color: '#3498db'}}>{startRecord}</strong> to <strong style={{color: '#3498db'}}>{endRecord}</strong> of <strong style={{color: '#e74c3c'}}>{totalCount}</strong> entries
+                </span>
+              </div>
+            </div>
+
+            {/* Pagination Buttons */}
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 1,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              {/* Numbered Pagination Buttons */}
+              {Array.from({ length: totalPages }, (_, i) => {
+                const pageNum = i + 1;
+                const isActive = currentPage === pageNum;
+
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => !loading && handlePageChange(pageNum)}
+                    disabled={loading}
+                    className={isActive ? 'active' : ''}
+                    style={{
+                      background: loading
+                        ? 'linear-gradient(45deg, #7f8c8d, #95a5a6)'
+                        : isActive
+                        ? 'linear-gradient(45deg, #f39c12, #e67e22)'
+                        : 'linear-gradient(45deg, #34495e, #2c3e50)',
+                      border: isActive
+                        ? '2px solid #f39c12'
+                        : '1px solid rgba(52, 152, 219, 0.3)',
+                      borderRadius: '50%',
+                      width: '32px',
+                      height: '32px',
+                      color: '#ffffff',
+                      fontSize: '14px',
+                      fontWeight: '700',
+                      cursor: loading ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: loading
+                        ? 'none'
+                        : isActive
+                        ? '0 4px 12px rgba(243, 156, 18, 0.4)'
+                        : '0 2px 8px rgba(52, 73, 94, 0.3)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: loading ? 0.6 : 1
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!loading && !isActive) {
+                        e.target.style.background = 'linear-gradient(45deg, #3498db, #2980b9)';
+                        e.target.style.transform = 'scale(1.1)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(52, 152, 219, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!loading && !isActive) {
+                        e.target.style.background = 'linear-gradient(45deg, #34495e, #2c3e50)';
+                        e.target.style.transform = 'scale(1)';
+                        e.target.style.boxShadow = '0 2px 8px rgba(52, 73, 94, 0.3)';
+                      }
+                    }}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
