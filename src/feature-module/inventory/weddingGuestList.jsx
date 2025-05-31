@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Avatar, Spin, Select, Input } from 'antd';
+import { Table, Button, Avatar, Spin, Select, Input, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
-import { Plus, Edit, Trash2, Users, Gift, Heart, Search } from 'react-feather';
+import { Plus, Edit, Trash2, Users, Gift, Heart, Search, Download } from 'react-feather';
 import CustomPagination from '../../components/CustomPagination';
+import { weddingGuestService } from '../../services/weddingGuestService';
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 const WeddingGuestList = () => {
   // State management
@@ -23,142 +25,295 @@ const WeddingGuestList = () => {
   const [filterUnit, setFilterUnit] = useState('All Units');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Mock data for wedding guests
+  // Statistics and options
+  const [statistics, setStatistics] = useState({
+    totalGuests: 0,
+    confirmedGuests: 0,
+    totalPeople: 0,
+    totalGiftAmount: 0
+  });
+
+
+  // Mock data fallback for development/testing
   const mockGuestData = [
     {
-      id: 1,
+      id: '1',
       name: 'Nguyễn Văn An',
       unit: 'Công ty ABC',
       numberOfPeople: 2,
       giftAmount: 500000,
-      status: 'Đi',
+      status: 'Going',
       phone: '0901234567',
-      relationship: 'Bạn bè',
-      inviteDate: '2024-01-15',
-      confirmDate: '2024-01-20'
+      relationship: 'Friend',
+      address: '123 Lê Lợi, Q1, TP.HCM',
+      notes: 'Bạn thân từ đại học',
+      inviteDate: '2024-01-15T00:00:00Z',
+      confirmDate: '2024-01-20T00:00:00Z',
+      createdDate: '2024-01-10T00:00:00Z',
+      isActive: true
     },
     {
-      id: 2,
+      id: '2',
       name: 'Trần Thị Bình',
       unit: 'Trường ĐH XYZ',
       numberOfPeople: 4,
       giftAmount: 1000000,
-      status: 'Đi',
+      status: 'Going',
       phone: '0912345678',
-      relationship: 'Gia đình',
-      inviteDate: '2024-01-16',
-      confirmDate: '2024-01-22'
+      relationship: 'Family',
+      address: '456 Nguyễn Huệ, Q1, TP.HCM',
+      notes: 'Chị gái',
+      inviteDate: '2024-01-16T00:00:00Z',
+      confirmDate: '2024-01-22T00:00:00Z',
+      createdDate: '2024-01-11T00:00:00Z',
+      isActive: true
     },
     {
-      id: 3,
+      id: '3',
       name: 'Lê Minh Cường',
       unit: 'Ngân hàng DEF',
       numberOfPeople: 1,
       giftAmount: 300000,
-      status: 'Không đi',
+      status: 'NotGoing',
       phone: '0923456789',
-      relationship: 'Đồng nghiệp',
-      inviteDate: '2024-01-17',
-      confirmDate: '2024-01-25'
+      relationship: 'Colleague',
+      address: '789 Đồng Khởi, Q1, TP.HCM',
+      notes: 'Đồng nghiệp cũ',
+      inviteDate: '2024-01-17T00:00:00Z',
+      confirmDate: '2024-01-25T00:00:00Z',
+      createdDate: '2024-01-12T00:00:00Z',
+      isActive: true
     },
     {
-      id: 4,
+      id: '4',
       name: 'Phạm Thị Dung',
       unit: 'Bệnh viện GHI',
       numberOfPeople: 3,
       giftAmount: 800000,
-      status: 'Đi',
+      status: 'Going',
       phone: '0934567890',
-      relationship: 'Bạn bè',
-      inviteDate: '2024-01-18',
-      confirmDate: '2024-01-28'
+      relationship: 'Friend',
+      address: '321 Hai Bà Trưng, Q3, TP.HCM',
+      notes: 'Bạn cùng lớp',
+      inviteDate: '2024-01-18T00:00:00Z',
+      confirmDate: '2024-01-28T00:00:00Z',
+      createdDate: '2024-01-13T00:00:00Z',
+      isActive: true
     },
     {
-      id: 5,
+      id: '5',
       name: 'Hoàng Văn Em',
       unit: 'Công ty JKL',
       numberOfPeople: 2,
       giftAmount: 600000,
-      status: 'Chưa xác nhận',
+      status: 'Pending',
       phone: '0945678901',
-      relationship: 'Đồng nghiệp',
-      inviteDate: '2024-01-19',
-      confirmDate: null
+      relationship: 'Colleague',
+      address: '654 Cách Mạng Tháng 8, Q10, TP.HCM',
+      notes: 'Đồng nghiệp hiện tại',
+      inviteDate: '2024-01-19T00:00:00Z',
+      confirmDate: null,
+      createdDate: '2024-01-14T00:00:00Z',
+      isActive: true
     }
   ];
 
-  // Load guest data
+  // Load wedding guests from API
   const loadGuests = async (page = 1, size = 10) => {
+    console.log('🚀 Loading guests...', { page, size, searchTerm, filterStatus, filterUnit });
     setLoading(true);
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const params = {
+        page: page,
+        pageSize: size,
+        searchTerm: searchTerm || undefined,
+        status: (filterStatus && filterStatus !== 'All Status') ? filterStatus : undefined,
+        unit: (filterUnit && filterUnit !== 'All Units') ? filterUnit : undefined,
+        sortBy: 'name',
+        sortOrder: 'asc'
+      };
 
-      // Filter and paginate mock data
-      let filteredData = mockGuestData;
+      console.log('📤 API Request params:', params);
+      const response = await weddingGuestService.getWeddingGuests(params);
+      console.log('📥 API Response:', response);
 
-      // Apply filters
-      if (filterStatus !== 'All Status') {
-        filteredData = filteredData.filter(guest => guest.status === filterStatus);
+      if (response.success) {
+        const guests = response.data.guests || response.data || [];
+        console.log('👥 Setting guest data:', guests);
+        setGuestData(guests);
+
+        if (response.data.pagination) {
+          setTotalCount(response.data.pagination.totalCount);
+          setTotalPages(response.data.pagination.totalPages);
+          console.log('📊 Pagination:', response.data.pagination);
+        } else {
+          // If no pagination object, assume single page
+          setTotalCount(guests.length);
+          setTotalPages(1);
+          console.log('📊 No pagination, using array length:', guests.length);
+        }
+      } else {
+        console.error('❌ API call failed:', response.message);
+        console.log('🔄 Using mock data as fallback');
+
+        // Use mock data as fallback
+        setGuestData(mockGuestData);
+        setTotalCount(mockGuestData.length);
+        setTotalPages(1);
+
+        message.warning('Using demo data - API connection failed: ' + response.message);
       }
-
-      if (filterUnit !== 'All Units') {
-        filteredData = filteredData.filter(guest => guest.unit === filterUnit);
-      }
-
-      if (searchTerm) {
-        filteredData = filteredData.filter(guest =>
-          guest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          guest.unit.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
-
-      // Pagination
-      const startIndex = (page - 1) * size;
-      const endIndex = startIndex + size;
-      const paginatedData = filteredData.slice(startIndex, endIndex);
-
-      setGuestData(paginatedData);
-      setTotalCount(filteredData.length);
-      setTotalPages(Math.ceil(filteredData.length / size));
-
     } catch (error) {
-      console.error('Error loading guests:', error);
-      setGuestData([]);
-      setTotalCount(0);
+      console.error('💥 Exception in loadGuests:', error);
+      console.log('🔄 Using mock data as fallback due to exception');
+
+      // Use mock data as fallback
+      setGuestData(mockGuestData);
+      setTotalCount(mockGuestData.length);
       setTotalPages(1);
+
+      message.warning('Using demo data - API connection error: ' + error.message);
     } finally {
       setLoading(false);
+      console.log('✅ Loading complete');
+    }
+  };
+
+  // Load statistics from API
+  const loadStatistics = async () => {
+    try {
+      console.log('📊 Loading statistics...');
+      const response = await weddingGuestService.getWeddingGuestStatistics();
+
+      if (response.success) {
+        setStatistics({
+          totalGuests: response.data.totalGuests || 0,
+          confirmedGuests: response.data.confirmedGuests || 0,
+          totalPeople: response.data.totalPeople || 0,
+          totalGiftAmount: response.data.totalGiftAmount || 0
+        });
+        console.log('✅ Statistics loaded:', response.data);
+      } else {
+        console.log('🔄 Using mock statistics as fallback');
+        // Calculate mock statistics
+        const mockStats = {
+          totalGuests: mockGuestData.length,
+          confirmedGuests: mockGuestData.filter(g => g.status === 'Going').length,
+          totalPeople: mockGuestData.filter(g => g.status === 'Going').reduce((sum, g) => sum + g.numberOfPeople, 0),
+          totalGiftAmount: mockGuestData.filter(g => g.status === 'Going').reduce((sum, g) => sum + g.giftAmount, 0)
+        };
+        setStatistics(mockStats);
+        console.log('📊 Mock statistics:', mockStats);
+      }
+    } catch (error) {
+      console.error('Error loading statistics:', error);
+      console.log('🔄 Using mock statistics as fallback due to exception');
+
+      // Calculate mock statistics
+      const mockStats = {
+        totalGuests: mockGuestData.length,
+        confirmedGuests: mockGuestData.filter(g => g.status === 'Going').length,
+        totalPeople: mockGuestData.filter(g => g.status === 'Going').reduce((sum, g) => sum + g.numberOfPeople, 0),
+        totalGiftAmount: mockGuestData.filter(g => g.status === 'Going').reduce((sum, g) => sum + g.giftAmount, 0)
+      };
+      setStatistics(mockStats);
+    }
+  };
+
+  // Load available units for filter
+  const loadUnits = async () => {
+    try {
+      console.log('🏢 Loading units...');
+      const response = await weddingGuestService.getUnits();
+
+      if (response.success) {
+      
+        console.log('✅ Units loaded:', response.data);
+      } else {
+        console.log('🔄 Using mock units as fallback');
+    
+      }
+    } catch (error) {
+      console.error('Error loading units:', error);
+      console.log('🔄 Using mock units as fallback due to exception');
+
+    }
+  };
+
+  // Handle delete guest
+  const handleDeleteGuest = async (id) => {
+    confirm({
+      title: 'Xác nhận xóa khách mời',
+      content: 'Bạn có chắc chắn muốn xóa khách mời này không?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Hủy',
+      onOk: async () => {
+        try {
+          const response = await weddingGuestService.deleteWeddingGuest(id);
+
+          if (response.success) {
+            message.success('Xóa khách mời thành công');
+            loadGuests(currentPage, pageSize);
+            loadStatistics();
+          } else {
+            message.error(response.message || 'Failed to delete guest');
+          }
+        } catch (error) {
+          console.error('Error deleting guest:', error);
+          message.error('An error occurred while deleting guest');
+        }
+      }
+    });
+  };
+
+  // Handle export guests
+  const handleExportGuests = async () => {
+    try {
+      const response = await weddingGuestService.exportWeddingGuests('excel');
+
+      if (response.success) {
+        message.success('Export completed successfully');
+      } else {
+        message.error(response.message || 'Failed to export guests');
+      }
+    } catch (error) {
+      console.error('Error exporting guests:', error);
+      message.error('An error occurred while exporting guests');
     }
   };
 
   // Get status configuration
   const getStatusConfig = (status) => {
     const statusConfigs = {
-      'Đi': {
+      'Going': {
         color: '#52c41a',
         backgroundColor: 'rgba(82, 196, 26, 0.1)',
         borderColor: '#52c41a',
         textColor: '#52c41a',
-        icon: '✅'
+        icon: '✅',
+        label: 'Đi'
       },
-      'Không đi': {
+      'NotGoing': {
         color: '#f5222d',
         backgroundColor: 'rgba(245, 34, 45, 0.1)',
         borderColor: '#f5222d',
         textColor: '#f5222d',
-        icon: '❌'
+        icon: '❌',
+        label: 'Không đi'
       },
-      'Chưa xác nhận': {
+      'Pending': {
         color: '#faad14',
         backgroundColor: 'rgba(250, 173, 20, 0.1)',
         borderColor: '#faad14',
         textColor: '#faad14',
-        icon: '⏳'
+        icon: '⏳',
+        label: 'Chưa xác nhận'
       }
     };
 
-    return statusConfigs[status] || statusConfigs['Chưa xác nhận'];
+    return statusConfigs[status] || statusConfigs['Pending'];
   };
 
   // Format currency
@@ -172,8 +327,20 @@ const WeddingGuestList = () => {
   // Load data on component mount
   useEffect(() => {
     loadGuests();
+    loadStatistics();
+    loadUnits();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Reload data when filters change
+  useEffect(() => {
+    if (currentPage === 1) {
+      loadGuests(1, pageSize);
+    } else {
+      setCurrentPage(1);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterStatus, filterUnit, searchTerm]);
 
   // Handle pagination change
   const handlePageChange = (page) => {
@@ -191,14 +358,6 @@ const WeddingGuestList = () => {
   // Handle search
   const handleSearch = (value) => {
     setSearchTerm(value);
-    setCurrentPage(1);
-    loadGuests(1, pageSize);
-  };
-
-  // Handle filter change
-  const handleFilterChange = () => {
-    setCurrentPage(1);
-    loadGuests(1, pageSize);
   };
 
   // Table columns configuration
@@ -281,7 +440,7 @@ const WeddingGuestList = () => {
             }}
           >
             <span style={{ fontSize: '14px' }}>{config.icon}</span>
-            <span>{status}</span>
+            <span>{config.label}</span>
           </div>
         );
       }
@@ -298,11 +457,22 @@ const WeddingGuestList = () => {
       title: '',
       key: 'actions',
       width: 100,
-      render: () => (
+      render: (_, record) => (
         <div className="action-table-data">
           <div className="edit-delete-action">
-            <Edit size={16} style={{ cursor: 'pointer', color: '#1890ff' }} />
-            <Trash2 size={16} style={{ cursor: 'pointer', color: '#ff4d4f' }} />
+            <Edit
+              size={16}
+              style={{ cursor: 'pointer', color: '#1890ff', marginRight: '8px' }}
+              onClick={() => {
+                // TODO: Navigate to edit page
+                message.info('Edit functionality will be implemented');
+              }}
+            />
+            <Trash2
+              size={16}
+              style={{ cursor: 'pointer', color: '#ff4d4f' }}
+              onClick={() => handleDeleteGuest(record.id)}
+            />
           </div>
         </div>
       )
@@ -320,11 +490,8 @@ const WeddingGuestList = () => {
     }),
   };
 
-  // Calculate statistics
-  const totalGuests = mockGuestData.length;
-  const confirmedGuests = mockGuestData.filter(g => g.status === 'Đi').length;
-  const totalPeople = mockGuestData.reduce((sum, g) => sum + (g.status === 'Đi' ? g.numberOfPeople : 0), 0);
-  const totalGiftAmount = mockGuestData.reduce((sum, g) => sum + (g.status === 'Đi' ? g.giftAmount : 0), 0);
+  // Statistics from API data
+  const { totalGuests, confirmedGuests, totalPeople, totalGiftAmount } = statistics;
 
   return (
     <div className="page-wrapper">
@@ -341,16 +508,26 @@ const WeddingGuestList = () => {
             </div>
           </div>
           <div className="page-btn">
-            <Link to="/add-wedding-guest">
+            <div style={{ display: 'flex', gap: '8px' }}>
               <Button
-                type="primary"
-                icon={<Plus size={16} />}
-                className="btn btn-added"
-                style={{ backgroundColor: '#ff69b4', borderColor: '#ff69b4' }}
+                type="default"
+                icon={<Download size={16} />}
+                onClick={handleExportGuests}
+                style={{ marginRight: '8px' }}
               >
-                Thêm khách mời
+                Export Excel
               </Button>
-            </Link>
+              <Link to="/add-wedding-guest">
+                <Button
+                  type="primary"
+                  icon={<Plus size={16} />}
+                  className="btn btn-added"
+                  style={{ backgroundColor: '#ff69b4', borderColor: '#ff69b4' }}
+                >
+                  Thêm khách mời
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -423,32 +600,28 @@ const WeddingGuestList = () => {
                     value={filterStatus}
                     onChange={(value) => {
                       setFilterStatus(value);
-                      handleFilterChange();
                     }}
                     className="project-filter-select"
                     style={{ width: 160, height: 42 }}
                   >
-                    <Option value="All Status">Tất cả trạng thái</Option>
-                    <Option value="Đi">✅ Đi</Option>
-                    <Option value="Không đi">❌ Không đi</Option>
-                    <Option value="Chưa xác nhận">⏳ Chưa xác nhận</Option>
+                    <Option value="All Status">📋 Tất cả trạng thái</Option>
+                    <Option value="Going">✅ Đi</Option>
+                    <Option value="NotGoing">❌ Không đi</Option>
+                    <Option value="Pending">⏳ Chưa xác nhận</Option>
                   </Select>
 
                   <Select
                     value={filterUnit}
                     onChange={(value) => {
                       setFilterUnit(value);
-                      handleFilterChange();
                     }}
                     className="project-filter-select"
                     style={{ width: 180, height: 42 }}
                   >
-                    <Option value="All Units">Tất cả đơn vị</Option>
-                    <Option value="Công ty ABC">Công ty ABC</Option>
-                    <Option value="Trường ĐH XYZ">Trường ĐH XYZ</Option>
-                    <Option value="Ngân hàng DEF">Ngân hàng DEF</Option>
-                    <Option value="Bệnh viện GHI">Bệnh viện GHI</Option>
-                    <Option value="Công ty JKL">Công ty JKL</Option>
+                    <Option value="All Units">📋 Tất cả đơn vị</Option>
+                    <Option value="Nội">Nội</Option>
+                    <Option value="NotGoing">Ngoại</Option>
+                    <Option value="Pending">Bạn bè</Option>
                   </Select>
                 </div>
               </div>
