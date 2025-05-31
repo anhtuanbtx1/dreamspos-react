@@ -72,7 +72,7 @@ const ProjectTracker = () => {
           progress: project.progressPercentage,
           deadline: dayjs(project.endDate).format('DD MMM YYYY'),
           status: formatStatus(project.status),
-          statusColor: getStatusColor(project.status),
+          statusConfig: getStatusConfig(project.status),
           priority: project.priority,
           starred: false,
           budget: `$${project.budget.toLocaleString()}`,
@@ -124,15 +124,48 @@ const ProjectTracker = () => {
     return colorMap[categoryName] || 'blue';
   };
 
-  const getStatusColor = (status) => {
-    const colorMap = {
-      'planning': 'default',
-      'in-progress': 'warning',
-      'review': 'processing',
-      'completed': 'success',
-      'on-hold': 'error'
+  const getStatusConfig = (status) => {
+    const statusLower = (status || 'planning').toLowerCase().replace(/\s+/g, '').replace(/-/g, '');
+
+    const statusConfigs = {
+      'planning': {
+        color: '#1890ff',
+        backgroundColor: 'rgba(24, 144, 255, 0.1)',
+        borderColor: '#1890ff',
+        textColor: '#1890ff',
+        icon: '📋'
+      },
+      'completed': {
+        color: '#52c41a',
+        backgroundColor: 'rgba(82, 196, 26, 0.1)',
+        borderColor: '#52c41a',
+        textColor: '#52c41a',
+        icon: '✅'
+      },
+      'pending': {
+        color: '#faad14',
+        backgroundColor: 'rgba(250, 173, 20, 0.1)',
+        borderColor: '#faad14',
+        textColor: '#faad14',
+        icon: '⏳'
+      },
+      'inprogress': {
+        color: '#722ed1',
+        backgroundColor: 'rgba(114, 46, 209, 0.1)',
+        borderColor: '#722ed1',
+        textColor: '#722ed1',
+        icon: '🚀'
+      },
+      'onhold': {
+        color: '#f5222d',
+        backgroundColor: 'rgba(245, 34, 45, 0.1)',
+        borderColor: '#f5222d',
+        textColor: '#f5222d',
+        icon: '⏸️'
+      }
     };
-    return colorMap[status] || 'default';
+
+    return statusConfigs[statusLower] || statusConfigs['planning'];
   };
 
   const formatStatus = (status) => {
@@ -253,7 +286,7 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Progress',
+      title: 'Tiến độ',
       dataIndex: 'progress',
       key: 'progress',
       render: (progress) => (
@@ -279,22 +312,33 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Status',
+      title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (status, record) => (
-        <Tag
-          color={record.statusColor}
-          style={{
-            borderRadius: '12px',
-            fontSize: '12px',
-            border: 'none',
-            padding: '4px 12px'
-          }}
-        >
-          {status}
-        </Tag>
-      )
+      render: (status, record) => {
+        const config = record.statusConfig || getStatusConfig(status);
+        return (
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              backgroundColor: config.backgroundColor,
+              border: `1px solid ${config.borderColor}`,
+              fontSize: '12px',
+              fontWeight: '500',
+              color: config.textColor,
+              minWidth: '100px',
+              justifyContent: 'center'
+            }}
+          >
+            <span style={{ fontSize: '14px' }}>{config.icon}</span>
+            <span>{status}</span>
+          </div>
+        );
+      }
     },
     {
       title: 'Budget',
@@ -363,7 +407,7 @@ const ProjectTracker = () => {
                   <span style={{ fontSize: '16px', fontWeight: '500' }}>
                     Project Lists
                   </span>
-              
+
                 </div>
               </div>
               <div className="search-path">
@@ -412,10 +456,11 @@ const ProjectTracker = () => {
                     style={{ width: 140, height: 42 }}
                   >
                     <Option value="All Status">Select Status</Option>
-                    <Option value="Planning">Planning</Option>
-                    <Option value="In Progress">In Progress</Option>
-                    <Option value="Review">Review</Option>
-                    <Option value="Completed">Completed</Option>
+                    <Option value="Planning">📋 Planning</Option>
+                    <Option value="Completed">✅ Completed</Option>
+                    <Option value="Pending">⏳ Pending</Option>
+                    <Option value="Inprogress">🚀 In Progress</Option>
+                    <Option value="Onhold">⏸️ On Hold</Option>
                   </Select>
 
                   <Select
@@ -435,211 +480,6 @@ const ProjectTracker = () => {
           </div>
 
           <div className="table-responsive">
-            <style>
-              {`
-                /* Hide default Ant Design pagination */
-                .ant-pagination-total-text,
-                .ant-table-wrapper .ant-pagination,
-                .ant-spin-container .ant-pagination {
-                  display: none !important;
-                  visibility: hidden !important;
-                  opacity: 0 !important;
-                  position: absolute !important;
-                  left: -9999px !important;
-                  top: -9999px !important;
-                  z-index: -1 !important;
-                  width: 0 !important;
-                  height: 0 !important;
-                  overflow: hidden !important;
-                }
-
-                /* Ensure our custom pagination is visible */
-                .custom-pagination-container {
-                  display: block !important;
-                  visibility: visible !important;
-                  opacity: 1 !important;
-                  position: relative !important;
-                  z-index: 1 !important;
-                  transition: all 0.3s ease !important;
-                }
-
-                /* Dark mode pagination styling (default) */
-                .custom-pagination-container {
-                  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
-                  border: 1px solid rgba(52, 152, 219, 0.3) !important;
-                  border-radius: 12px !important;
-                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(52, 152, 219, 0.1) !important;
-                  backdrop-filter: blur(10px) !important;
-                  padding: 16px 24px !important;
-                  margin: 16px 0 !important;
-                }
-
-                /* Dark mode text styling */
-                .custom-pagination-container .pagination-info {
-                  color: #bdc3c7 !important;
-                  font-weight: 500 !important;
-                  font-size: 14px !important;
-                }
-
-                /* Dark mode select styling */
-                .custom-pagination-container select {
-                  background: linear-gradient(45deg, #34495e, #2c3e50) !important;
-                  border: 1px solid rgba(52, 152, 219, 0.3) !important;
-                  border-radius: 6px !important;
-                  color: #ffffff !important;
-                  padding: 4px 8px !important;
-                  font-size: 14px !important;
-                  cursor: pointer !important;
-                  transition: all 0.3s ease !important;
-                }
-
-                .custom-pagination-container select:focus {
-                  border-color: #3498db !important;
-                  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
-                  outline: none !important;
-                }
-
-                .custom-pagination-container select option {
-                  background: #2c3e50 !important;
-                  color: #ffffff !important;
-                }
-
-                /* Dark mode pagination buttons */
-                .custom-pagination-container button {
-                  background: linear-gradient(45deg, #34495e, #2c3e50) !important;
-                  border: 1px solid rgba(52, 152, 219, 0.3) !important;
-                  border-radius: 50% !important;
-                  width: 32px !important;
-                  height: 32px !important;
-                  color: #ffffff !important;
-                  font-size: 14px !important;
-                  font-weight: 700 !important;
-                  cursor: pointer !important;
-                  transition: all 0.3s ease !important;
-                  box-shadow: 0 2px 8px rgba(52, 73, 94, 0.3) !important;
-                  display: flex !important;
-                  align-items: center !important;
-                  justify-content: center !important;
-                }
-
-                .custom-pagination-container button:hover {
-                  background: linear-gradient(45deg, #3498db, #2980b9) !important;
-                  transform: scale(1.1) !important;
-                  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4) !important;
-                }
-
-                .custom-pagination-container button.active {
-                  background: linear-gradient(45deg, #f39c12, #e67e22) !important;
-                  border: 2px solid #f39c12 !important;
-                  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4) !important;
-                }
-
-                .custom-pagination-container button:disabled {
-                  background: linear-gradient(45deg, #7f8c8d, #95a5a6) !important;
-                  border-color: #7f8c8d !important;
-                  color: #bdc3c7 !important;
-                  opacity: 0.6 !important;
-                  cursor: not-allowed !important;
-                  transform: none !important;
-                  box-shadow: none !important;
-                }
-
-                /* Light mode pagination styling */
-                .custom-pagination-container.light-mode {
-                  background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
-                  border: 1px solid rgba(0, 0, 0, 0.1) !important;
-                  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
-                  backdrop-filter: none !important;
-                }
-
-                /* Light mode text styling */
-                .custom-pagination-container.light-mode .pagination-info {
-                  color: #2c3e50 !important;
-                  font-weight: 600 !important;
-                }
-
-                /* Light mode select styling */
-                .custom-pagination-container.light-mode select {
-                  background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
-                  border: 1px solid #dee2e6 !important;
-                  color: #495057 !important;
-                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-                }
-
-                .custom-pagination-container.light-mode select:focus {
-                  border-color: #80bdff !important;
-                  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
-                }
-
-                .custom-pagination-container.light-mode select option {
-                  background: #ffffff !important;
-                  color: #495057 !important;
-                }
-
-                /* Light mode pagination buttons */
-                .custom-pagination-container.light-mode button {
-                  background: linear-gradient(135deg, #ffffff, #f8f9fa) !important;
-                  border: 1px solid #dee2e6 !important;
-                  color: #495057 !important;
-                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
-                }
-
-                .custom-pagination-container.light-mode button:hover {
-                  background: linear-gradient(135deg, #e9ecef, #f8f9fa) !important;
-                  border-color: #adb5bd !important;
-                  transform: translateY(-1px) scale(1.05) !important;
-                  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15) !important;
-                  color: #495057 !important;
-                }
-
-                .custom-pagination-container.light-mode button.active {
-                  background: linear-gradient(135deg, #007bff, #0056b3) !important;
-                  border-color: #007bff !important;
-                  color: #ffffff !important;
-                  box-shadow: 0 3px 8px rgba(0, 123, 255, 0.3) !important;
-                }
-
-                .custom-pagination-container.light-mode button:disabled {
-                  background: linear-gradient(135deg, #f8f9fa, #e9ecef) !important;
-                  border-color: #dee2e6 !important;
-                  color: #6c757d !important;
-                  opacity: 0.6 !important;
-                  cursor: not-allowed !important;
-                  transform: none !important;
-                  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-                }
-
-                /* Icon styling for both modes */
-                .custom-pagination-container .pagination-icon {
-                  background: linear-gradient(45deg, #3498db, #2ecc71) !important;
-                  border-radius: 50% !important;
-                  width: 24px !important;
-                  height: 24px !important;
-                  display: flex !important;
-                  align-items: center !important;
-                  justify-content: center !important;
-                  font-size: 12px !important;
-                  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
-                  transition: all 0.3s ease !important;
-                }
-
-                .custom-pagination-container.light-mode .pagination-icon {
-                  background: linear-gradient(45deg, #007bff, #28a745) !important;
-                  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2) !important;
-                }
-
-                /* Hover effects for container */
-                .custom-pagination-container:hover {
-                  transform: translateY(-2px) !important;
-                  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(52, 152, 219, 0.2) !important;
-                }
-
-                .custom-pagination-container.light-mode:hover {
-                  transform: translateY(-2px) !important;
-                  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
-                }
-              `}
-            </style>
 
             <Spin spinning={loading}>
               <Table
@@ -654,20 +494,25 @@ const ProjectTracker = () => {
           </div>
 
           {/* Reusable Custom Pagination Component */}
-          <CustomPagination
-            currentPage={currentPage}
-            pageSize={pageSize}
-            totalCount={totalCount}
-            totalPages={totalPages}
-            loading={loading}
-            onPageChange={handlePageChange}
-            onPageSizeChange={handlePageSizeChange}
-            pageSizeOptions={[10, 20, 50, 100]}
-            showInfo={true}
-            showPageSizeSelector={true}
-            compact={true}
-            className="project-tracker-pagination"
-          />
+          <div style={{
+            paddingLeft: '16px',
+            paddingRight: '16px'
+          }}>
+            <CustomPagination
+              currentPage={currentPage}
+              pageSize={pageSize}
+              totalCount={totalCount}
+              totalPages={totalPages}
+              loading={loading}
+              onPageChange={handlePageChange}
+              onPageSizeChange={handlePageSizeChange}
+              pageSizeOptions={[10, 20, 50, 100]}
+              showInfo={true}
+              showPageSizeSelector={true}
+              compact={false}
+              className="project-tracker-pagination"
+            />
+          </div>
         </div>
       </div>
 
