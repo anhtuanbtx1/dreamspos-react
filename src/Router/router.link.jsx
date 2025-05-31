@@ -198,6 +198,7 @@ import TodoList from "../feature-module/todo/todolist";
 import ProjectTracker from "../feature-module/projects/projecttracker";
 import CreateProject from "../feature-module/projects/createproject";
 import EnhancedLoaders from "../feature-module/uiinterface/enhanced-loaders";
+import WeddingGuestList from "../feature-module/inventory/weddingGuestList";
 import { all_routes } from "./all_routes";
 export const publicRoutes = [
   {
@@ -1425,6 +1426,13 @@ export const publicRoutes = [
     path: "/create-project",
     name: "createproject",
     element: <CreateProject />,
+    route: Route,
+  },
+  {
+    id: 117.2,
+    path: routes.weddingGuestList,
+    name: "weddingGuestList",
+    element: <WeddingGuestList />,
     route: Route,
   },
   {

@@ -72,7 +72,8 @@ export const SidebarData = [
           { label: "Variant Attributes", link: "/variant-attributes", icon:  <Icon.Layers />,showSubRoute: false,submenu: false },
           { label: "Warranties", link: "/warranty", icon:  <Icon.Bookmark />,showSubRoute: false,submenu: false },
           { label: "Print Barcode", link: "/barcode", icon: <Icon.AlignJustify />, showSubRoute: false,submenu: false },
-          { label: "Print QR Code", link: "/qrcode", icon:  <Icon.Maximize  />,showSubRoute: false,submenu: false }
+          { label: "Print QR Code", link: "/qrcode", icon:  <Icon.Maximize  />,showSubRoute: false,submenu: false },
+          { label: "Khách mời đám cưới", link: "/wedding-guest-list", icon:  <Icon.Heart />,showSubRoute: false,submenu: false }
         ]
       },
       {
