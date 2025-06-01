@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { DatePicker, Select, Input } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { DatePicker, Select, Input, message } from 'antd';
 import {
   ArrowLeft,
   Calendar,
   Users,
   DollarSign,
   Target,
-  Clock,
-  FileText
+  FileText,
+  CheckCircle,
+  TrendingUp
 } from 'feather-icons-react';
 import { LoadingButton } from '../../components/Loading';
 import dayjs from 'dayjs';
@@ -17,24 +18,114 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const CreateProject = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     projectName: '',
     description: '',
-    category: '',
+    clientName: '',
+    categoryId: '',
     priority: 'medium',
     status: 'planning',
     startDate: dayjs(),
     endDate: dayjs().add(1, 'month'),
     budget: '',
-    client: '',
-    manager: [],
+    progressPercentage: 0,
+    managers: [],
     teamMembers: [],
-    tags: [],
-    attachments: []
+    tags: []
   });
 
   const [errors, setErrors] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [users, setUsers] = useState([]);
+
+  // Load categories from API
+  const loadCategories = async () => {
+    try {
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
+      const response = await fetch(`${apiBaseUrl}ProjectCategories`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setCategories(result.data || []);
+      } else {
+        console.error('Failed to load categories');
+        // Fallback to sample data
+        setCategories([
+          { id: 1, name: 'Web Development', color: 'blue' },
+          { id: 2, name: 'Mobile App', color: 'green' },
+          { id: 3, name: 'Design', color: 'purple' },
+          { id: 4, name: 'Marketing', color: 'orange' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      // Fallback to sample data
+      setCategories([
+        { id: 1, name: 'Web Development', color: 'blue' },
+        { id: 2, name: 'Mobile App', color: 'green' },
+        { id: 3, name: 'Design', color: 'purple' },
+        { id: 4, name: 'Marketing', color: 'orange' }
+      ]);
+    } finally {
+      setCategoriesLoading(false);
+    }
+  };
+
+  // Load users from API
+  const loadUsers = async () => {
+    try {
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
+      const response = await fetch(`${apiBaseUrl}Users`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setUsers(result.data || []);
+      } else {
+        console.error('Failed to load users');
+        // Fallback to sample data
+        setUsers([
+          { id: 1, fullName: 'John Smith', email: 'john@example.com' },
+          { id: 2, fullName: 'Sarah Johnson', email: 'sarah@example.com' },
+          { id: 3, fullName: 'Mike Wilson', email: 'mike@example.com' },
+          { id: 4, fullName: 'Lisa Chen', email: 'lisa@example.com' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+      // Fallback to sample data
+      setUsers([
+        { id: 1, fullName: 'John Smith', email: 'john@example.com' },
+        { id: 2, fullName: 'Sarah Johnson', email: 'sarah@example.com' },
+        { id: 3, fullName: 'Mike Wilson', email: 'mike@example.com' },
+        { id: 4, fullName: 'Lisa Chen', email: 'lisa@example.com' }
+      ]);
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  // Load data on component mount
+  useEffect(() => {
+    loadCategories();
+    loadUsers();
+  }, []);
 
   // Avatar component with initials fallback
   const UserAvatar = ({ initials, name }) => (
@@ -59,30 +150,17 @@ const CreateProject = () => {
     </div>
   );
 
-  // Sample data
-  const categories = [
-    { value: 'web-development', label: 'Web Development', color: 'blue' },
-    { value: 'mobile-app', label: 'Mobile App', color: 'green' },
-    { value: 'design', label: 'Design', color: 'purple' },
-    { value: 'marketing', label: 'Marketing', color: 'orange' },
-    { value: 'devops', label: 'DevOps', color: 'cyan' },
-    { value: 'data-science', label: 'Data Science', color: 'red' }
-  ];
+  // Generate initials from name
+  const getInitials = (name) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
+  };
 
-  const managers = [
-    { value: 'john-smith', label: 'John Smith', initials: 'JS' },
-    { value: 'sarah-johnson', label: 'Sarah Johnson', initials: 'SJ' },
-    { value: 'mike-wilson', label: 'Mike Wilson', initials: 'MW' },
-    { value: 'lisa-chen', label: 'Lisa Chen', initials: 'LC' }
-  ];
 
-  const teamMembers = [
-    { value: 'alex-rodriguez', label: 'Alex Rodriguez', initials: 'AR' },
-    { value: 'maria-garcia', label: 'Maria Garcia', initials: 'MG' },
-    { value: 'david-brown', label: 'David Brown', initials: 'DB' },
-    { value: 'emma-davis', label: 'Emma Davis', initials: 'ED' },
-    { value: 'james-miller', label: 'James Miller', initials: 'JM' }
-  ];
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -110,20 +188,22 @@ const CreateProject = () => {
       newErrors.description = 'Project description is required';
     }
 
-    if (!formData.category) {
-      newErrors.category = 'Please select a category';
+    if (!formData.categoryId) {
+      newErrors.categoryId = 'Please select a category';
     }
 
-    if (!formData.client.trim()) {
-      newErrors.client = 'Client name is required';
+    if (!formData.clientName.trim()) {
+      newErrors.clientName = 'Client name is required';
     }
 
     if (!formData.budget.trim()) {
       newErrors.budget = 'Budget is required';
+    } else if (isNaN(parseFloat(formData.budget))) {
+      newErrors.budget = 'Budget must be a valid number';
     }
 
-    if (formData.manager.length === 0) {
-      newErrors.manager = 'Please assign at least one manager';
+    if (formData.progressPercentage < 0 || formData.progressPercentage > 100) {
+      newErrors.progressPercentage = 'Progress must be between 0 and 100';
     }
 
     if (dayjs(formData.endDate).isBefore(dayjs(formData.startDate))) {
@@ -136,25 +216,61 @@ const CreateProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
-    
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log('Project created:', formData);
-      
-      // Reset form or redirect
-      alert('Project created successfully!');
-      
+      const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
+
+      // Prepare data for API - Simple format
+      const projectData = {
+        projectName: formData.projectName,
+        description: formData.description,
+        clientName: formData.clientName,
+        categoryId: parseInt(formData.categoryId),
+        priority: formData.priority,
+        status: formData.status,
+        startDate: formData.startDate.format('YYYY-MM-DD'),
+        endDate: formData.endDate.format('YYYY-MM-DD'),
+        budget: parseFloat(formData.budget),
+        progressPercentage: parseInt(formData.progressPercentage)
+      };
+
+      console.log('Sending project data:', projectData);
+
+      const response = await fetch(`${apiBaseUrl}Projects`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(projectData)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Project created successfully:', result);
+
+        message.success('Project created successfully!');
+
+        // Redirect to project list
+        setTimeout(() => {
+          navigate('/project-tracker');
+        }, 1500);
+
+      } else {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        message.error(errorData.message || 'Failed to create project. Please try again.');
+      }
+
     } catch (error) {
       console.error('Error creating project:', error);
-      alert('Error creating project. Please try again.');
+      message.error('Network error. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -215,12 +331,12 @@ const CreateProject = () => {
                     <label className="form-label">Client Name <span className="text-danger">*</span></label>
                     <input
                       type="text"
-                      className={`form-control ${errors.client ? 'is-invalid' : ''}`}
-                      value={formData.client}
-                      onChange={(e) => handleInputChange('client', e.target.value)}
+                      className={`form-control ${errors.clientName ? 'is-invalid' : ''}`}
+                      value={formData.clientName}
+                      onChange={(e) => handleInputChange('clientName', e.target.value)}
                       placeholder="Enter client name"
                     />
-                    {errors.client && <div className="invalid-feedback">{errors.client}</div>}
+                    {errors.clientName && <div className="invalid-feedback">{errors.clientName}</div>}
                   </div>
                 </div>
 
@@ -254,19 +370,20 @@ const CreateProject = () => {
                   <div className="mb-3">
                     <label className="form-label">Category <span className="text-danger">*</span></label>
                     <Select
-                      value={formData.category}
-                      onChange={(value) => handleInputChange('category', value)}
-                      className={`project-select ${errors.category ? 'is-invalid' : ''}`}
+                      value={formData.categoryId}
+                      onChange={(value) => handleInputChange('categoryId', value)}
+                      className={`project-select ${errors.categoryId ? 'is-invalid' : ''}`}
                       placeholder="Select category"
+                      loading={categoriesLoading}
                     >
                       {categories.map(cat => (
-                        <Option key={cat.value} value={cat.value}>
-                          <span className={`badge badge-${cat.color} me-2`}></span>
-                          {cat.label}
+                        <Option key={cat.id} value={cat.id}>
+                          <span className={`badge badge-${cat.color || 'primary'} me-2`}></span>
+                          {cat.name}
                         </Option>
                       ))}
                     </Select>
-                    {errors.category && <div className="invalid-feedback d-block">{errors.category}</div>}
+                    {errors.categoryId && <div className="invalid-feedback d-block">{errors.categoryId}</div>}
                   </div>
                 </div>
 
@@ -313,17 +430,17 @@ const CreateProject = () => {
               </div>
 
               <div className="row">
-                {/* Timeline & Budget */}
+                {/* Timeline, Budget & Progress */}
                 <div className="col-lg-12">
                   <div className="form-group-header">
                     <div className="form-group-icon">
-                      <Clock size={20} />
+                      <TrendingUp size={20} />
                     </div>
-                    <h5>Timeline & Budget</h5>
+                    <h5>Timeline, Budget & Progress</h5>
                   </div>
                 </div>
 
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                   <div className="mb-3">
                     <label className="form-label">Start Date</label>
                     <DatePicker
@@ -336,7 +453,7 @@ const CreateProject = () => {
                   </div>
                 </div>
 
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                   <div className="mb-3">
                     <label className="form-label">End Date</label>
                     <DatePicker
@@ -350,7 +467,7 @@ const CreateProject = () => {
                   </div>
                 </div>
 
-                <div className="col-lg-4">
+                <div className="col-lg-3">
                   <div className="mb-3">
                     <label className="form-label">Budget <span className="text-danger">*</span></label>
                     <div className="input-group">
@@ -368,6 +485,26 @@ const CreateProject = () => {
                     {errors.budget && <div className="invalid-feedback">{errors.budget}</div>}
                   </div>
                 </div>
+
+                <div className="col-lg-3">
+                  <div className="mb-3">
+                    <label className="form-label">Progress Percentage</label>
+                    <div className="input-group">
+                      <input
+                        type="number"
+                        className={`form-control ${errors.progressPercentage ? 'is-invalid' : ''}`}
+                        value={formData.progressPercentage}
+                        onChange={(e) => handleInputChange('progressPercentage', parseInt(e.target.value) || 0)}
+                        placeholder="0"
+                        min="0"
+                        max="100"
+                      />
+                      <span className="input-group-text">%</span>
+                    </div>
+                    {errors.progressPercentage && <div className="invalid-feedback">{errors.progressPercentage}</div>}
+                    <small className="form-text text-muted">Enter progress from 0 to 100</small>
+                  </div>
+                </div>
               </div>
 
               <div className="row">
@@ -383,25 +520,30 @@ const CreateProject = () => {
 
                 <div className="col-lg-6">
                   <div className="mb-3">
-                    <label className="form-label">Project Manager <span className="text-danger">*</span></label>
+                    <label className="form-label">Project Manager</label>
                     <Select
                       mode="multiple"
-                      value={formData.manager}
-                      onChange={(value) => handleInputChange('manager', value)}
-                      className={`project-select ${errors.manager ? 'is-invalid' : ''}`}
-                      placeholder="Select project manager(s)"
+                      value={formData.managers}
+                      onChange={(value) => handleInputChange('managers', value)}
+                      className="project-select"
+                      placeholder="Select project manager(s) (Optional)"
                       optionLabelProp="label"
+                      loading={usersLoading}
+                      allowClear
                     >
-                      {managers.map(manager => (
-                        <Option key={manager.value} value={manager.value} label={manager.label}>
+                      {users.map(user => (
+                        <Option key={user.id} value={user.id} label={user.fullName}>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <UserAvatar initials={manager.initials} name={manager.label} />
-                            {manager.label}
+                            <UserAvatar initials={getInitials(user.fullName)} name={user.fullName} />
+                            <div>
+                              <div>{user.fullName}</div>
+                              <small style={{ color: '#666' }}>{user.email}</small>
+                            </div>
                           </div>
                         </Option>
                       ))}
                     </Select>
-                    {errors.manager && <div className="invalid-feedback d-block">{errors.manager}</div>}
+                    <small className="form-text text-muted">You can assign managers later</small>
                   </div>
                 </div>
 
@@ -413,18 +555,24 @@ const CreateProject = () => {
                       value={formData.teamMembers}
                       onChange={(value) => handleInputChange('teamMembers', value)}
                       className="project-select"
-                      placeholder="Select team members"
+                      placeholder="Select team members (Optional)"
                       optionLabelProp="label"
+                      loading={usersLoading}
+                      allowClear
                     >
-                      {teamMembers.map(member => (
-                        <Option key={member.value} value={member.value} label={member.label}>
+                      {users.map(user => (
+                        <Option key={user.id} value={user.id} label={user.fullName}>
                           <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <UserAvatar initials={member.initials} name={member.label} />
-                            {member.label}
+                            <UserAvatar initials={getInitials(user.fullName)} name={user.fullName} />
+                            <div>
+                              <div>{user.fullName}</div>
+                              <small style={{ color: '#666' }}>{user.email}</small>
+                            </div>
                           </div>
                         </Option>
                       ))}
                     </Select>
+                    <small className="form-text text-muted">You can assign team members later</small>
                   </div>
                 </div>
               </div>
@@ -440,6 +588,7 @@ const CreateProject = () => {
                       loading={loading}
                       loadingText="Creating Project..."
                       className="create-project-btn"
+                      icon={<CheckCircle size={16} />}
                     >
                       Create Project
                     </LoadingButton>
