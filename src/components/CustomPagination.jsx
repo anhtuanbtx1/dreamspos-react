@@ -150,7 +150,7 @@ const CustomPagination = ({
         >
           {showPageSizeSelector && (
             <div style={{display: 'flex', alignItems: 'center', gap: compact ? '6px' : '12px'}}>
-              <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: compact ? '12px' : '14px', fontWeight: '500'}}>Row Per Page</span>
+              <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: compact ? '12px' : '14px', fontWeight: '500'}}>Số hàng mỗi trang</span>
               <select
                 value={pageSize}
                 onChange={(e) => handlePageSizeClick(parseInt(e.target.value))}
@@ -181,7 +181,7 @@ const CustomPagination = ({
                   </option>
                 ))}
               </select>
-              <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: compact ? '12px' : '14px', fontWeight: '500'}}>Entries</span>
+              <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: compact ? '12px' : '14px', fontWeight: '500'}}>bản ghi</span>
             </div>
           )}
 
@@ -207,7 +207,7 @@ const CustomPagination = ({
               📊
             </div>
             <span style={{color: isDarkMode ? '#bdc3c7' : '#2c3e50', fontSize: compact ? '12px' : '14px', fontWeight: '500'}}>
-              Showing <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{startRecord}</strong> to <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{endRecord}</strong> of <strong style={{color: isDarkMode ? '#e74c3c' : '#dc3545'}}>{totalCount}</strong> entries
+              Xem <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{startRecord}</strong> đến <strong style={{color: isDarkMode ? '#3498db' : '#007bff'}}>{endRecord}</strong> của <strong style={{color: isDarkMode ? '#e74c3c' : '#dc3545'}}>{totalCount}</strong> bản
             </span>
           </div>
         </div>

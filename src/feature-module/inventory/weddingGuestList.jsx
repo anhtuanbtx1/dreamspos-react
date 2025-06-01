@@ -445,14 +445,7 @@ const WeddingGuestList = () => {
         );
       }
     },
-    {
-      title: 'Liên hệ',
-      dataIndex: 'phone',
-      key: 'phone',
-      render: (phone) => (
-        <span style={{ fontSize: '13px', color: '#1890ff' }}>{phone}</span>
-      )
-    },
+   
     {
       title: '',
       key: 'actions',
@@ -620,7 +613,7 @@ const WeddingGuestList = () => {
                   >
                     <Option value="All Units">📋 Tất cả đơn vị</Option>
                     <Option value="Nội">Nội</Option>
-                    <Option value="NotGoing">Ngoại</Option>
+                    <Option value="Ngoại">Ngoại</Option>
                     <Option value="Pending">Bạn bè</Option>
                   </Select>
                 </div>

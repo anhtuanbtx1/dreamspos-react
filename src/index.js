@@ -18,6 +18,37 @@ import AllRoutes from "./Router/router.jsx";
 
 const rootElement = document.getElementById('root');
 
+// Initialize default dark mode theme
+const initializeTheme = () => {
+  // Force reset to dark mode for new default (uncomment if needed)
+  // localStorage.removeItem("colorschema");
+  // localStorage.removeItem("layoutStyling");
+  // localStorage.removeItem("layoutThemeColors");
+
+  // Set default values if not exists in localStorage
+  if (!localStorage.getItem("colorschema")) {
+    localStorage.setItem("colorschema", "dark_mode");
+  }
+  if (!localStorage.getItem("layoutStyling")) {
+    localStorage.setItem("layoutStyling", "default");
+  }
+  if (!localStorage.getItem("layoutThemeColors")) {
+    localStorage.setItem("layoutThemeColors", "light");
+  }
+
+  // Apply theme to document
+  const colorSchema = localStorage.getItem("colorschema") || "dark_mode";
+  const layoutStyling = localStorage.getItem("layoutStyling") || "default";
+  const layoutThemeColors = localStorage.getItem("layoutThemeColors") || "light";
+
+  document.documentElement.setAttribute("data-layout-mode", colorSchema);
+  document.documentElement.setAttribute("data-layout-style", layoutStyling);
+  document.documentElement.setAttribute("data-nav-color", layoutThemeColors);
+};
+
+// Initialize theme before rendering
+initializeTheme();
+
 
 
 if (rootElement) {
