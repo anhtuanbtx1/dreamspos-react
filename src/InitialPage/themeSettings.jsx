@@ -389,246 +389,245 @@ const ThemeSettings = () => {
                       </div>
                     </div>
                   </div>
+                </div>
 
-                    <div className="theme-mode border-0 mb-0">
-                      <div className="theme-head">
-                        <h6><Layout size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />Layout Mode</h6>
-                        <p>Select the primary layout style for your app.</p>
+                <div className="theme-mode border-0 mb-0">
+                  <div className="theme-head">
+                    <h6><Layout size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />Layout Mode</h6>
+                    <p>Select the primary layout style for your app.</p>
+                  </div>
+                  <div className="row">
+                    <div className="col-xl-6 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div
+                            className="status-toggle d-flex align-items-center me-2"
+                            onClick={DefaultStyle}
+                          >
+                            <input
+                              type="radio"
+                              name="layout"
+                              id="default_layout"
+                              className="check layout-mode"
+                              defaultValue="default"
+                              defaultChecked
+                            />
+                            <label
+                              htmlFor="default_layout"
+                              className="checktoggles"
+                            >
+                              <ImageWithBasePath
+                                src="assets/img/theme/theme-img-01.jpg"
+                                alt="img"
+                              />
+                              <span className="theme-name">Default</span>
+                            </label>
+                          </div>
+                        </div>
                       </div>
-                      <div className="row">
-                        <div className="col-xl-6 ere">
-                          <div className="layout-wrap">
-                            <div className="d-flex align-items-center">
-                              <div
-                                className="status-toggle d-flex align-items-center me-2"
-                                onClick={DefaultStyle}
-                              >
-                                <input
-                                  type="radio"
-                                  name="layout"
-                                  id="default_layout"
-                                  className="check layout-mode"
-                                  defaultValue="default"
-                                  defaultChecked
-                                />
-                                <label
-                                  htmlFor="default_layout"
-                                  className="checktoggles"
-                                >
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-01.jpg"
-                                    alt="img"
-                                  />
-                                  <span className="theme-name">Default</span>
-                                </label>
-                              </div>
-                            </div>
+                    </div>
+                    <div className="col-xl-6 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div
+                            className="status-toggle d-flex align-items-center me-2"
+                            onClick={LayoutBox}
+                          >
+                            <input
+                              type="radio"
+                              name="layout"
+                              id="box_layout"
+                              className="check layout-mode"
+                              defaultValue="box"
+                            />
+                            <label
+                              htmlFor="box_layout"
+                              className="checktoggles"
+                            >
+                              <ImageWithBasePath
+                                src="assets/img/theme/theme-img-07.jpg"
+                                alt="img"
+                              />
+                              <span className="theme-name">Box</span>
+                            </label>
                           </div>
                         </div>
-                        <div className="col-xl-6 ere">
-                          <div className="layout-wrap">
-                            <div className="d-flex align-items-center">
-                              <div
-                                className="status-toggle d-flex align-items-center me-2"
-                                onClick={LayoutBox}
-                              >
-                                <input
-                                  type="radio"
-                                  name="layout"
-                                  id="box_layout"
-                                  className="check layout-mode"
-                                  defaultValue="box"
-                                />
-                                <label
-                                  htmlFor="box_layout"
-                                  className="checktoggles"
-                                >
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-07.jpg"
-                                    alt="img"
-                                  />
-                                  <span className="theme-name">Box</span>
-                                </label>
-                              </div>
-                            </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-6 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div
+                            className="status-toggle d-flex align-items-center me-2"
+                            onClick={collapsedLayout}
+                          >
+                            <input
+                              type="radio"
+                              name="layout"
+                              id="collapse_layout"
+                              className="check layout-mode"
+                              defaultValue="collapsed"
+                            />
+                            <label
+                              htmlFor="collapse_layout"
+                              className="checktoggles"
+                            >
+                              <ImageWithBasePath
+                                src="assets/img/theme/theme-img-05.jpg"
+                                alt="img"
+                              />
+                              <span className="theme-name">Collapsed</span>
+                            </label>
                           </div>
                         </div>
-                        <div className="col-xl-6 ere">
-                          <div className="layout-wrap">
-                            <div className="d-flex align-items-center">
-                              <div
-                                className="status-toggle d-flex align-items-center me-2"
-                                onClick={collapsedLayout}
-                              >
-                                <input
-                                  type="radio"
-                                  name="layout"
-                                  id="collapse_layout"
-                                  className="check layout-mode"
-                                  defaultValue="collapsed"
-                                />
-                                <label
-                                  htmlFor="collapse_layout"
-                                  className="checktoggles"
-                                >
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-05.jpg"
-                                    alt="img"
-                                  />
-                                  <span className="theme-name">Collapsed</span>
-                                </label>
-                              </div>
-                            </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-6 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div
+                            className="status-toggle d-flex align-items-center me-2"
+                            onClick={HorizontalLayout}
+                          >
+                            <input
+                              type="radio"
+                              name="layout"
+                              id="horizontal_layout"
+                              className="check layout-mode"
+                              defaultValue="horizontal"
+                            />
+                            <label
+                              htmlFor="horizontal_layout"
+                              className="checktoggles"
+                            >
+                              <ImageWithBasePath
+                                src="assets/img/theme/theme-img-06.jpg"
+                                alt
+                              />
+                              <span className="theme-name">Horizontal</span>
+                            </label>
                           </div>
                         </div>
-                        <div className="col-xl-6 ere">
-                          <div className="layout-wrap">
-                            <div className="d-flex align-items-center">
-                              <div
-                                className="status-toggle d-flex align-items-center me-2"
-                                onClick={HorizontalLayout}
-                              >
-                                <input
-                                  type="radio"
-                                  name="layout"
-                                  id="horizontal_layout"
-                                  className="check layout-mode"
-                                  defaultValue="horizontal"
-                                />
-                                <label
-                                  htmlFor="horizontal_layout"
-                                  className="checktoggles"
-                                >
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-06.jpg"
-                                    alt
-                                  />
-                                  <span className="theme-name">Horizontal</span>
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-xl-6 ere">
-                          <div className="layout-wrap">
-                            <div className="d-flex align-items-center">
-                              <div
-                                className="status-toggle d-flex align-items-center me-2"
-                                onClick={modernLayout}
-                              >
-                                <input
-                                  type="radio"
-                                  name="layout"
-                                  id="modern_layout"
-                                  className="check layout-mode"
-                                  defaultValue="modern"
-                                />
-                                <label
-                                  htmlFor="modern_layout"
-                                  className="checktoggles"
-                                >
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-04.jpg"
-                                    alt
-                                  />
-                                  <span className="theme-name">Modern</span>
-                                </label>
-                              </div>
-                            </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-6 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div
+                            className="status-toggle d-flex align-items-center me-2"
+                            onClick={modernLayout}
+                          >
+                            <input
+                              type="radio"
+                              name="layout"
+                              id="modern_layout"
+                              className="check layout-mode"
+                              defaultValue="modern"
+                            />
+                            <label
+                              htmlFor="modern_layout"
+                              className="checktoggles"
+                            >
+                              <ImageWithBasePath
+                                src="assets/img/theme/theme-img-04.jpg"
+                                alt
+                              />
+                              <span className="theme-name">Modern</span>
+                            </label>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                    <form id="nav_color" method="post">
-                      <div className="theme-mode">
-                        <div className="theme-head">
-                          <h6>Navigation Colors</h6>
-                          <p>Setup the color for the Navigation</p>
-                        </div>
-                        <div className="row">
-                          <div className="col-xl-4 ere">
-                            <div className="layout-wrap">
-                              <div className="d-flex align-items-center">
-                                <div className="status-toggle d-flex align-items-center me-2">
-                                  <input
-                                    type="radio"
-                                    name="nav_color"
-                                    id="light_color"
-                                    className="check nav-color"
-                                    defaultValue="light"
-                                    defaultChecked
-                                  />
-                                  <label
-                                    htmlFor="light_color"
-                                    className="checktoggles"
-                                  >
-                                    <span
-                                      className="theme-name"
-                                      onClick={LayoutLight}
-                                    >
-                                      Light
-                                    </span>
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-xl-4 ere">
-                            <div className="layout-wrap">
-                              <div className="d-flex align-items-center">
-                                <div className="status-toggle d-flex align-items-center me-2">
-                                  <input
-                                    type="radio"
-                                    name="nav_color"
-                                    id="grey_color"
-                                    className="check nav-color"
-                                    defaultValue="grey"
-                                  />
-                                  <label
-                                    htmlFor="grey_color"
-                                    className="checktoggles"
-                                  >
-                                    <span
-                                      className="theme-name"
-                                      onClick={LayoutGrey}
-                                    >
-                                      Grey
-                                    </span>
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-xl-4 ere">
-                            <div className="layout-wrap">
-                              <div className="d-flex align-items-center">
-                                <div className="status-toggle d-flex align-items-center me-2">
-                                  <input
-                                    type="radio"
-                                    name="nav_color"
-                                    id="dark_color"
-                                    className="check nav-color"
-                                    defaultValue="dark"
-                                  />
-                                  <label
-                                    htmlFor="dark_color"
-                                    className="checktoggles"
-                                  >
-                                    <span
-                                      className="theme-name"
-                                      onClick={LayoutDark}
-                                    >
-                                      Dark
-                                    </span>
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
+                </div>
+
+                <div className="theme-mode">
+                  <div className="theme-head">
+                    <h6>Navigation Colors</h6>
+                    <p>Setup the color for the Navigation</p>
+                  </div>
+                  <div className="row">
+                    <div className="col-xl-4 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div className="status-toggle d-flex align-items-center me-2">
+                            <input
+                              type="radio"
+                              name="nav_color"
+                              id="light_color"
+                              className="check nav-color"
+                              defaultValue="light"
+                              defaultChecked
+                            />
+                            <label
+                              htmlFor="light_color"
+                              className="checktoggles"
+                            >
+                              <span
+                                className="theme-name"
+                                onClick={LayoutLight}
+                              >
+                                Light
+                              </span>
+                            </label>
                           </div>
                         </div>
                       </div>
-                    </form>
+                    </div>
+                    <div className="col-xl-4 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div className="status-toggle d-flex align-items-center me-2">
+                            <input
+                              type="radio"
+                              name="nav_color"
+                              id="grey_color"
+                              className="check nav-color"
+                              defaultValue="grey"
+                            />
+                            <label
+                              htmlFor="grey_color"
+                              className="checktoggles"
+                            >
+                              <span
+                                className="theme-name"
+                                onClick={LayoutGrey}
+                              >
+                                Grey
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-xl-4 ere">
+                      <div className="layout-wrap">
+                        <div className="d-flex align-items-center">
+                          <div className="status-toggle d-flex align-items-center me-2">
+                            <input
+                              type="radio"
+                              name="nav_color"
+                              id="dark_color"
+                              className="check nav-color"
+                              defaultValue="dark"
+                            />
+                            <label
+                              htmlFor="dark_color"
+                              className="checktoggles"
+                            >
+                              <span
+                                className="theme-name"
+                                onClick={LayoutDark}
+                              >
+                                Dark
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                   </div>
                 </div>
                 <div className="sidebar-footer">
