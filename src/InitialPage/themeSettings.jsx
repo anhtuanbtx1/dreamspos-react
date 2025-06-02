@@ -389,65 +389,7 @@ const ThemeSettings = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="theme-mode border-0">
-                    <div className="theme-head">
-                      <h6>Direction</h6>
-                      <p>Select the direction for your app.</p>
-                    </div>
-                    <div className="row">
-                      <div className="col-xl-6 ere">
-                        <div className="layout-wrap">
-                          <div className="d-flex align-items-center">
-                            <div className="status-toggle d-flex align-items-center me-2">
-                              <input
-                                type="radio"
-                                name="direction"
-                                id="ltr"
-                                className="check direction"
-                                defaultValue="ltr"
-                                defaultChecked
-                              />
-                              <label htmlFor="ltr" className="checktoggles">
-                                <Link to="/">
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-01.jpg"
-                                    alt
-                                  />
-                                </Link>
-                                <span className="theme-name">LTR</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-xl-6 ere">
-                        <div className="layout-wrap">
-                          <div className="d-flex align-items-center">
-                            <div className="status-toggle d-flex align-items-center me-2">
-                              <input
-                                type="radio"
-                                name="direction"
-                                id="rtl"
-                                className="check direction"
-                                defaultValue="rtl"
-                              />
-                              <label htmlFor="rtl" className="checktoggles">
-                                <Link
-                                  to="https://dreamspos.dreamstechnologies.com/react/"
-                                  target="_blank"
-                                >
-                                  <ImageWithBasePath
-                                    src="assets/img/theme/theme-img-03.jpg"
-                                    alt
-                                  />
-                                </Link>
-                                <span className="theme-name">RTL</span>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+
                     <div className="theme-mode border-0 mb-0">
                       <div className="theme-head">
                         <h6><Layout size={18} style={{marginRight: '8px', verticalAlign: 'middle'}} />Layout Mode</h6>
@@ -597,6 +539,7 @@ const ThemeSettings = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
                     <form id="nav_color" method="post">
                       <div className="theme-mode">
                         <div className="theme-head">
