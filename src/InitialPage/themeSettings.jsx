@@ -628,32 +628,30 @@ const ThemeSettings = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </form>
+            <div className="sidebar-footer">
+              <div className="row">
+                <div className="col-xl-6">
+                  <div className="footer-preview-btn">
+                    <button
+                      type="button"
+                      className="btn btn-secondary w-100"
+                      onClick={ResetData}
+                    >
+                      Reset
+                    </button>
                   </div>
                 </div>
-                <div className="sidebar-footer">
-                  <div className="row">
-                    <div className="col-xl-6">
-                      <div className="footer-preview-btn">
-                        <button
-                          type="button"
-                          className="btn btn-secondary w-100"
-                          onClick={ResetData}
-                        >
-                          Reset
-                        </button>
-                      </div>
-                    </div>
-                    <div className="col-xl-6">
-                      <div className="footer-reset-btn">
-                        <Link to="#" className="btn btn-primary w-100">
-                          Buy Now
-                        </Link>
-                      </div>
-                    </div>
+                <div className="col-xl-6">
+                  <div className="footer-reset-btn">
+                    <Link to="#" className="btn btn-primary w-100">
+                      Buy Now
+                    </Link>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
