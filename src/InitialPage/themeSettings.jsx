@@ -351,34 +351,35 @@ const ThemeSettings = () => {
                               defaultValue="dark_mode"
                               defaultChecked
                             />
-                            <label htmlFor="dark_mode" className="checktoggles theme-preview-card">
-                              <div onClick={DarkThemes}>
-                                {/* Custom Dark Mode Preview */}
-                                <div className="theme-preview dark-preview">
-                                  <div className="preview-header">
-                                    <div className="preview-dots">
-                                      <span className="dot red"></span>
-                                      <span className="dot yellow"></span>
-                                      <span className="dot green"></span>
-                                    </div>
+                            <label
+                              htmlFor="dark_mode"
+                              className="checktoggles theme-preview-card"
+                              onClick={DarkThemes}
+                            >
+                              {/* Custom Dark Mode Preview */}
+                              <div className="theme-preview dark-preview">
+                                <div className="preview-header">
+                                  <div className="preview-dots">
+                                    <span className="dot red"></span>
+                                    <span className="dot yellow"></span>
+                                    <span className="dot green"></span>
                                   </div>
-                                  <div className="preview-body">
-                                    <div className="preview-sidebar dark-sidebar">
-                                      <div className="sidebar-item"></div>
-                                      <div className="sidebar-item"></div>
-                                      <div className="sidebar-item active"></div>
-                                    </div>
-                                    <div className="preview-content dark-content">
-                                      <div className="content-header"></div>
-                                      <div className="content-body">
-                                        <div className="content-line"></div>
-                                        <div className="content-line short"></div>
-                                      </div>
+                                </div>
+                                <div className="preview-body">
+                                  <div className="preview-sidebar dark-sidebar">
+                                    <div className="sidebar-item"></div>
+                                    <div className="sidebar-item"></div>
+                                    <div className="sidebar-item active"></div>
+                                  </div>
+                                  <div className="preview-content dark-content">
+                                    <div className="content-header"></div>
+                                    <div className="content-body">
+                                      <div className="content-line"></div>
+                                      <div className="content-line short"></div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-
                               <span className="theme-name">
                                 <Moon size={14} style={{marginRight: '6px', verticalAlign: 'middle'}} />
                                 Dark Mode
