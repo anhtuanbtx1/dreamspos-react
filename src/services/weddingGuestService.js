@@ -62,10 +62,13 @@ export const weddingGuestService = {
         data: response.data
       });
 
+      // Handle different response structures
+      const responseData = response.data;
+
       return {
         success: true,
-        data: response.data.data || response.data,
-        message: response.data.message || 'Success'
+        data: responseData,
+        message: responseData.message || 'Success'
       };
     } catch (error) {
       console.error('❌ Error fetching wedding guests:', {

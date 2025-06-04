@@ -139,19 +139,62 @@ const WeddingGuestList = () => {
       console.log('📥 API Response:', response);
 
       if (response.success) {
-        const guests = response.data.guests || response.data || [];
+        // Handle different API response structures
+        let guests = [];
+        let paginationInfo = null;
+
+        // Check if response has pagination structure
+        if (response.data && typeof response.data === 'object') {
+          if (response.data.data && Array.isArray(response.data.data)) {
+            // Structure: { data: [...], pagination: {...} }
+            guests = response.data.data;
+            paginationInfo = response.data.pagination;
+          } else if (response.data.guests && Array.isArray(response.data.guests)) {
+            // Structure: { guests: [...], pagination: {...} }
+            guests = response.data.guests;
+            paginationInfo = response.data.pagination;
+          } else if (Array.isArray(response.data)) {
+            // Structure: [...]
+            guests = response.data;
+          } else {
+            // Fallback: try to extract array from response
+            guests = Object.values(response.data).find(val => Array.isArray(val)) || [];
+          }
+        }
+
         console.log('👥 Setting guest data:', guests);
         setGuestData(guests);
 
-        if (response.data.pagination) {
-          setTotalCount(response.data.pagination.totalCount);
-          setTotalPages(response.data.pagination.totalPages);
-          console.log('📊 Pagination:', response.data.pagination);
+        // Handle pagination info
+        if (paginationInfo) {
+          const totalCount = paginationInfo.totalCount || paginationInfo.total || 0;
+          const totalPages = paginationInfo.totalPages || Math.ceil(totalCount / pageSize);
+
+          setTotalCount(totalCount);
+          setTotalPages(totalPages);
+
+          console.log('📊 Pagination from API:', {
+            paginationInfo,
+            totalCount,
+            totalPages,
+            currentPage: page,
+            pageSize
+          });
         } else {
-          // If no pagination object, assume single page
-          setTotalCount(guests.length);
-          setTotalPages(1);
-          console.log('📊 No pagination, using array length:', guests.length);
+          // Calculate pagination from array length
+          const totalCount = guests.length;
+          const totalPages = Math.ceil(totalCount / pageSize);
+
+          setTotalCount(totalCount);
+          setTotalPages(totalPages);
+
+          console.log('📊 Calculated pagination:', {
+            totalCount,
+            totalPages,
+            currentPage: page,
+            pageSize,
+            guestsLength: guests.length
+          });
         }
       } else {
         console.error('❌ API call failed:', response.message);
