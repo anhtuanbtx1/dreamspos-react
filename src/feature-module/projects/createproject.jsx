@@ -65,7 +65,8 @@ const CreateProject = () => {
           { id: 1, name: 'Web Development', color: 'blue' },
           { id: 2, name: 'Mobile App', color: 'green' },
           { id: 3, name: 'Design', color: 'purple' },
-          { id: 4, name: 'Marketing', color: 'orange' }
+          { id: 4, name: 'Marketing', color: 'orange' },
+          { id: 5, name: 'Khác', color: 'orange' },
         ]);
       }
     } catch (error) {
@@ -285,8 +286,8 @@ const CreateProject = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>Create New Project</h4>
-              <h6>Add a new project to your workspace</h6>
+              <h4>Tạo dự án</h4>
+              <h6>Thêm một dự án mới vào không gian làm việc của bạn</h6>
             </div>
           </div>
           <div className="page-btn">
@@ -308,19 +309,19 @@ const CreateProject = () => {
                     <div className="form-group-icon">
                       <FileText size={20} />
                     </div>
-                    <h5>Project Information</h5>
+                    <h5>Thông tin</h5>
                   </div>
                 </div>
 
                 <div className="col-lg-6">
                   <div className="mb-3">
-                    <label className="form-label">Project Name <span className="text-danger">*</span></label>
+                    <label className="form-label">Tên dự án <span className="text-danger">*</span></label>
                     <input
                       type="text"
                       className={`form-control ${errors.projectName ? 'is-invalid' : ''}`}
                       value={formData.projectName}
                       onChange={(e) => handleInputChange('projectName', e.target.value)}
-                      placeholder="Enter project name"
+                      placeholder="Nhập tên dự án"
                     />
                     {errors.projectName && <div className="invalid-feedback">{errors.projectName}</div>}
                   </div>
@@ -328,13 +329,13 @@ const CreateProject = () => {
 
                 <div className="col-lg-6">
                   <div className="mb-3">
-                    <label className="form-label">Client Name <span className="text-danger">*</span></label>
+                    <label className="form-label">Đối tác <span className="text-danger">*</span></label>
                     <input
                       type="text"
                       className={`form-control ${errors.clientName ? 'is-invalid' : ''}`}
                       value={formData.clientName}
                       onChange={(e) => handleInputChange('clientName', e.target.value)}
-                      placeholder="Enter client name"
+                      placeholder="Nhập đối tác"
                     />
                     {errors.clientName && <div className="invalid-feedback">{errors.clientName}</div>}
                   </div>
@@ -342,13 +343,13 @@ const CreateProject = () => {
 
                 <div className="col-lg-12">
                   <div className="mb-3">
-                    <label className="form-label">Project Description <span className="text-danger">*</span></label>
+                    <label className="form-label">Mô tả <span className="text-danger">*</span></label>
                     <TextArea
                       rows={4}
                       className={`form-control ${errors.description ? 'is-invalid' : ''}`}
                       value={formData.description}
                       onChange={(e) => handleInputChange('description', e.target.value)}
-                      placeholder="Describe your project goals, requirements, and deliverables..."
+                      placeholder="Mô tả chi tiết về dự án..."
                     />
                     {errors.description && <div className="invalid-feedback">{errors.description}</div>}
                   </div>
@@ -362,13 +363,13 @@ const CreateProject = () => {
                     <div className="form-group-icon">
                       <Target size={20} />
                     </div>
-                    <h5>Project Settings</h5>
+                    <h5>Cấu hình mục tiêu</h5>
                   </div>
                 </div>
 
                 <div className="col-lg-4">
                   <div className="mb-3">
-                    <label className="form-label">Category <span className="text-danger">*</span></label>
+                    <label className="form-label">Danh mục <span className="text-danger">*</span></label>
                     <Select
                       value={formData.categoryId}
                       onChange={(value) => handleInputChange('categoryId', value)}
@@ -389,7 +390,7 @@ const CreateProject = () => {
 
                 <div className="col-lg-4">
                   <div className="mb-3">
-                    <label className="form-label">Priority</label>
+                    <label className="form-label">Mức độ</label>
                     <Select
                       value={formData.priority}
                       onChange={(value) => handleInputChange('priority', value)}
@@ -397,15 +398,15 @@ const CreateProject = () => {
                     >
                       <Option value="low">
                         <span className="badge badge-success me-2"></span>
-                        Low Priority
+                        Thấp
                       </Option>
                       <Option value="medium">
                         <span className="badge badge-warning me-2"></span>
-                        Medium Priority
+                        Trung bình
                       </Option>
                       <Option value="high">
                         <span className="badge badge-danger me-2"></span>
-                        High Priority
+                        Ưu tiên
                       </Option>
                     </Select>
                   </div>
@@ -413,17 +414,17 @@ const CreateProject = () => {
 
                 <div className="col-lg-4">
                   <div className="mb-3">
-                    <label className="form-label">Status</label>
+                    <label className="form-label">Trạng thái</label>
                     <Select
                       value={formData.status}
                       onChange={(value) => handleInputChange('status', value)}
                       className="project-select"
                     >
-                      <Option value="planning">Planning</Option>
-                      <Option value="in-progress">In Progress</Option>
-                      <Option value="review">Review</Option>
-                      <Option value="completed">Completed</Option>
-                      <Option value="on-hold">On Hold</Option>
+                      <Option value="planning">Dự định</Option>
+                      <Option value="in-progress">Đang thực hiện</Option>
+                      <Option value="review">Xem xét</Option>
+                      <Option value="completed">Hoàn thành</Option>
+                      <Option value="on-hold">Tạm dừng</Option>
                     </Select>
                   </div>
                 </div>
@@ -436,13 +437,13 @@ const CreateProject = () => {
                     <div className="form-group-icon">
                       <TrendingUp size={20} />
                     </div>
-                    <h5>Timeline, Budget & Progress</h5>
+                    <h5>Thời gian, Ngân sách & Tiến độ</h5>
                   </div>
                 </div>
 
                 <div className="col-lg-3">
                   <div className="mb-3">
-                    <label className="form-label">Start Date</label>
+                    <label className="form-label">Thời gian bắt đầu</label>
                     <DatePicker
                       value={formData.startDate}
                       onChange={(date) => handleInputChange('startDate', date)}
@@ -455,7 +456,7 @@ const CreateProject = () => {
 
                 <div className="col-lg-3">
                   <div className="mb-3">
-                    <label className="form-label">End Date</label>
+                    <label className="form-label">Thời gian kết thúc</label>
                     <DatePicker
                       value={formData.endDate}
                       onChange={(date) => handleInputChange('endDate', date)}
@@ -469,7 +470,7 @@ const CreateProject = () => {
 
                 <div className="col-lg-3">
                   <div className="mb-3">
-                    <label className="form-label">Budget <span className="text-danger">*</span></label>
+                    <label className="form-label">Ngân sách <span className="text-danger">*</span></label>
                     <div className="input-group">
                       <span className="input-group-text">
                         <DollarSign size={16} />
@@ -488,7 +489,7 @@ const CreateProject = () => {
 
                 <div className="col-lg-3">
                   <div className="mb-3">
-                    <label className="form-label">Progress Percentage</label>
+                    <label className="form-label">Phần trăm tiến độ</label>
                     <div className="input-group">
                       <input
                         type="number"
@@ -502,7 +503,7 @@ const CreateProject = () => {
                       <span className="input-group-text">%</span>
                     </div>
                     {errors.progressPercentage && <div className="invalid-feedback">{errors.progressPercentage}</div>}
-                    <small className="form-text text-muted">Enter progress from 0 to 100</small>
+                    <small className="form-text text-muted">Nhập giá trị từ 0 đến 100</small>
                   </div>
                 </div>
               </div>
@@ -514,19 +515,19 @@ const CreateProject = () => {
                     <div className="form-group-icon">
                       <Users size={20} />
                     </div>
-                    <h5>Team Assignment</h5>
+                    <h5>Phân công nhóm</h5>
                   </div>
                 </div>
 
                 <div className="col-lg-6">
                   <div className="mb-3">
-                    <label className="form-label">Project Manager</label>
+                    <label className="form-label">Người quản lý</label>
                     <Select
                       mode="multiple"
                       value={formData.managers}
                       onChange={(value) => handleInputChange('managers', value)}
                       className="project-select"
-                      placeholder="Select project manager(s) (Optional)"
+                      placeholder="Chọn quản lý dự án"
                       optionLabelProp="label"
                       loading={usersLoading}
                       allowClear
@@ -543,19 +544,19 @@ const CreateProject = () => {
                         </Option>
                       ))}
                     </Select>
-                    <small className="form-text text-muted">You can assign managers later</small>
+                    <small className="form-text text-muted">Bạn có thể chỉ định người quản lý sau</small>
                   </div>
                 </div>
 
                 <div className="col-lg-6">
                   <div className="mb-3">
-                    <label className="form-label">Team Members</label>
+                    <label className="form-label">Thành viên</label>
                     <Select
                       mode="multiple"
                       value={formData.teamMembers}
                       onChange={(value) => handleInputChange('teamMembers', value)}
                       className="project-select"
-                      placeholder="Select team members (Optional)"
+                      placeholder="Chọn thành viên tham gia dự án"
                       optionLabelProp="label"
                       loading={usersLoading}
                       allowClear
@@ -572,7 +573,7 @@ const CreateProject = () => {
                         </Option>
                       ))}
                     </Select>
-                    <small className="form-text text-muted">You can assign team members later</small>
+                    <small className="form-text text-muted">Bạn có thể chỉ định sau</small>
                   </div>
                 </div>
               </div>

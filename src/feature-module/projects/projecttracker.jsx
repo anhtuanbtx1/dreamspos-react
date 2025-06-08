@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Table, Progress, Tag, Avatar, Button, DatePicker, Select, Spin } from 'antd';
+import { Table, Progress, Tag, Avatar, Button, DatePicker, Select, Spin, Modal, message } from 'antd';
 import {
   Star,
   Edit,
@@ -162,6 +162,13 @@ const ProjectTracker = () => {
         borderColor: '#f5222d',
         textColor: '#f5222d',
         icon: '⏸️'
+      },
+      'review':{
+        color: '#1890ff',
+        backgroundColor: 'rgba(24, 144, 255, 0.1)',
+        borderColor: '#66a2a3',
+        textColor: '#ffffff',
+        icon: '📋'
       }
     };
 
@@ -177,6 +184,80 @@ const ProjectTracker = () => {
       'on-hold': 'On Hold'
     };
     return statusMap[status] || status;
+  };
+
+  // Delete project function
+  const handleDeleteProject = async (projectId) => {
+    Modal.confirm({
+      title: 'Xác nhận xóa dự án',
+      content: 'Bạn có chắc chắn muốn xóa dự án này không? Hành động này không thể hoàn tác.',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Hủy',
+      onOk: async () => {
+        try {
+          const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
+          console.log('🗑️ Deleting project:', projectId);
+
+          const response = await fetch(`${apiBaseUrl}Projects/delete/${projectId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+
+          console.log('📡 Delete response status:', response.status);
+          console.log('📡 Delete response ok:', response.ok);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          // Try to parse JSON response
+          let result = null;
+          try {
+            const responseText = await response.text();
+            console.log('📄 Raw response text:', responseText);
+
+            if (responseText) {
+              result = JSON.parse(responseText);
+              console.log('✅ Parsed response:', result);
+            } else {
+              console.log('📄 Empty response body');
+              result = { success: true, message: 'Delete successful' };
+            }
+          } catch (parseError) {
+            console.log('⚠️ JSON parse error:', parseError.message);
+            // If JSON parsing fails but HTTP status is OK, consider it success
+            result = { success: true, message: 'Delete successful' };
+          }
+
+          // Check if response indicates success
+          const isSuccess = response.ok && (
+            !result ||
+            result.success !== false ||
+            result.status !== 'error'
+          );
+
+          if (isSuccess) {
+            console.log('✅ Delete operation successful');
+            message.success('Xóa dự án thành công!');
+
+            // Reload projects after successful deletion
+            loadProjects(currentPage, pageSize);
+          } else {
+            console.log('❌ Delete operation failed:', result);
+            const errorMessage = result?.message || result?.error || 'Unknown error occurred';
+            message.error('Xóa dự án thất bại: ' + errorMessage);
+          }
+
+        } catch (error) {
+          console.error('💥 Error deleting project:', error);
+          message.error('Có lỗi xảy ra khi xóa dự án: ' + error.message);
+        }
+      }
+    });
   };
 
   // Load data on component mount
@@ -210,7 +291,6 @@ const ProjectTracker = () => {
   };
 
 
-
   // Table columns configuration
   const columns = [
     {
@@ -242,7 +322,7 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Project Name',
+      title: 'Tên dự án',
       dataIndex: 'projectName',
       key: 'projectName',
       render: (text) => (
@@ -261,7 +341,7 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Project Manager',
+      title: 'Quản lý',
       dataIndex: 'manager',
       key: 'manager',
       render: (managers) => (
@@ -278,7 +358,7 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Start Date',
+      title: 'Bắt đầu',
       dataIndex: 'startDate',
       key: 'startDate',
       render: (date) => (
@@ -304,7 +384,7 @@ const ProjectTracker = () => {
       )
     },
     {
-      title: 'Deadline',
+      title: 'Kết thúc',
       dataIndex: 'deadline',
       key: 'deadline',
       render: (date) => (
@@ -341,7 +421,7 @@ const ProjectTracker = () => {
       }
     },
     {
-      title: 'Budget',
+      title: 'Ngân sách',
       dataIndex: 'budget',
       key: 'budget',
       render: (budget) => (
@@ -352,11 +432,22 @@ const ProjectTracker = () => {
       title: '',
       key: 'actions',
       width: 100,
-      render: () => (
+      render: (_, record) => (
         <div className="action-table-data">
           <div className="edit-delete-action">
-            <Edit size={16} style={{ cursor: 'pointer' }} />
-            <Trash2 size={16} style={{ cursor: 'pointer' }} />
+            <Edit
+              size={16}
+              style={{ cursor: 'pointer', color: '#1890ff', marginRight: '8px' }}
+              onClick={() => {
+                // TODO: Navigate to edit page
+                message.info('Edit functionality will be implemented');
+              }}
+            />
+            <Trash2
+              size={16}
+              style={{ cursor: 'pointer', color: '#ff4d4f' }}
+              onClick={() => handleDeleteProject(record.id || record.key)}
+            />
           </div>
         </div>
       )
@@ -381,8 +472,8 @@ const ProjectTracker = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>Project Tracker</h4>
-              <h6>Manage Your Projects</h6>
+              <h4>Theo dõi tiến độ dự án</h4>
+              <h6>Quản lý dự án</h6>
             </div>
           </div>
           <div className="page-btn">
@@ -392,7 +483,7 @@ const ProjectTracker = () => {
                 icon={<Plus size={16} />}
                 className="btn btn-added"
               >
-                Create New Project
+                Thêm mới
               </Button>
             </Link>
           </div>
@@ -405,7 +496,7 @@ const ProjectTracker = () => {
               <div className="search-set">
                 <div className="search-input">
                   <span style={{ fontSize: '16px', fontWeight: '500' }}>
-                    Project Lists
+                    Danh sách dự án
                   </span>
 
                 </div>
@@ -455,12 +546,12 @@ const ProjectTracker = () => {
                     className="project-filter-select"
                     style={{ width: 140, height: 42 }}
                   >
-                    <Option value="All Status">Select Status</Option>
-                    <Option value="Planning">📋 Planning</Option>
-                    <Option value="Completed">✅ Completed</Option>
+                    <Option value="All Status">Chọn trạng thái</Option>
+                    <Option value="Planning">📋 Dự định</Option>
+                    <Option value="Completed">✅ Hoàn thành</Option>
                     <Option value="Pending">⏳ Pending</Option>
-                    <Option value="Inprogress">🚀 In Progress</Option>
-                    <Option value="Onhold">⏸️ On Hold</Option>
+                    <Option value="Inprogress">🚀 Hiện thực</Option>
+                    <Option value="Onhold">⏸️ Tạm dừng</Option>
                   </Select>
 
                   <Select
