@@ -317,7 +317,7 @@ const Calendar = () => {
                   data-bs-toggle="modal"
                   data-bs-target="#add_event"
                 >
-                  Create Event
+                  Thêm sự kiện
                 </a>
               </div>
             </div>
@@ -327,35 +327,35 @@ const Calendar = () => {
               <div className="calendar-sidebar">
                 <h4 className="card-title">🎯 Drag & Drop Events</h4>
                 <div id="calendar-events" className="mb-3">
-                  <div className="calendar-events" data-class="bg-primary">
-                    <i className="fas fa-circle" /> 👥 Team Meeting
+                  <div className="calendar-events" data-class="bg-danger">
+                    <i className="fas fa-circle" /> 👥 Họp
                   </div>
                   <div className="calendar-events" data-class="bg-success">
-                    <i className="fas fa-circle" /> 📊 Project Review
-                  </div>
-                  <div className="calendar-events" data-class="bg-warning">
-                    <i className="fas fa-circle" /> 📞 Client Call
+                    <i className="fas fa-circle" /> ⚽ Bóng đá
                   </div>
                   <div className="calendar-events" data-class="bg-danger">
-                    <i className="fas fa-circle" /> 🎨 Design Workshop
+                    <i className="fas fa-circle" /> 🔑 Quan trọng
+                  </div>
+                  <div className="calendar-events" data-class="bg-success">
+                    <i className="fas fa-circle" /> 🎨 Sáng tạo 
                   </div>
                   <div className="calendar-events" data-class="bg-info">
-                    <i className="fas fa-circle" /> 💻 Code Review
+                    <i className="fas fa-circle" /> 🧑‍💼 Đi làm
                   </div>
                   <div className="calendar-events" data-class="bg-secondary">
-                    <i className="fas fa-circle" /> 🍽️ Lunch Break
+                    <i className="fas fa-circle" /> 🍽️ Ăn trưa 
                   </div>
                   <div className="calendar-events" data-class="bg-purple">
                     <i className="fas fa-circle" /> 📚 Training Session
                   </div>
                   <div className="calendar-events" data-class="bg-success">
-                    <i className="fas fa-circle" /> 🏃 Sprint Planning
+                    <i className="fas fa-circle" /> 🏃 Gym
                   </div>
                   <div className="calendar-events" data-class="bg-info">
-                    <i className="fas fa-circle" /> 🔍 Bug Triage
+                    <i className="fas fa-circle" /> 🏸 Cầu lông
                   </div>
-                  <div className="calendar-events" data-class="bg-warning">
-                    <i className="fas fa-circle" /> ☕ Coffee Chat
+                  <div className="calendar-events" data-class="bg-primary">
+                    <i className="fas fa-circle" /> ☕ Cafe
                   </div>
                 </div>
                 <div className="checkbox mb-3">
@@ -432,10 +432,24 @@ const Calendar = () => {
                   <FullCalendar
                     ref={calendarRef}
                     plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                    locale="vi" // Set Vietnamese locale
                     headerToolbar={{
                       left: "prev,next today",
                       center: "title",
                       right: "dayGridMonth,timeGridWeek,timeGridDay",
+                    }}
+                    buttonText={{
+                      today: "Hôm nay",
+                      month: "Tháng",
+                      week: "Tuần",
+                      day: "Ngày",
+                      prev: "Trước",
+                      next: "Sau"
+                    }}
+                    dayHeaderFormat={{ weekday: 'long' }}
+                    titleFormat={{
+                      year: 'numeric',
+                      month: 'long'
                     }}
                     initialView="dayGridMonth"
                     editable={true}
@@ -516,7 +530,7 @@ const Calendar = () => {
                 type="button"
                 className="btn btn-success save-event submit-btn"
               >
-                Create event
+                Thêm sự kiện
               </button>
               <button
                 type="button"

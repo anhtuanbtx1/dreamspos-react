@@ -86,7 +86,7 @@ const Content = () => {
                                 className="feather-calendar"
                               />
                             </span>
-                            <h3>Today</h3>
+                            <h3>Hôm nay</h3>
                             <h6>1</h6>
                           </div>
                         </div>
