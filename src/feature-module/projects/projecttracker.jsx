@@ -35,12 +35,39 @@ const ProjectTracker = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Load projects from API
-  const loadProjects = async (page = currentPage, size = pageSize) => {
+  // Add loading ref to prevent duplicate calls with timestamp
+  const loadingRef = React.useRef(false);
+  const lastCallRef = React.useRef(0);
+  const mountedRef = React.useRef(false);
+
+  // Load projects from API with enhanced duplicate prevention
+  const loadProjects = React.useCallback(async (page = currentPage, size = pageSize) => {
+    const now = Date.now();
+    const timeSinceLastCall = now - lastCallRef.current;
+
+    // Prevent duplicate API calls within 500ms
+    if (loadingRef.current || timeSinceLastCall < 500) {
+      console.log('🚫 API call blocked - already in progress or too soon:', {
+        loading: loadingRef.current,
+        timeSinceLastCall,
+        mounted: mountedRef.current
+      });
+      return;
+    }
+
+    // Only proceed if component is mounted
+    if (!mountedRef.current) {
+      console.log('🚫 Component not mounted, skipping API call');
+      return;
+    }
+
+    lastCallRef.current = now;
+    loadingRef.current = true;
     setLoading(true);
+
     try {
       const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || '';
-      console.log('Loading projects from:', `${apiBaseUrl}Projects`);
+      console.log('📡 Loading projects from:', `${apiBaseUrl}Projects?page=${page}&pageSize=${size}`);
 
       const response = await fetch(`${apiBaseUrl}Projects?page=${page}&pageSize=${size}`, {
         method: 'GET',
@@ -55,7 +82,7 @@ const ProjectTracker = () => {
       }
 
       const result = await response.json();
-      console.log('API Response:', result);
+      console.log('✅ API Response:', result);
 
       if (result.data) {
         // Map API data to table format
@@ -99,15 +126,20 @@ const ProjectTracker = () => {
         setTotalPages(1);
       }
     } catch (error) {
-      console.error('Error loading projects:', error);
-      // Set empty data on error
-      setProjectData([]);
-      setTotalCount(0);
-      setTotalPages(1);
+      console.error('💥 Error loading projects:', error);
+      // Only update state if component is still mounted
+      if (mountedRef.current) {
+        setProjectData([]);
+        setTotalCount(0);
+        setTotalPages(1);
+      }
     } finally {
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
+      loadingRef.current = false; // Reset loading ref
     }
-  };
+  }, [currentPage, pageSize]); // Add dependencies for useCallback
 
   // Helper functions for mapping
   const getCategoryColor = (categoryName) => {
@@ -188,6 +220,12 @@ const ProjectTracker = () => {
 
   // Delete project function
   const handleDeleteProject = async (projectId) => {
+    // Prevent multiple delete operations
+    if (loading || loadingRef.current) {
+      console.log('🚫 Operation already in progress, ignoring delete request');
+      return;
+    }
+
     Modal.confirm({
       title: 'Xác nhận xóa dự án',
       content: 'Bạn có chắc chắn muốn xóa dự án này không? Hành động này không thể hoàn tác.',
@@ -260,34 +298,47 @@ const ProjectTracker = () => {
     });
   };
 
-  // Load data on component mount
+  // Mount/unmount management
   useEffect(() => {
+    mountedRef.current = true;
+    console.log('🚀 Component mounted - loading projects');
+
+    // Load projects on mount
     loadProjects();
-  }, []);
+
+    // Cleanup on unmount
+    return () => {
+      console.log('🔄 Component unmounting - cleaning up');
+      mountedRef.current = false;
+      loadingRef.current = false;
+      lastCallRef.current = 0;
+    };
+  }, [loadProjects]); // Include loadProjects in dependencies
 
 
 
   // Handle pagination change
   const handlePageChange = (page) => {
-    setCurrentPage(page);
-    loadProjects(page, pageSize);
+    if (page !== currentPage && !loading) {
+      setCurrentPage(page);
+      loadProjects(page, pageSize);
+    }
   };
 
   // Handle page size change
   const handlePageSizeChange = (newPageSize) => {
-    setPageSize(newPageSize);
-    setCurrentPage(1); // Reset to first page when changing page size
-    loadProjects(1, newPageSize);
+    if (newPageSize !== pageSize && !loading) {
+      setPageSize(newPageSize);
+      setCurrentPage(1); // Reset to first page when changing page size
+      loadProjects(1, newPageSize);
+    }
   };
 
-  // Handle table change (for Ant Design Table)
-  const handleTableChange = (paginationInfo) => {
-    if (paginationInfo.current !== currentPage) {
-      handlePageChange(paginationInfo.current);
-    }
-    if (paginationInfo.pageSize !== pageSize) {
-      handlePageSizeChange(paginationInfo.pageSize);
-    }
+  // Handle table change (for Ant Design Table) - DISABLED to prevent double calls
+  const handleTableChange = () => {
+    // Disabled to prevent duplicate API calls since we use CustomPagination
+    // The CustomPagination component handles all pagination logic
+    console.log('Table change event ignored to prevent duplicate API calls');
   };
 
 
@@ -345,7 +396,7 @@ const ProjectTracker = () => {
       dataIndex: 'manager',
       key: 'manager',
       render: (managers) => (
-        <Avatar.Group maxCount={2} size="small">
+        <Avatar.Group max={{ count: 2 }} size="small">
           {managers.map((manager, index) => (
             <Avatar
               key={index}

@@ -1,7 +1,7 @@
 /* eslint-disable no-dupe-keys */
 /* eslint-disable no-const-assign */
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -9,6 +9,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { Draggable } from "@fullcalendar/interaction";
 // import "../../assets/plugins/fullcalendar/fullcalendar.min.css";
 import "../../style/css/fullcalendar.min.css";
+import "../../style/css/calendar-custom.css";
 // import FullCalendar from '@fullcalendar/react/dist/main.esm.js';
 
 import Select from "react-select";
@@ -65,15 +66,26 @@ const Calendar = () => {
       className: "bg-warning",
     },
   ]);
+  // Add ref to prevent multiple initialization
+  const initializedRef = React.useRef(false);
+
   useEffect(() => {
+    // Prevent multiple initialization
+    if (initializedRef.current) {
+      console.log("🚫 Calendar already initialized, skipping");
+      return;
+    }
+
     let elements = Array.from(
       document.getElementsByClassName("react-datepicker-wrapper")
     );
     elements.map((element) => element.classList.add("width-100"));
 
-    // Initialize external draggable events with simple hide/show
+    // Initialize external draggable events with enhanced duplicate prevention
     const draggableEl = document.getElementById("calendar-events");
     if (draggableEl) {
+      console.log("🚀 Initializing calendar draggable events");
+
       new Draggable(draggableEl, {
         itemSelector: ".calendar-events",
         eventData: function(eventEl) {
@@ -91,10 +103,9 @@ const Calendar = () => {
 
       // Store reference to currently dragging element
       let currentDragElement = null;
-      let dragHelper = null;
 
       // Listen for drag start from external elements
-      draggableEl.addEventListener('dragstart', function(e) {
+      const handleDragStart = (e) => {
         const target = e.target.closest('.calendar-events');
         if (target) {
           currentDragElement = target;
@@ -102,27 +113,42 @@ const Calendar = () => {
           setTimeout(() => {
             if (currentDragElement) {
               currentDragElement.classList.add('dragging-hidden');
+              console.log("🎯 Hiding dragged element:", target.innerText.trim());
             }
           }, 10); // Small delay to let drag start
         }
-      });
-
-      // Simple approach - just hide the original item during drag
-      // No custom helper, let FullCalendar handle the drag visual
+      };
 
       // Listen for drag end
-      document.addEventListener('dragend', function(e) {
+      const handleDragEnd = (e) => {
         if (currentDragElement) {
           currentDragElement.classList.remove('dragging-hidden');
+          console.log("🎯 Showing dragged element back");
           currentDragElement = null;
         }
-        if (dragHelper && dragHelper.parentNode) {
-          dragHelper.parentNode.removeChild(dragHelper);
-          dragHelper = null;
-        }
-      });
+      };
+
+      draggableEl.addEventListener('dragstart', handleDragStart);
+      document.addEventListener('dragend', handleDragEnd);
+
+      // Mark as initialized
+      initializedRef.current = true;
+      console.log("✅ Calendar draggable events initialized successfully");
+
+      // Cleanup function
+      return () => {
+        draggableEl.removeEventListener('dragstart', handleDragStart);
+        document.removeEventListener('dragend', handleDragEnd);
+        initializedRef.current = false;
+        console.log("🧹 Calendar drag listeners cleaned up");
+      };
     }
-  }, []);
+  }, []); // Empty dependency array for one-time initialization
+
+  // Debug useEffect to track calendarEvents changes - DISABLED to prevent re-renders
+  // useEffect(() => {
+  //   console.log("🔥 calendarEvents changed:", calendarEvents.length, calendarEvents);
+  // }, [calendarEvents]);
 
   const handleChange = (date) => {
     setDate(date);
@@ -154,48 +180,65 @@ const Calendar = () => {
     setaddneweventobj(selectInfo);
   };
 
-  const handleEventReceive = (info) => {
-    // Handle external drag and drop
-    console.log("Event received:", info.event);
+  // Add ref to track processing state more reliably
+  const processingRef = React.useRef(false);
+  const lastDropTime = React.useRef(0);
 
-    // Prevent FullCalendar from automatically adding the event
-    // We'll handle it manually to avoid duplicates
+  const handleEventReceive = useCallback((info) => {
+    const now = Date.now();
+    const timeSinceLastDrop = now - lastDropTime.current;
+
+    // Handle external drag and drop with enhanced duplicate prevention
+    console.log("🔥 handleEventReceive called - Event:", info.event.title);
+
+    // Prevent duplicate processing within 300ms
+    if (processingRef.current || timeSinceLastDrop < 300) {
+      console.log("🚫 Duplicate drop prevented:", {
+        processing: processingRef.current,
+        timeSinceLastDrop
+      });
+      info.revert();
+      return;
+    }
+
+    processingRef.current = true;
+    lastDropTime.current = now;
+
+    // Prevent default behavior
     info.revert();
 
-    // Create event object
+    // Create event object with unique ID
+    const uniqueId = `dropped-${now}-${Math.random().toString(36).substr(2, 9)}`;
     const newEvent = {
-      id: `dropped-${Date.now()}`,
+      id: uniqueId,
       title: info.event.title,
       start: info.event.start,
-      end: info.event.end || new Date(info.event.start.getTime() + 60 * 60 * 1000), // Default 1 hour duration
+      end: info.event.end || new Date(info.event.start.getTime() + 60 * 60 * 1000),
       className: info.event.classNames[0] || 'bg-primary',
       droppedAt: new Date().toLocaleString(),
       source: 'external'
     };
 
-    // Add to calendar events state to display on calendar
+    console.log("✅ Creating new event:", uniqueId);
+
+    // Update calendar events
     setCalendarEvents(prev => [...prev, newEvent]);
 
-    // Add to dropped events list for tracking
+    // Add to dropped events list
     setDroppedEvents(prev => [...prev, newEvent]);
 
-    // Show success notification in console only
-    console.log("✅ Event successfully dropped:", newEvent);
-
-    // Show the original item again (in case it was hidden)
-    const draggedEl = info.draggedEl;
-    if (draggedEl) {
-      draggedEl.classList.remove('dragging-hidden');
-    }
-
-    // Check if "Remove after drop" is checked
-    const removeAfterDrop = document.getElementById("drop-remove").checked;
-    if (removeAfterDrop) {
-      // Remove the dragged element from the external list
+    // Handle "Remove after drop" option
+    const removeAfterDrop = document.getElementById("drop-remove")?.checked;
+    if (removeAfterDrop && info.draggedEl) {
       info.draggedEl.remove();
       console.log("🗑️ Original event removed from sidebar");
     }
-  };
+
+    // Reset processing flag
+    setTimeout(() => {
+      processingRef.current = false;
+    }, 300);
+  }, []); // Remove dependencies to prevent unnecessary re-creation
 
   const handleEventDrop = (info) => {
     // Handle internal event drag and drop
@@ -331,32 +374,52 @@ const Calendar = () => {
                 {/* Dropped Events Tracker */}
                 {droppedEvents.length > 0 && (
                   <div className="mt-4">
-                    <h5 className="text-success">✅ Recently Dropped Events ({droppedEvents.length})</h5>
+                    <div className="dropped-events-header">
+                      ✅ Recently Dropped Events
+                      <span className="dropped-events-count">{droppedEvents.length}</span>
+                    </div>
                     <div className="dropped-events-list">
-                      {droppedEvents.slice(-5).map((event, index) => (
-                        <div key={event.id} className="dropped-event-item mb-2 p-2 border rounded">
-                          <div className="d-flex justify-content-between align-items-center">
-                            <div>
+                      {droppedEvents.slice(-8).map((event) => (
+                        <div key={event.id} className="dropped-event-item p-3">
+                          <div className="row align-items-start">
+                            <div className="col-8">
                               <strong>{event.title}</strong>
-                              <br />
-                              <small className="text-muted">
-                                📅 {event.start.toLocaleDateString()} at {event.start.toLocaleTimeString()}
-                              </small>
-                              <br />
-                              <small className="text-success">
-                                ⏰ Dropped: {event.droppedAt}
-                              </small>
+                              <div className="event-time">
+                                <span className="event-icon">📅</span>
+                                <small className="text-muted">
+                                  {event.start.toLocaleDateString()} • {event.start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </small>
+                              </div>
+                              <div className="event-dropped-time">
+                                <span className="event-icon">⏰</span>
+                                <small className="text-success">
+                                  {event.droppedAt}
+                                </small>
+                              </div>
                             </div>
-                            <span className={`badge ${event.className}`}>
-                              {event.className.replace('bg-', '')}
-                            </span>
+                            <div className="col-4 text-end">
+                              <span
+                                className={`badge ${event.className}`}
+                                title={event.className.replace('bg-', '').toUpperCase()}
+                                style={{
+                                  width: '20px',
+                                  height: '20px',
+                                  borderRadius: '50%',
+                                  display: 'inline-block',
+                                  border: '2px solid rgba(255,255,255,0.3)'
+                                }}
+                              >
+                              </span>
+                            </div>
                           </div>
                         </div>
                       ))}
-                      {droppedEvents.length > 5 && (
-                        <small className="text-muted">
-                          ... and {droppedEvents.length - 5} more events
-                        </small>
+                      {droppedEvents.length > 8 && (
+                        <div className="text-center mt-2">
+                          <small className="text-muted" style={{fontStyle: 'italic'}}>
+                            ... and {droppedEvents.length - 8} more events
+                          </small>
+                        </div>
                       )}
                     </div>
                   </div>

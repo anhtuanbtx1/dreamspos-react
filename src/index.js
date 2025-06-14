@@ -54,14 +54,11 @@ initializeTheme();
 if (rootElement) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <React.StrictMode>
     <Provider store={store} >
       <BrowserRouter basename={process.env.PUBLIC_URL}>
       <AllRoutes />
-
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
   );
 } else {
   console.error("Element with id 'root' not found.");
