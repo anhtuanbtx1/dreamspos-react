@@ -1434,3 +1434,152 @@ ul.ant-pagination.ant-table-pagination li button.ant-pagination-item-link {
 .section-notes-slider .notes-slider .slick-list .slick-slide div{
   margin-left: 12px !important;
 }
+
+// Calendar Dark Mode Integration
+[data-layout-mode="dark_mode"] {
+  .calendar-page-wrapper {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+  }
+
+  .calendar-page-header {
+    background: rgba(29, 29, 66, 0.95) !important;
+    border: 1px solid rgba(103, 116, 142, 0.3) !important;
+
+    h3 {
+      background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      background-clip: text !important;
+    }
+  }
+
+  .calendar-sidebar {
+    background: rgba(29, 29, 66, 0.95) !important;
+    border: 1px solid rgba(103, 116, 142, 0.3) !important;
+
+    h4 {
+      color: #ffffff !important;
+    }
+  }
+
+  .calendar-main-card {
+    background: rgba(29, 29, 66, 0.95) !important;
+    border: 1px solid rgba(103, 116, 142, 0.3) !important;
+  }
+
+  .fc-col-header-cell {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%) !important;
+    color: #ffffff !important;
+  }
+
+  .fc-daygrid-day-number {
+    color: #ffffff !important;
+
+    &:hover {
+      color: #ff9f43 !important;
+    }
+  }
+
+  .fc-day-today {
+    background: linear-gradient(135deg, rgba(255, 159, 67, 0.1) 0%, rgba(254, 202, 87, 0.1) 100%) !important;
+    border: 2px solid rgba(255, 159, 67, 0.3) !important;
+  }
+
+  .fc-toolbar-title {
+    background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+  }
+
+  .fc-button-primary {
+    background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+    box-shadow: 0 4px 15px rgba(255, 159, 67, 0.3) !important;
+
+    &:hover {
+      background: linear-gradient(135deg, #feca57 0%, #ff9f43 100%) !important;
+      box-shadow: 0 6px 20px rgba(255, 159, 67, 0.4) !important;
+    }
+
+    &:not(:disabled):active,
+    &:not(:disabled).fc-button-active {
+      background: linear-gradient(135deg, #e8890a 0%, #ff9f43 100%) !important;
+      box-shadow: 0 2px 10px rgba(255, 159, 67, 0.5) !important;
+    }
+  }
+
+  .fc-daygrid-day:hover {
+    background: rgba(255, 159, 67, 0.05) !important;
+  }
+
+  .calendar-create-btn {
+    background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+    box-shadow: 0 8px 25px rgba(255, 159, 67, 0.3) !important;
+
+    &:hover {
+      background: linear-gradient(135deg, #feca57 0%, #ff9f43 100%) !important;
+      box-shadow: 0 12px 35px rgba(255, 159, 67, 0.4) !important;
+    }
+  }
+
+  .calendar-add-category-btn {
+    background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+    box-shadow: 0 8px 25px rgba(255, 159, 67, 0.3) !important;
+
+    &:hover {
+      background: linear-gradient(135deg, #feca57 0%, #ff9f43 100%) !important;
+      box-shadow: 0 12px 35px rgba(255, 159, 67, 0.4) !important;
+    }
+  }
+
+  // Calendar Modal Dark Mode
+  .modal.custom-modal {
+    .modal-content {
+      background: rgba(29, 29, 66, 0.95) !important;
+      border: 1px solid rgba(103, 116, 142, 0.3) !important;
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+    }
+
+    .modal-body {
+      background: rgba(29, 29, 66, 0.95) !important;
+
+      .form-group {
+        label {
+          color: #ffffff !important;
+        }
+
+        .form-control {
+          background: rgba(29, 29, 66, 0.8) !important;
+          border-color: rgba(103, 116, 142, 0.5) !important;
+          color: #ffffff !important;
+
+          &:focus {
+            border-color: #ff9f43 !important;
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.1) !important;
+          }
+
+          &::placeholder {
+            color: rgba(255, 255, 255, 0.5) !important;
+          }
+        }
+      }
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #ff9f43 0%, #feca57 100%) !important;
+      box-shadow: 0 8px 25px rgba(255, 159, 67, 0.3) !important;
+
+      &:hover {
+        background: linear-gradient(135deg, #feca57 0%, #ff9f43 100%) !important;
+        box-shadow: 0 12px 35px rgba(255, 159, 67, 0.4) !important;
+      }
+    }
+  }
+
+  .checkbox label {
+    color: #ffffff !important;
+  }
+}
