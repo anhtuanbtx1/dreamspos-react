@@ -531,6 +531,21 @@ const WeddingGuestList = () => {
 
   return (
     <div className="page-wrapper">
+      <style>
+        {`
+          .wedding-guest-search-input input {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+          }
+          .wedding-guest-search-input .ant-input {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+          }
+          .wedding-guest-search-input .ant-input::placeholder {
+            color: #999999 !important;
+          }
+        `}
+      </style>
       <div className="content">
         {/* Header */}
         <div className="page-header">
@@ -626,7 +641,13 @@ const WeddingGuestList = () => {
                     prefix={<Search size={16} />}
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
-                    style={{ width: 300 }}
+                    style={{
+                      width: 300,
+                      color: '#000000 !important',
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #d9d9d9'
+                    }}
+                    className="wedding-guest-search-input"
                   />
                 </div>
               </div>
