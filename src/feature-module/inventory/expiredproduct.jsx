@@ -28,20 +28,20 @@ const ExpiredProduct = () => {
     };
 
     const oldandlatestvalue = [
-        { value: 'date', label: 'Sort by Date' },
-        { value: 'newest', label: 'Newest' },
-        { value: 'oldest', label: 'Oldest' },
+        { value: 'date', label: 'Sắp xếp theo ngày' },
+        { value: 'newest', label: 'Mới nhất' },
+        { value: 'oldest', label: 'Cũ nhất' },
     ];
 
     const brands = [
-        { value: 'chooseType', label: 'Choose Type' },
-        { value: 'lenovo3rdGen', label: 'Lenovo 3rd Generation' },
+        { value: 'chooseType', label: 'Chọn loại' },
+        { value: 'lenovo3rdGen', label: 'Lenovo thế hệ 3' },
         { value: 'nikeJordan', label: 'Nike Jordan' },
     ];
 
     const renderTooltip = (props) => (
         <Tooltip id="pdf-tooltip" {...props}>
-            Pdf
+            PDF
         </Tooltip>
     );
     const renderExcelTooltip = (props) => (
@@ -51,23 +51,23 @@ const ExpiredProduct = () => {
     );
     const renderPrinterTooltip = (props) => (
         <Tooltip id="printer-tooltip" {...props}>
-            Printer
+            In ấn
         </Tooltip>
     );
     const renderRefreshTooltip = (props) => (
         <Tooltip id="refresh-tooltip" {...props}>
-            Refresh
+            Làm mới
         </Tooltip>
     );
     const renderCollapseTooltip = (props) => (
         <Tooltip id="refresh-tooltip" {...props}>
-            Collapse
+            Thu gọn
         </Tooltip>
     );
 
     const columns = [
         {
-            title: "Product",
+            title: "Sản phẩm",
             dataIndex: "product",
             render: (text, record) => (
                 <span className="productimgname">
@@ -81,23 +81,23 @@ const ExpiredProduct = () => {
             width: "5%"
         },
         {
-            title: "SKU",
+            title: "Mã IMEI",
             dataIndex: "sku",
             sorter: (a, b) => a.sku.length - b.sku.length,
         },
         {
-            title: "Manufactured Date",
+            title: "Ngày sản xuất",
             dataIndex: "manufactureddate",
             sorter: (a, b) => a.manufactureddate.length - b.manufactureddate.length,
         },
         {
-            title: "Expired Date",
+            title: "Ngày hết hạn",
             dataIndex: "expireddate",
             sorter: (a, b) => a.expireddate.length - b.expireddate.length,
         },
-       
+
         {
-            title: 'Actions',
+            title: 'Thao tác',
             dataIndex: 'actions',
             key: 'actions',
             render: () => (
@@ -118,19 +118,19 @@ const ExpiredProduct = () => {
 
     const showConfirmationAlert = () => {
         MySwal.fire({
-            title: 'Are you sure?',
-            text: 'You won\'t be able to revert this!',
+            title: 'Bạn có chắc chắn?',
+            text: 'Bạn sẽ không thể hoàn tác hành động này!',
             showCancelButton: true,
             confirmButtonColor: '#00ff00',
-            confirmButtonText: 'Yes, delete it!',
+            confirmButtonText: 'Có, xóa nó!',
             cancelButtonColor: '#ff0000',
-            cancelButtonText: 'Cancel',
+            cancelButtonText: 'Hủy',
         }).then((result) => {
             if (result.isConfirmed) {
 
                 MySwal.fire({
-                    title: 'Deleted!',
-                    text: 'Your file has been deleted.',
+                    title: 'Đã xóa!',
+                    text: 'Tệp của bạn đã được xóa.',
                     className: "btn btn-success",
                     confirmButtonText: 'OK',
                     customClass: {
@@ -150,8 +150,8 @@ const ExpiredProduct = () => {
                     <div className="page-header">
                         <div className="add-item d-flex">
                             <div className="page-title">
-                                <h4>Expired Products</h4>
-                                <h6>Manage your expired products</h6>
+                                <h4>Sản phẩm hết hạn</h4>
+                                <h6>Quản lý các sản phẩm hết hạn của bạn</h6>
                             </div>
                         </div>
                         <ul className="table-top-head">
@@ -209,7 +209,7 @@ const ExpiredProduct = () => {
                                     <div className="search-input">
                                         <input
                                             type="text"
-                                            placeholder="Search"
+                                            placeholder="Tìm kiếm"
                                             className="form-control form-control-sm formsearch"
                                         />
                                         <Link to className="btn btn-searchset">
@@ -235,7 +235,7 @@ const ExpiredProduct = () => {
                                     <Select
                                         className="select"
                                         options={oldandlatestvalue}
-                                        placeholder="Newest"
+                                        placeholder="Mới nhất"
                                     />
                                 </div>
                             </div>
@@ -251,7 +251,7 @@ const ExpiredProduct = () => {
                                             <div className="input-blocks">
                                                 <Box className="info-img" />
 
-                                                <Select options={brands} className="select" placeholder="Choose Type" />
+                                                <Select options={brands} className="select" placeholder="Chọn loại" />
 
                                             </div>
                                         </div>
@@ -264,7 +264,7 @@ const ExpiredProduct = () => {
                                                         type="date"
                                                         className="filterdatepicker"
                                                         dateFormat="dd-MM-yyyy"
-                                                        placeholder='Choose Date'
+                                                        placeholder='Chọn ngày'
                                                     />
                                                 </div>
                                             </div>
@@ -274,7 +274,7 @@ const ExpiredProduct = () => {
                                                 <Link className="btn btn-filters ms-auto">
                                                     {" "}
                                                     <i data-feather="search" className="feather-search" />{" "}
-                                                    Search{" "}
+                                                    Tìm kiếm{" "}
                                                 </Link>
                                             </div>
                                         </div>

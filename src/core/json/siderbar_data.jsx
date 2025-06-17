@@ -62,9 +62,11 @@ export const SidebarData = [
         submenuItems: [
            { label: "Tiến độ dự án", link: "/project-tracker",icon:  <Icon.Layers />,showSubRoute: false},
           { label: "Sản phẩm", link: "/product-list", icon:<Icon.Box />,showSubRoute: false,submenu: false },
+          { label: "Nhập kho", link: "/product-list-2", icon:<Icon.Package />,showSubRoute: false,submenu: false },
+          { label: "Tồn kho", link: "/product-list-3", icon:<Icon.Archive />,showSubRoute: false,submenu: false },
           { label: "Create Product", link: "/add-product", icon:  <Icon.PlusSquare />,showSubRoute: false, submenu: false },
-          { label: "Expired Products", link: "/expired-products", icon:  <Icon.Codesandbox  />,showSubRoute: false,submenu: false },
-          { label: "Low Stocks", link: "/low-stocks", icon: <Icon.TrendingDown  />,showSubRoute: false,submenu: false },
+          { label: "Sản phẩm hết hạn", link: "/expired-products", icon:  <Icon.Codesandbox  />,showSubRoute: false,submenu: false },
+          { label: "Hàng tồn kho", link: "/low-stocks", icon: <Icon.TrendingDown  />,showSubRoute: false,submenu: false },
           { label: "Danh mục", link: "/category-list", icon:  <Icon.Codepen />,showSubRoute: false,submenu: false },
           { label: "Sub Category", link: "/sub-categories", icon:  <Icon.Speaker  />,showSubRoute: false,submenu: false },
           { label: "Thương hiệu", link: "/brand-list", icon:  <Icon.Tag />,showSubRoute: false,submenu: false },
