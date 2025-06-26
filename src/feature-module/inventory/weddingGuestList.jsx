@@ -13,6 +13,7 @@ const WeddingGuestList = () => {
   const [guestData, setGuestData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -271,11 +272,11 @@ const WeddingGuestList = () => {
       const response = await weddingGuestService.getUnits();
 
       if (response.success) {
-      
+
         console.log('✅ Units loaded:', response.data);
       } else {
         console.log('🔄 Using mock units as fallback');
-    
+
       }
     } catch (error) {
       console.error('Error loading units:', error);
@@ -366,6 +367,84 @@ const WeddingGuestList = () => {
       currency: 'VND'
     }).format(amount);
   };
+
+  // Theme detection with multiple approaches
+  useEffect(() => {
+    const checkTheme = () => {
+      const htmlElement = document.documentElement;
+      const bodyElement = document.body;
+
+      // Get all possible theme indicators
+      const layoutMode = htmlElement.getAttribute('data-layout-mode');
+      const dataTheme = htmlElement.getAttribute('data-theme');
+      const bodyClass = bodyElement.className;
+      const colorSchema = localStorage.getItem('colorschema');
+
+      // Check multiple ways to detect dark mode
+      const isDarkByLayoutMode = layoutMode === 'dark_mode';
+      const isDarkByDataTheme = dataTheme === 'dark';
+      const isDarkByLocalStorage = colorSchema === 'dark_mode';
+      const isDarkByBodyClass = bodyClass.includes('dark') || bodyClass.includes('dark-mode');
+
+      // Use any method that indicates dark mode
+      const isDark = isDarkByLayoutMode || isDarkByDataTheme || isDarkByLocalStorage || isDarkByBodyClass;
+
+      console.log('🎨 Theme debug:', {
+        layoutMode,
+        dataTheme,
+        bodyClass,
+        colorSchema,
+        isDarkByLayoutMode,
+        isDarkByDataTheme,
+        isDarkByLocalStorage,
+        isDarkByBodyClass,
+        finalIsDark: isDark
+      });
+
+      setIsDarkTheme(isDark);
+    };
+
+    // Initial check
+    checkTheme();
+
+    // Check again after a short delay to catch late theme application
+    setTimeout(checkTheme, 100);
+    setTimeout(checkTheme, 500);
+
+    // Listen for all possible theme changes
+    const observer = new MutationObserver(() => {
+      console.log('🔄 DOM mutation detected, rechecking theme...');
+      checkTheme();
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-layout-mode', 'data-theme', 'class']
+    });
+
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class', 'data-theme']
+    });
+
+    // Listen for localStorage changes
+    const handleStorageChange = (e) => {
+      if (e.key === 'colorschema') {
+        console.log('📦 localStorage colorschema changed:', e.newValue);
+        setTimeout(checkTheme, 50);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    // Also check periodically as fallback
+    const interval = setInterval(checkTheme, 2000);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Load data on component mount
   useEffect(() => {
@@ -488,7 +567,7 @@ const WeddingGuestList = () => {
         );
       }
     },
-   
+
     {
       title: '',
       key: 'actions',
@@ -496,14 +575,23 @@ const WeddingGuestList = () => {
       render: (_, record) => (
         <div className="action-table-data">
           <div className="edit-delete-action">
-            <Edit
-              size={16}
-              style={{ cursor: 'pointer', color: '#1890ff', marginRight: '8px' }}
-              onClick={() => {
-                // TODO: Navigate to edit page
-                message.info('Edit functionality will be implemented');
-              }}
-            />
+            <Link to={`/edit-wedding-guest/${record.id}`}>
+              <Edit
+                size={16}
+                style={{
+                  cursor: 'pointer',
+                  color: isDarkTheme ? '#ffffff' : '#666666',
+                  marginRight: '8px',
+                  transition: 'color 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = isDarkTheme ? '#cccccc' : '#333333';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = isDarkTheme ? '#ffffff' : '#666666';
+                }}
+              />
+            </Link>
             <Trash2
               size={16}
               style={{ cursor: 'pointer', color: '#ff4d4f' }}
@@ -533,16 +621,128 @@ const WeddingGuestList = () => {
     <div className="page-wrapper">
       <style>
         {`
-          .wedding-guest-search-input input {
-            color: #000000 !important;
-            background-color: #ffffff !important;
+          /* Dynamic theme styling for wedding guest list */
+          .card.table-list-card {
+            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
           }
+
+          .wedding-guest-search-input input,
           .wedding-guest-search-input .ant-input {
-            color: #000000 !important;
-            background-color: #ffffff !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
           }
+
           .wedding-guest-search-input .ant-input::placeholder {
-            color: #999999 !important;
+            color: ${isDarkTheme ? '#888888' : '#999999'} !important;
+          }
+
+          .ant-select-selector {
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
+          }
+
+          .ant-select-selection-item {
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          }
+
+          .ant-table {
+            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          }
+
+          .ant-table-thead > tr > th {
+            background-color: ${isDarkTheme ? '#2a2a2a' : '#fafafa'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+            border-bottom: 1px solid ${isDarkTheme ? '#434343' : '#f0f0f0'} !important;
+          }
+
+          .ant-table-tbody > tr > td {
+            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+            border-bottom: 1px solid ${isDarkTheme ? '#434343' : '#f0f0f0'} !important;
+          }
+
+          .ant-table-tbody > tr:hover > td {
+            background-color: ${isDarkTheme ? '#2a2a2a' : '#f5f5f5'} !important;
+          }
+
+          /* Page wrapper ant-card styling - match website background */
+          .page-wrapper .content .ant-card {
+            background-color: ${isDarkTheme ? '#141432' : '#FAFBFE'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          }
+
+          /* All ant-card elements in page-wrapper - match website background */
+          .page-wrapper .ant-card,
+          .page-wrapper .content .ant-card,
+          .page-wrapper .content .ant-card.ant-card-bordered {
+            background-color: ${isDarkTheme ? '#141432' : '#FAFBFE'} !important;
+            background: ${isDarkTheme ? '#141432' : '#FAFBFE'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          }
+
+          /* Override any CSS-in-JS styles */
+          .page-wrapper .ant-card[style],
+          .page-wrapper .content .ant-card[style] {
+            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+            background: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+          }
+
+          /* Force dark mode styles when data-layout-mode is dark_mode - match website background */
+          html[data-layout-mode="dark_mode"] .page-wrapper .content .ant-card,
+          html[data-layout-mode="dark_mode"] .page-wrapper .ant-card,
+          body.dark-mode .page-wrapper .content .ant-card,
+          body.dark .page-wrapper .content .ant-card {
+            background-color: #141432 !important;
+            background: #141432 !important;
+            border-color: #434343 !important;
+            color: #ffffff !important;
+          }
+
+          /* Force light mode styles when data-layout-mode is light_mode - match website background */
+          html[data-layout-mode="light_mode"] .page-wrapper .content .ant-card,
+          html[data-layout-mode="light_mode"] .page-wrapper .ant-card,
+          body.light-mode .page-wrapper .content .ant-card,
+          body.light .page-wrapper .content .ant-card {
+            background-color: #FAFBFE !important;
+            background: #FAFBFE !important;
+            border-color: #d9d9d9 !important;
+            color: #000000 !important;
+          }
+
+          /* Edit button styling - remove blue hover */
+          .action-table-data .edit-delete-action a {
+            text-decoration: none !important;
+          }
+
+          .action-table-data .edit-delete-action a:hover {
+            background-color: transparent !important;
+            color: inherit !important;
+          }
+
+          .action-table-data .edit-delete-action svg {
+            transition: color 0.2s ease !important;
+          }
+
+          .action-table-data .edit-delete-action svg:hover {
+            color: ${isDarkTheme ? '#cccccc' : '#333333'} !important;
+          }
+
+          /* Remove any blue hover effects from links */
+          a:hover {
+            color: inherit !important;
+          }
+
+          /* Ant Design link hover override */
+          .ant-table-tbody > tr > td a:hover {
+            color: inherit !important;
+            background-color: transparent !important;
           }
         `}
       </style>

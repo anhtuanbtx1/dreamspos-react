@@ -199,6 +199,8 @@ import ProjectTracker from "../feature-module/projects/projecttracker";
 import CreateProject from "../feature-module/projects/createproject";
 import EnhancedLoaders from "../feature-module/uiinterface/enhanced-loaders";
 import WeddingGuestList from "../feature-module/inventory/weddingGuestList";
+import EditWeddingGuest from "../feature-module/inventory/editWeddingGuest";
+import AddWeddingGuest from "../feature-module/inventory/addWeddingGuest";
 import ProductList2 from "../feature-module/inventory/productlist2";
 import ProductList3 from "../feature-module/inventory/productlist3";
 import { all_routes } from "./all_routes";
@@ -1449,6 +1451,20 @@ export const publicRoutes = [
     path: routes.weddingGuestList,
     name: "weddingGuestList",
     element: <WeddingGuestList />,
+    route: Route,
+  },
+  {
+    id: 117.3,
+    path: routes.editWeddingGuest,
+    name: "editWeddingGuest",
+    element: <EditWeddingGuest />,
+    route: Route,
+  },
+  {
+    id: 117.4,
+    path: routes.addWeddingGuest,
+    name: "addWeddingGuest",
+    element: <AddWeddingGuest />,
     route: Route,
   },
   {

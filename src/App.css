@@ -1,0 +1,180 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+/* Dark mode support */
+.dark-mode {
+  background-color: #1f1f1f;
+  color: #ffffff;
+}
+
+.dark-mode .ant-layout {
+  background-color: #1f1f1f;
+}
+
+.dark-mode .ant-layout-content {
+  background-color: #1f1f1f;
+}
+
+/* Calendar custom styles */
+.fc {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .fc {
+  background-color: #2d2d2d;
+  color: #ffffff;
+}
+
+.dark-mode .fc-theme-standard td,
+.dark-mode .fc-theme-standard th {
+  border-color: #404040;
+}
+
+.dark-mode .fc-theme-standard .fc-scrollgrid {
+  border-color: #404040;
+}
+
+.dark-mode .fc-col-header-cell {
+  background-color: #3d3d3d;
+}
+
+.dark-mode .fc-daygrid-day {
+  background-color: #2d2d2d;
+}
+
+.dark-mode .fc-daygrid-day:hover {
+  background-color: #404040;
+}
+
+/* Project tracker styles */
+.project-card {
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .project-card {
+  background-color: #2d2d2d;
+  border-color: #404040;
+}
+
+.progress-bar {
+  border-radius: 4px;
+}
+
+.status-badge {
+  border-radius: 12px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-active {
+  background-color: #52c41a;
+  color: white;
+}
+
+.status-pending {
+  background-color: #faad14;
+  color: white;
+}
+
+.status-completed {
+  background-color: #1890ff;
+  color: white;
+}
+
+.status-cancelled {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+/* Navigation styles */
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #1890ff !important;
+}
+
+.nav-link.active {
+  color: #1890ff !important;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 10px;
+  }
+  
+  .project-card {
+    margin-bottom: 12px;
+  }
+  
+  .fc {
+    font-size: 14px;
+  }
+}
+
+/* Loading animation */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.loading-spinner .ant-spin {
+  font-size: 24px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+.dark-mode ::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}

@@ -3,7 +3,6 @@ import {
   Edit,
   Eye,
   Filter,
-  GitMerge,
   Sliders,
   StopCircle,
   Trash2,
@@ -44,7 +43,7 @@ function hideAntElements() {
       overflow: hidden !important;
       pointer-events: none !important;
     }
-    
+
     /* Hide all Ant Design checkboxes */
     .ant-checkbox,
     .ant-checkbox-input,
@@ -182,7 +181,7 @@ const ProductList3 = () => {
 
   useEffect(() => {
     hideAntElements();
-    
+
     // Fetch products on component mount
     if (apiProducts.length === 0) {
       dispatch(fetchProducts({ page: currentPage, pageSize }));
@@ -202,7 +201,7 @@ const ProductList3 = () => {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    
+
     if (value.trim()) {
       dispatch(searchProducts(value));
     } else {
@@ -237,7 +236,7 @@ const ProductList3 = () => {
 
       if (result.isConfirmed) {
         await dispatch(deleteProduct(productId));
-        
+
         MySwal.fire({
           title: "Deleted!",
           text: "Product has been deleted successfully.",

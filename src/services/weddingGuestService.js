@@ -132,14 +132,38 @@ export const weddingGuestService = {
   // Update wedding guest
   async updateWeddingGuest(id, guestData) {
     try {
-      const response = await apiClient.put(`/WeddingGuests/${id}`, guestData);
+      console.log('🔍 API Call - Update Wedding Guest:', {
+        baseURL: API_BASE_URL,
+        endpoint: `/WeddingGuests/${id}`,
+        method: 'POST',
+        data: guestData
+      });
+
+      const response = await apiClient.post(`/WeddingGuests/${id}`, guestData);
+
+      console.log('✅ API Response - Update Wedding Guest:', {
+        status: response.status,
+        data: response.data
+      });
+
       return {
         success: true,
         data: response.data.data || response.data,
         message: response.data.message || 'Wedding guest updated successfully'
       };
     } catch (error) {
-      console.error('Error updating wedding guest:', error);
+      console.error('❌ Error updating wedding guest:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        config: {
+          url: error.config?.url,
+          method: error.config?.method,
+          baseURL: error.config?.baseURL
+        }
+      });
+
       return {
         success: false,
         data: null,
@@ -170,7 +194,7 @@ export const weddingGuestService = {
   // Update wedding guest status only
   async updateWeddingGuestStatus(id, status) {
     try {
-      const response = await apiClient.put(`/WeddingGuests/${id}/status`, { status });
+      const response = await apiClient.post(`/WeddingGuests/${id}/status`, { status });
       return {
         success: true,
         data: response.data.data || response.data,

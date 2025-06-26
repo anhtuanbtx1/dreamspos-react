@@ -194,4 +194,6 @@ export const all_routes = {
   warehouses: "/warehouse",
   coupons:"/coupons",
   weddingGuestList: "/wedding-guest-list",
+  addWeddingGuest: "/add-wedding-guest",
+  editWeddingGuest: "/edit-wedding-guest/:id",
 };

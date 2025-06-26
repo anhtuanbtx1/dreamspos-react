@@ -1,0 +1,206 @@
+/* Basic FullCalendar CSS */
+.fc {
+  direction: ltr;
+  text-align: left;
+}
+
+.fc table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.fc th {
+  text-align: center;
+}
+
+.fc th,
+.fc td {
+  vertical-align: top;
+  padding: 0;
+}
+
+.fc-header-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc-toolbar-chunk {
+  display: flex;
+  align-items: center;
+}
+
+.fc-button-group {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.fc-button {
+  position: relative;
+  display: inline-block;
+  padding: 0.4em 0.65em;
+  margin-bottom: 0;
+  font-size: 1em;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25em;
+}
+
+.fc-button:not(:disabled) {
+  cursor: pointer;
+}
+
+.fc-button:not(:disabled):active,
+.fc-button:not(:disabled).fc-button-active {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+.fc-daygrid {
+  position: relative;
+}
+
+.fc-daygrid-body {
+  position: relative;
+  width: 100%;
+}
+
+.fc-daygrid-day {
+  position: relative;
+}
+
+.fc-daygrid-day-number {
+  position: relative;
+  z-index: 4;
+  padding: 4px;
+}
+
+.fc-event {
+  position: relative;
+  display: block;
+  font-size: 0.85em;
+  line-height: 1.3;
+  border-radius: 3px;
+  border: 1px solid #3788d8;
+  background-color: #3788d8;
+  font-weight: normal;
+  color: #fff;
+}
+
+.fc-event-harness {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+.fc-event-title {
+  padding: 0 1px;
+}
+
+.fc-day-today {
+  background-color: rgba(255, 220, 40, 0.15);
+}
+
+.fc-timegrid {
+  position: relative;
+  z-index: 1;
+}
+
+.fc-timegrid-body {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+}
+
+.fc-timegrid-slot {
+  height: 1.5em;
+  border-bottom: 1px solid #ddd;
+}
+
+.fc-timegrid-slot-label {
+  vertical-align: middle;
+  padding: 0 4px;
+}
+
+.fc-scrollgrid {
+  position: relative;
+  border: 1px solid #ddd;
+}
+
+.fc-scrollgrid table {
+  width: 100%;
+}
+
+.fc-col-header-cell {
+  background-color: #eee;
+}
+
+.fc-daygrid-day-frame {
+  position: relative;
+  min-height: 100%;
+}
+
+.fc-daygrid-day-top {
+  position: relative;
+  z-index: 2;
+}
+
+.fc-daygrid-day-events {
+  margin-top: 1px;
+}
+
+.fc-daygrid-event {
+  position: relative;
+  white-space: nowrap;
+  border-radius: 3px;
+  font-size: 0.85em;
+  margin-bottom: 1px;
+}
+
+.fc-daygrid-block-event .fc-event-time {
+  font-weight: bold;
+}
+
+.fc-daygrid-block-event .fc-event-title {
+  margin-top: 1px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-start,
+.fc-direction-rtl .fc-daygrid-event.fc-event-end {
+  margin-left: 2px;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end,
+.fc-direction-rtl .fc-daygrid-event.fc-event-start {
+  margin-right: 2px;
+}
+
+.fc-daygrid-week-number {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  padding: 2px;
+  min-width: 1.5em;
+  text-align: center;
+  background-color: rgba(208, 208, 208, 0.3);
+  color: #808080;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .fc-header-toolbar {
+    flex-direction: column;
+  }
+  
+  .fc-toolbar-chunk {
+    margin: 2px 0;
+  }
+}
