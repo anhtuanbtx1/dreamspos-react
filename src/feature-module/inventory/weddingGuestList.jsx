@@ -571,33 +571,44 @@ const WeddingGuestList = () => {
     {
       title: '',
       key: 'actions',
-      width: 100,
+      width: 120,
       render: (_, record) => (
-        <div className="action-table-data">
-          <div className="edit-delete-action">
-            <Link to={`/edit-wedding-guest/${record.id}`}>
-              <Edit
-                size={16}
-                style={{
-                  cursor: 'pointer',
-                  color: isDarkTheme ? '#ffffff' : '#666666',
-                  marginRight: '8px',
-                  transition: 'color 0.2s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = isDarkTheme ? '#cccccc' : '#333333';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = isDarkTheme ? '#ffffff' : '#666666';
-                }}
-              />
-            </Link>
-            <Trash2
-              size={16}
-              style={{ cursor: 'pointer', color: '#ff4d4f' }}
-              onClick={() => handleDeleteGuest(record.id)}
-            />
-          </div>
+        <div className="d-flex gap-2">
+          <Link to={`/edit-wedding-guest/${record.id}`}>
+            <button
+              className="btn btn-sm btn-outline-warning"
+              title="Chỉnh sửa"
+              style={{
+                border: '1px solid #faad14',
+                color: '#faad14',
+                backgroundColor: 'transparent',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Edit size={14} />
+            </button>
+          </Link>
+          <button
+            className="btn btn-sm btn-outline-danger"
+            onClick={() => handleDeleteGuest(record.id)}
+            title="Xóa"
+            style={{
+              border: '1px solid #ff4d4f',
+              color: '#ff4d4f',
+              backgroundColor: 'transparent',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Trash2 size={14} />
+          </button>
         </div>
       )
     }
@@ -716,33 +727,185 @@ const WeddingGuestList = () => {
             color: #000000 !important;
           }
 
-          /* Edit button styling - remove blue hover */
-          .action-table-data .edit-delete-action a {
-            text-decoration: none !important;
-          }
-
-          .action-table-data .edit-delete-action a:hover {
+          /* Project Tracker Style Buttons */
+          .btn-outline-warning {
+            border: 1px solid #faad14 !important;
+            color: #faad14 !important;
             background-color: transparent !important;
-            color: inherit !important;
           }
 
-          .action-table-data .edit-delete-action svg {
-            transition: color 0.2s ease !important;
+          .btn-outline-warning:hover {
+            background-color: #faad14 !important;
+            color: #ffffff !important;
+            border-color: #faad14 !important;
           }
 
-          .action-table-data .edit-delete-action svg:hover {
-            color: ${isDarkTheme ? '#cccccc' : '#333333'} !important;
-          }
-
-          /* Remove any blue hover effects from links */
-          a:hover {
-            color: inherit !important;
-          }
-
-          /* Ant Design link hover override */
-          .ant-table-tbody > tr > td a:hover {
-            color: inherit !important;
+          .btn-outline-danger {
+            border: 1px solid #ff4d4f !important;
+            color: #ff4d4f !important;
             background-color: transparent !important;
+          }
+
+          .btn-outline-danger:hover {
+            background-color: #ff4d4f !important;
+            color: #ffffff !important;
+            border-color: #ff4d4f !important;
+          }
+
+          /* Dark mode button adjustments */
+          [data-layout-mode="dark_mode"] .btn-outline-warning {
+            border-color: #faad14 !important;
+            color: #faad14 !important;
+          }
+
+          [data-layout-mode="dark_mode"] .btn-outline-danger {
+            border-color: #ff4d4f !important;
+            color: #ff4d4f !important;
+          }
+
+          /* Remove background-color from wedding guest search inputs */
+          .wedding-guest-search-input input,
+          .wedding-guest-search-input .ant-input {
+            background-color: transparent !important;
+            background: transparent !important;
+          }
+
+          /* Ensure search input transparency in all themes */
+          .wedding-guest-search-input .ant-input:focus,
+          .wedding-guest-search-input .ant-input:hover,
+          .wedding-guest-search-input input:focus,
+          .wedding-guest-search-input input:hover {
+            background-color: transparent !important;
+            background: transparent !important;
+          }
+
+          /* Dropdown Lists Dark Theme Styling */
+
+          /* Light Mode Dropdown Styling */
+          html[data-layout-mode="light_mode"] .ant-select-selector,
+          html[data-layout-mode="light_mode"] .ant-select-single .ant-select-selector,
+          body.light-mode .ant-select-selector,
+          body.light .ant-select-selector {
+            background-color: #ffffff !important;
+            border-color: #d9d9d9 !important;
+            color: #000000 !important;
+          }
+
+          html[data-layout-mode="light_mode"] .ant-select-dropdown,
+          body.light-mode .ant-select-dropdown,
+          body.light .ant-select-dropdown {
+            background-color: #ffffff !important;
+            border-color: #d9d9d9 !important;
+          }
+
+          html[data-layout-mode="light_mode"] .ant-select-item,
+          body.light-mode .ant-select-item,
+          body.light .ant-select-item {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+          }
+
+          html[data-layout-mode="light_mode"] .ant-select-item:hover,
+          body.light-mode .ant-select-item:hover,
+          body.light .ant-select-item:hover {
+            background-color: #f5f5f5 !important;
+            color: #000000 !important;
+          }
+
+          html[data-layout-mode="light_mode"] .ant-select-item-option-selected,
+          body.light-mode .ant-select-item-option-selected,
+          body.light .ant-select-item-option-selected {
+            background-color: #1890ff !important;
+            color: #ffffff !important;
+          }
+
+          /* Dark Mode Dropdown Styling */
+          html[data-layout-mode="dark_mode"] .ant-select-selector,
+          html[data-layout-mode="dark_mode"] .ant-select-single .ant-select-selector,
+          body.dark-mode .ant-select-selector,
+          body.dark .ant-select-selector {
+            background-color: #141432 !important;
+            border-color: #434343 !important;
+            color: #ffffff !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-dropdown,
+          body.dark-mode .ant-select-dropdown,
+          body.dark .ant-select-dropdown {
+            background-color: #141432 !important;
+            border-color: #434343 !important;
+            box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.48), 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 9px 28px 8px rgba(0, 0, 0, 0.2) !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-item,
+          body.dark-mode .ant-select-item,
+          body.dark .ant-select-item {
+            color: #ffffff !important;
+            background-color: #141432 !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-item:hover,
+          body.dark-mode .ant-select-item:hover,
+          body.dark .ant-select-item:hover {
+            background-color: #434343 !important;
+            color: #ffffff !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-item-option-selected,
+          body.dark-mode .ant-select-item-option-selected,
+          body.dark .ant-select-item-option-selected {
+            background-color: #177ddc !important;
+            color: #ffffff !important;
+          }
+
+          /* Dropdown Arrow Icon Dark Mode */
+          html[data-layout-mode="dark_mode"] .ant-select-arrow,
+          body.dark-mode .ant-select-arrow,
+          body.dark .ant-select-arrow {
+            color: #ffffff !important;
+          }
+
+          /* Focus States for Dark Mode */
+          html[data-layout-mode="dark_mode"] .ant-select-focused .ant-select-selector,
+          body.dark-mode .ant-select-focused .ant-select-selector,
+          body.dark .ant-select-focused .ant-select-selector {
+            background-color: #141432 !important;
+            border-color: #177ddc !important;
+            box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2) !important;
+          }
+
+          /* Placeholder Text Dark Mode */
+          html[data-layout-mode="dark_mode"] .ant-select-selection-placeholder,
+          body.dark-mode .ant-select-selection-placeholder,
+          body.dark .ant-select-selection-placeholder {
+            color: #888888 !important;
+          }
+
+          /* Dynamic Theme Support */
+          .ant-select-selector {
+            background-color: ${isDarkTheme ? '#141432' : '#ffffff'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          }
+
+          .ant-select-dropdown {
+            background-color: ${isDarkTheme ? '#141432' : '#ffffff'} !important;
+            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
+          }
+
+          .ant-select-item {
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+            background-color: ${isDarkTheme ? '#141432' : '#ffffff'} !important;
+          }
+
+          .ant-select-item:hover {
+            background-color: ${isDarkTheme ? '#434343' : '#f5f5f5'} !important;
+            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          }
+
+          .ant-select-item-option-selected {
+            background-color: ${isDarkTheme ? '#177ddc' : '#1890ff'} !important;
+            color: #ffffff !important;
           }
         `}
       </style>
@@ -773,9 +936,8 @@ const WeddingGuestList = () => {
                   type="primary"
                   icon={<Plus size={16} />}
                   className="btn btn-added"
-                  style={{ backgroundColor: '#ff69b4', borderColor: '#ff69b4' }}
                 >
-                  Thêm khách mời
+                  Thêm mới
                 </Button>
               </Link>
             </div>
@@ -836,6 +998,11 @@ const WeddingGuestList = () => {
             <div className="table-top">
               <div className="search-set">
                 <div className="search-input">
+                  <span style={{ fontSize: '16px', fontWeight: '500' }}>
+                    Danh sách khách mời
+                  </span>
+                </div>
+                <div className="search-input">
                   <Input
                     placeholder="Tìm kiếm khách mời..."
                     prefix={<Search size={16} />}
@@ -843,8 +1010,6 @@ const WeddingGuestList = () => {
                     onChange={(e) => handleSearch(e.target.value)}
                     style={{
                       width: 300,
-                      color: '#000000 !important',
-                      backgroundColor: '#ffffff',
                       border: '1px solid #d9d9d9'
                     }}
                     className="wedding-guest-search-input"

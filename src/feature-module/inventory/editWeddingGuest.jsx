@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, InputNumber, Select, Button, Card, message, Spin, Row, Col } from 'antd';
+import { Form, Input, InputNumber, Select, message, Spin } from 'antd';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Save, Heart } from 'react-feather';
+import { ArrowLeft, Save, Users, FileText, Gift } from 'react-feather';
 import { weddingGuestService } from '../../services/weddingGuestService';
+import { LoadingButton } from '../../components/Loading';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -14,85 +15,8 @@ const EditWeddingGuest = () => {
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [guestData, setGuestData] = useState(null);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-  // Check theme with multiple approaches
-  useEffect(() => {
-    const checkTheme = () => {
-      const htmlElement = document.documentElement;
-      const bodyElement = document.body;
 
-      // Get all possible theme indicators
-      const layoutMode = htmlElement.getAttribute('data-layout-mode');
-      const dataTheme = htmlElement.getAttribute('data-theme');
-      const bodyClass = bodyElement.className;
-      const colorSchema = localStorage.getItem('colorschema');
-
-      // Check multiple ways to detect dark mode
-      const isDarkByLayoutMode = layoutMode === 'dark_mode';
-      const isDarkByDataTheme = dataTheme === 'dark';
-      const isDarkByLocalStorage = colorSchema === 'dark_mode';
-      const isDarkByBodyClass = bodyClass.includes('dark') || bodyClass.includes('dark-mode');
-
-      // Use any method that indicates dark mode
-      const isDark = isDarkByLayoutMode || isDarkByDataTheme || isDarkByLocalStorage || isDarkByBodyClass;
-
-      console.log('🎨 Theme debug (Edit):', {
-        layoutMode,
-        dataTheme,
-        bodyClass,
-        colorSchema,
-        isDarkByLayoutMode,
-        isDarkByDataTheme,
-        isDarkByLocalStorage,
-        isDarkByBodyClass,
-        finalIsDark: isDark
-      });
-
-      setIsDarkTheme(isDark);
-    };
-
-    // Initial check
-    checkTheme();
-
-    // Check again after a short delay to catch late theme application
-    setTimeout(checkTheme, 100);
-    setTimeout(checkTheme, 500);
-
-    // Listen for all possible theme changes
-    const observer = new MutationObserver(() => {
-      console.log('🔄 DOM mutation detected (Edit), rechecking theme...');
-      checkTheme();
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-layout-mode', 'data-theme', 'class']
-    });
-
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class', 'data-theme']
-    });
-
-    // Listen for localStorage changes
-    const handleStorageChange = (e) => {
-      if (e.key === 'colorschema') {
-        console.log('📦 localStorage colorschema changed (Edit):', e.newValue);
-        setTimeout(checkTheme, 50);
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-
-    // Also check periodically as fallback
-    const interval = setInterval(checkTheme, 2000);
-
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
-    };
-  }, []);
 
   // Load guest data
   const loadGuestData = async () => {
@@ -168,40 +92,7 @@ const EditWeddingGuest = () => {
     }
   };
 
-  // Dynamic styles based on theme
-  const getInputStyle = () => ({
-    color: isDarkTheme ? '#ffffff' : '#000000',
-    backgroundColor: isDarkTheme ? '#1f1f1f' : '#ffffff',
-    borderColor: isDarkTheme ? '#434343' : '#d9d9d9',
-  });
 
-  const getLabelStyle = () => ({
-    color: isDarkTheme ? '#ffffff' : '#000000',
-  });
-
-  // Force DOM styling update
-  useEffect(() => {
-    const forceCardStyling = () => {
-      // Find all ant-card elements
-      const cards = document.querySelectorAll('.ant-card, .wedding-guest-form');
-      cards.forEach(card => {
-        if (card) {
-          card.style.backgroundColor = isDarkTheme ? '#141432' : '#FAFBFE';
-          card.style.background = isDarkTheme ? '#141432' : '#FAFBFE';
-          card.style.borderColor = isDarkTheme ? '#434343' : '#d9d9d9';
-          card.style.color = isDarkTheme ? '#ffffff' : '#000000';
-        }
-      });
-    };
-
-    // Apply immediately
-    forceCardStyling();
-
-    // Apply after a short delay to catch any late-rendered elements
-    const timer = setTimeout(forceCardStyling, 100);
-
-    return () => clearTimeout(timer);
-  }, [isDarkTheme]);
 
   // Load data on component mount
   useEffect(() => {
@@ -225,105 +116,154 @@ const EditWeddingGuest = () => {
     <div className="page-wrapper">
       <style>
         {`
-          /* Nuclear option - override everything with maximum specificity */
-          div[class*="ant-card"] {
-            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            background: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          /* Dropdown Lists Dark Theme Styling for Edit Wedding Guest */
+
+          /* Light Mode Dropdown Styling */
+          html[data-layout-mode="light_mode"] .ant-select-selector,
+          html[data-layout-mode="light_mode"] .ant-select-single .ant-select-selector,
+          body.light-mode .ant-select-selector,
+          body.light .ant-select-selector {
+            background-color: #ffffff !important;
+            border-color: #d9d9d9 !important;
+            color: #000000 !important;
           }
 
-          /* Target specific CSS classes that Ant Design generates */
-          .css-dev-only-do-not-override-1ae8k9u,
-          [class*="css-dev-only-do-not-override"] {
-            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            background: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          html[data-layout-mode="light_mode"] .ant-select-dropdown,
+          body.light-mode .ant-select-dropdown,
+          body.light .ant-select-dropdown {
+            background-color: #ffffff !important;
+            border-color: #d9d9d9 !important;
           }
 
-          /* Ultra high specificity for all possible selectors */
-          html body div.page-wrapper div.content div.ant-card,
-          html body div.page-wrapper div.content .ant-card,
-          html body .page-wrapper .content .ant-card,
-          html body .ant-card,
-          .ant-card,
-          .wedding-guest-form {
-            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            background: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          html[data-layout-mode="light_mode"] .ant-select-item,
+          body.light-mode .ant-select-item,
+          body.light .ant-select-item {
+            color: #000000 !important;
+            background-color: #ffffff !important;
           }
 
-          /* Form elements */
-          .wedding-guest-form .ant-form-item-label > label {
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
+          html[data-layout-mode="light_mode"] .ant-select-item:hover,
+          body.light-mode .ant-select-item:hover,
+          body.light .ant-select-item:hover {
+            background-color: #f5f5f5 !important;
+            color: #000000 !important;
           }
 
-          .wedding-guest-form .ant-input,
-          .wedding-guest-form .ant-input-number-input,
-          .wedding-guest-form .ant-select-selector,
-          .wedding-guest-form textarea {
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
-            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
-            background: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
+          html[data-layout-mode="light_mode"] .ant-select-item-option-selected,
+          body.light-mode .ant-select-item-option-selected,
+          body.light .ant-select-item-option-selected {
+            background-color: #1890ff !important;
+            color: #ffffff !important;
           }
 
-          .wedding-guest-form .ant-input::placeholder,
-          .wedding-guest-form .ant-input-number-input::placeholder,
-          .wedding-guest-form textarea::placeholder {
-            color: ${isDarkTheme ? '#888888' : '#999999'} !important;
-          }
-
-          .wedding-guest-form .ant-select-selection-item {
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
-          }
-
-          /* Page wrapper ant-card styling - match website background */
-          .page-wrapper .content .ant-card {
-            background-color: ${isDarkTheme ? '#141432' : '#FAFBFE'} !important;
-            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
-          }
-
-          /* All ant-card elements in page-wrapper - match website background */
-          .page-wrapper .ant-card,
-          .page-wrapper .content .ant-card,
-          .page-wrapper .content .ant-card.ant-card-bordered {
-            background-color: ${isDarkTheme ? '#141432' : '#FAFBFE'} !important;
-            background: ${isDarkTheme ? '#141432' : '#FAFBFE'} !important;
-            border-color: ${isDarkTheme ? '#434343' : '#d9d9d9'} !important;
-            color: ${isDarkTheme ? '#ffffff' : '#000000'} !important;
-          }
-
-          /* Override any CSS-in-JS styles */
-          .page-wrapper .ant-card[style],
-          .page-wrapper .content .ant-card[style] {
-            background-color: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-            background: ${isDarkTheme ? '#1f1f1f' : '#ffffff'} !important;
-          }
-
-          /* Force dark mode styles when data-layout-mode is dark_mode - match website background */
-          html[data-layout-mode="dark_mode"] .page-wrapper .content .ant-card,
-          html[data-layout-mode="dark_mode"] .page-wrapper .ant-card,
-          html[data-layout-mode="dark_mode"] .wedding-guest-form,
-          body.dark-mode .page-wrapper .content .ant-card,
-          body.dark .page-wrapper .content .ant-card {
+          /* Dark Mode Dropdown Styling */
+          html[data-layout-mode="dark_mode"] .ant-select-selector,
+          html[data-layout-mode="dark_mode"] .ant-select-single .ant-select-selector,
+          body.dark-mode .ant-select-selector,
+          body.dark .ant-select-selector {
             background-color: #141432 !important;
-            background: #141432 !important;
             border-color: #434343 !important;
             color: #ffffff !important;
           }
 
-          /* Force light mode styles when data-layout-mode is light_mode - match website background */
-          html[data-layout-mode="light_mode"] .page-wrapper .content .ant-card,
-          html[data-layout-mode="light_mode"] .page-wrapper .ant-card,
-          html[data-layout-mode="light_mode"] .wedding-guest-form,
-          body.light-mode .page-wrapper .content .ant-card,
-          body.light .page-wrapper .content .ant-card {
-            background-color: #FAFBFE !important;
-            background: #FAFBFE !important;
+          html[data-layout-mode="dark_mode"] .ant-select-dropdown,
+          body.dark-mode .ant-select-dropdown,
+          body.dark .ant-select-dropdown {
+            background-color: #141432 !important;
+            border-color: #434343 !important;
+            box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.48), 0 6px 16px 0 rgba(0, 0, 0, 0.32), 0 9px 28px 8px rgba(0, 0, 0, 0.2) !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-item,
+          body.dark-mode .ant-select-item,
+          body.dark .ant-select-item {
+            color: #ffffff !important;
+            background-color: #141432 !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-item:hover,
+          body.dark-mode .ant-select-item:hover,
+          body.dark .ant-select-item:hover {
+            background-color: #434343 !important;
+            color: #ffffff !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-select-item-option-selected,
+          body.dark-mode .ant-select-item-option-selected,
+          body.dark .ant-select-item-option-selected {
+            background-color: #177ddc !important;
+            color: #ffffff !important;
+          }
+
+          /* Dropdown Arrow Icon Dark Mode */
+          html[data-layout-mode="dark_mode"] .ant-select-arrow,
+          body.dark-mode .ant-select-arrow,
+          body.dark .ant-select-arrow {
+            color: #ffffff !important;
+          }
+
+          /* Focus States for Dark Mode */
+          html[data-layout-mode="dark_mode"] .ant-select-focused .ant-select-selector,
+          body.dark-mode .ant-select-focused .ant-select-selector,
+          body.dark .ant-select-focused .ant-select-selector {
+            background-color: #141432 !important;
+            border-color: #177ddc !important;
+            box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2) !important;
+          }
+
+          /* Placeholder Text Dark Mode */
+          html[data-layout-mode="dark_mode"] .ant-select-selection-placeholder,
+          body.dark-mode .ant-select-selection-placeholder,
+          body.dark .ant-select-selection-placeholder {
+            color: #888888 !important;
+          }
+
+          /* Input Number Dark Mode Styling */
+          html[data-layout-mode="dark_mode"] .ant-input-number,
+          html[data-layout-mode="dark_mode"] .ant-input-number-input,
+          body.dark-mode .ant-input-number,
+          body.dark .ant-input-number {
+            background-color: #141432 !important;
+            border-color: #434343 !important;
+            color: #ffffff !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-input-number:focus,
+          html[data-layout-mode="dark_mode"] .ant-input-number-focused,
+          body.dark-mode .ant-input-number:focus,
+          body.dark .ant-input-number:focus {
+            background-color: #141432 !important;
+            border-color: #177ddc !important;
+            box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2) !important;
+          }
+
+          /* TextArea Dark Mode Styling */
+          html[data-layout-mode="dark_mode"] .ant-input,
+          html[data-layout-mode="dark_mode"] textarea.ant-input,
+          body.dark-mode .ant-input,
+          body.dark textarea.ant-input {
+            background-color: #141432 !important;
+            border-color: #434343 !important;
+            color: #ffffff !important;
+          }
+
+          html[data-layout-mode="dark_mode"] .ant-input:focus,
+          html[data-layout-mode="dark_mode"] textarea.ant-input:focus,
+          body.dark-mode .ant-input:focus,
+          body.dark textarea.ant-input:focus {
+            background-color: #141432 !important;
+            border-color: #177ddc !important;
+            box-shadow: 0 0 0 2px rgba(23, 125, 220, 0.2) !important;
+          }
+
+          /* Placeholder Text for Inputs */
+          html[data-layout-mode="dark_mode"] .ant-input::placeholder,
+          html[data-layout-mode="dark_mode"] .ant-input-number-input::placeholder,
+          html[data-layout-mode="dark_mode"] textarea.ant-input::placeholder,
+          body.dark-mode .ant-input::placeholder,
+          body.dark .ant-input::placeholder {
+            color: #888888 !important;
+          }
             border-color: #d9d9d9 !important;
             color: #000000 !important;
           }
@@ -334,176 +274,224 @@ const EditWeddingGuest = () => {
         <div className="page-header">
           <div className="add-item d-flex">
             <div className="page-title">
-              <h4>
-                <Heart size={20} style={{ marginRight: '8px', color: '#ff69b4' }} />
-                Chỉnh sửa khách mời đám cưới
-              </h4>
-              <h6>Cập nhật thông tin khách mời</h6>
+              <h4>Chỉnh sửa khách mời đám cưới</h4>
+              <h6>Cập nhật thông tin khách mời cho đám cưới</h6>
             </div>
           </div>
           <div className="page-btn">
-            <Link to="/wedding-guest-list">
-              <Button
-                type="default"
-                icon={<ArrowLeft size={16} />}
-              >
-                Quay lại
-              </Button>
+            <Link to="/wedding-guest-list" className="btn btn-added">
+              <ArrowLeft className="me-2" size={16} />
+              Quay lại danh sách
             </Link>
           </div>
         </div>
 
         {/* Form */}
-        <Card
-          className="wedding-guest-form"
-          style={{
-            backgroundColor: isDarkTheme ? '#141432' : '#FAFBFE',
-            borderColor: isDarkTheme ? '#434343' : '#d9d9d9',
-            color: isDarkTheme ? '#ffffff' : '#000000',
-            background: isDarkTheme ? '#141432' : '#FAFBFE'
-          }}
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleSubmit}
-            autoComplete="off"
-            className="wedding-guest-form"
-          >
-            <Row gutter={24}>
-              <Col xs={24} sm={12}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Tên khách mời</span>}
-                  name="name"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập tên khách mời!' },
-                    { min: 2, message: 'Tên phải có ít nhất 2 ký tự!' }
-                  ]}
-                >
-                  <Input placeholder="Nhập tên khách mời" style={getInputStyle()} />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={12}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Đơn vị</span>}
-                  name="unit"
-                  rules={[{ required: true, message: 'Vui lòng nhập đơn vị!' }]}
-                >
-                  <Input placeholder="Nhập đơn vị" style={getInputStyle()} />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={24}>
-              <Col xs={24} sm={8}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Số người</span>}
-                  name="numberOfPeople"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập số người!' },
-                    { type: 'number', min: 1, message: 'Số người phải lớn hơn 0!' }
-                  ]}
-                >
-                  <InputNumber
-                    placeholder="Nhập số người"
-                    style={{ width: '100%', ...getInputStyle() }}
-                    min={1}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={8}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Số tiền mừng (VND)</span>}
-                  name="giftAmount"
-                  rules={[
-                    { required: true, message: 'Vui lòng nhập số tiền mừng!' },
-                    { type: 'number', min: 0, message: 'Số tiền phải lớn hơn hoặc bằng 0!' }
-                  ]}
-                >
-                  <InputNumber
-                    placeholder="Nhập số tiền mừng"
-                    style={{ width: '100%', ...getInputStyle() }}
-                    min={0}
-                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} sm={8}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Trạng thái</span>}
-                  name="status"
-                  rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
-                >
-                  <Select placeholder="Chọn trạng thái" style={getInputStyle()}>
-                    <Option value="Going">✅ Đi</Option>
-                    <Option value="NotGoing">❌ Không đi</Option>
-                    <Option value="Pending">⏳ Chưa xác nhận</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={24}>
-              <Col xs={24} sm={12}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Mối quan hệ</span>}
-                  name="relationship"
-                  rules={[{ required: true, message: 'Vui lòng chọn mối quan hệ!' }]}
-                >
-                  <Select placeholder="Chọn mối quan hệ" style={getInputStyle()}>
-                    <Option value="Family">👨‍👩‍👧‍👦 Gia đình</Option>
-                    <Option value="Friend">👫 Bạn bè</Option>
-                    <Option value="Colleague">💼 Đồng nghiệp</Option>
-                    <Option value="Relative">👥 Họ hàng</Option>
-                    <Option value="Other">🤝 Khác</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row gutter={24}>
-              <Col xs={24}>
-                <Form.Item
-                  label={<span style={getLabelStyle()}>Ghi chú</span>}
-                  name="notes"
-                >
-                  <TextArea
-                    placeholder="Nhập ghi chú (tùy chọn)"
-                    rows={4}
-                    maxLength={500}
-                    showCount
-                    style={getInputStyle()}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col xs={24}>
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                  <Link to="/wedding-guest-list">
-                    <Button type="default">
-                      Hủy
-                    </Button>
-                  </Link>
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    loading={submitting}
-                    icon={<Save size={16} />}
-                    style={{ backgroundColor: '#ff69b4', borderColor: '#ff69b4' }}
-                  >
-                    Cập nhật khách mời
-                  </Button>
+        <div className="card">
+          <div className="card-body">
+            <Form
+              form={form}
+              layout="vertical"
+              onFinish={handleSubmit}
+              autoComplete="off"
+            >
+              <div className="row">
+                {/* Guest Basic Info */}
+                <div className="col-lg-12">
+                  <div className="form-group-header">
+                    <div className="form-group-icon">
+                      <FileText size={20} />
+                    </div>
+                    <h5>Thông tin khách mời</h5>
+                  </div>
                 </div>
-              </Col>
-            </Row>
-          </Form>
-        </Card>
+
+                <div className="col-lg-6">
+                  <div className="mb-3">
+                    <label className="form-label">Tên khách mời <span className="text-danger">*</span></label>
+                    <Form.Item
+                      name="name"
+                      rules={[
+                        { required: true, message: 'Vui lòng nhập tên khách mời!' },
+                        { min: 2, message: 'Tên phải có ít nhất 2 ký tự!' }
+                      ]}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <Input
+                        placeholder="Nhập tên khách mời"
+                        className="form-control"
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="mb-3">
+                    <label className="form-label">Đơn vị <span className="text-danger">*</span></label>
+                    <Form.Item
+                      name="unit"
+                      rules={[{ required: true, message: 'Vui lòng nhập đơn vị!' }]}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <Input
+                        placeholder="Nhập đơn vị"
+                        className="form-control"
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                {/* Guest Details */}
+                <div className="col-lg-12">
+                  <div className="form-group-header">
+                    <div className="form-group-icon">
+                      <Users size={20} />
+                    </div>
+                    <h5>Chi tiết khách mời</h5>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div className="mb-3">
+                    <label className="form-label">Số người <span className="text-danger">*</span></label>
+                    <Form.Item
+                      name="numberOfPeople"
+                      rules={[
+                        { required: true, message: 'Vui lòng nhập số người!' },
+                        { type: 'number', min: 1, message: 'Số người phải lớn hơn 0!' }
+                      ]}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <InputNumber
+                        placeholder="Nhập số người"
+                        style={{ width: '100%' }}
+                        min={1}
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div className="mb-3">
+                    <label className="form-label">Số tiền mừng (VND) <span className="text-danger">*</span></label>
+                    <Form.Item
+                      name="giftAmount"
+                      rules={[
+                        { required: true, message: 'Vui lòng nhập số tiền mừng!' },
+                        { type: 'number', min: 0, message: 'Số tiền phải lớn hơn hoặc bằng 0!' }
+                      ]}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <InputNumber
+                        placeholder="Nhập số tiền mừng"
+                        style={{ width: '100%' }}
+                        min={0}
+                        formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                        parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
+
+                <div className="col-lg-4">
+                  <div className="mb-3">
+                    <label className="form-label">Trạng thái <span className="text-danger">*</span></label>
+                    <Form.Item
+                      name="status"
+                      rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <Select
+                        placeholder="Chọn trạng thái"
+                        style={{ width: '100%' }}
+                      >
+                        <Option value="Confirmed">✅ Đã xác nhận</Option>
+                        <Option value="Pending">⏳ Chưa xác nhận</Option>
+                        <Option value="Cancelled">❌ Hủy</Option>
+                        <Option value="Attended">👥 Đã tham dự</Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                {/* Additional Info */}
+                <div className="col-lg-12">
+                  <div className="form-group-header">
+                    <div className="form-group-icon">
+                      <Gift size={20} />
+                    </div>
+                    <h5>Thông tin bổ sung</h5>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="mb-3">
+                    <label className="form-label">Mối quan hệ <span className="text-danger">*</span></label>
+                    <Form.Item
+                      name="relationship"
+                      rules={[{ required: true, message: 'Vui lòng chọn mối quan hệ!' }]}
+                      style={{ marginBottom: 0 }}
+                    >
+                      <Select
+                        placeholder="Chọn mối quan hệ"
+                        style={{ width: '100%' }}
+                      >
+                        <Option value="Family">👨‍👩‍👧‍👦 Gia đình</Option>
+                        <Option value="Friend">👫 Bạn bè</Option>
+                        <Option value="Colleague">💼 Đồng nghiệp</Option>
+                        <Option value="Relative">👥 Họ hàng</Option>
+                        <Option value="Other">🤝 Khác</Option>
+                      </Select>
+                    </Form.Item>
+                  </div>
+                </div>
+
+                <div className="col-lg-12">
+                  <div className="mb-3">
+                    <label className="form-label">Ghi chú</label>
+                    <Form.Item
+                      name="notes"
+                      style={{ marginBottom: 0 }}
+                    >
+                      <TextArea
+                        placeholder="Nhập ghi chú (tùy chọn)"
+                        rows={4}
+                        maxLength={500}
+                        showCount
+                      />
+                    </Form.Item>
+                  </div>
+                </div>
+              </div>
+              {/* Submit Buttons */}
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="btn-addproduct mb-4 d-flex align-items-center gap-3">
+                    <LoadingButton
+                      type="submit"
+                      variant="primary"
+                      size="medium"
+                      loading={submitting}
+                      loadingText="Đang cập nhật khách mời..."
+                      className="create-project-btn"
+                      icon={<Save size={16} />}
+                    >
+                      Cập nhật khách mời
+                    </LoadingButton>
+
+                    <Link to="/wedding-guest-list" className="btn btn-cancel btn-cancel-project">
+                      Hủy
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </Form>
+          </div>
+        </div>
       </div>
     </div>
   );
